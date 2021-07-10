@@ -7,13 +7,13 @@
     android:background="@color/transparent">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
 
         android:layout_height="@dimen/movie_page_poster_height">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingToolbarLayout"
+            android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 
@@ -29,14 +29,14 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/toolbarBeforeCollapsed"
+                android:id="@+id/toolbar_before_collapsed"
                 style="@style/MovieToolbarBeforeCollapsed"
                 android:layout_width="match_parent"
                 android:layout_gravity="bottom"
                 android:background="@drawable/half_rounded_shape_background">
 
                 <TextView
-                    android:id="@+id/MovieGenreText"
+                    android:id="@+id/movie_genre_text"
                     style="@style/MovieGenreText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -45,13 +45,13 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/MovieDateText"
+                    android:id="@+id/movie_date_text"
                     style="@style/MovieDateText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="22.04.2021"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/MovieGenreText"
+                    app:layout_constraintStart_toEndOf="@+id/movie_genre_text"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -60,13 +60,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:text="Гнев человеческий"
-                    app:layout_constraintEnd_toStartOf="@id/MovieRatingText"
+                    app:layout_constraintEnd_toStartOf="@id/movie_rating_age_text"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/MovieGenreText" />
+                    app:layout_constraintTop_toBottomOf="@+id/movie_genre_text" />
 
                 <TextView
-                    android:id="@+id/MovieRatingText"
-                    style="@style/MovieRatingText"
+                    android:id="@+id/movie_rating_age_text"
+                    style="@style/MovieRatingAgeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/rating_age_18"
@@ -96,11 +96,12 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:overScrollMode="never"
         android:paddingHorizontal="@dimen/movie_page_padding_horizontal"
-        app:layout_anchor="@+id/nestedScrollView"
+        app:layout_anchor="@+id/nested_scroll_view"
         app:layout_anchorGravity="center"
 
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -110,7 +111,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/MovieRatingStar1"
+                android:id="@+id/movie_rating_star_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
@@ -121,63 +122,89 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/MovieRatingStar2"
+                android:id="@+id/movie_rating_star_2"
                 style="@style/MovieRatingStar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/star_filled_description"
                 android:src="@drawable/ic_star_filled"
-                app:layout_constraintStart_toEndOf="@id/MovieRatingStar1"
+                app:layout_constraintStart_toEndOf="@id/movie_rating_star_1"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/MovieRatingStar3"
+                android:id="@+id/movie_rating_star_3"
                 style="@style/MovieRatingStar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/star_filled_description"
                 android:src="@drawable/ic_star_filled"
-                app:layout_constraintStart_toEndOf="@id/MovieRatingStar2"
+                app:layout_constraintStart_toEndOf="@id/movie_rating_star_2"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/MovieRatingStar4"
+                android:id="@+id/movie_rating_star_4"
                 style="@style/MovieRatingStar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/star_filled_description"
                 android:src="@drawable/ic_star_filled"
-                app:layout_constraintStart_toEndOf="@id/MovieRatingStar3"
+                app:layout_constraintStart_toEndOf="@id/movie_rating_star_3"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/MovieRatingStar5"
+                android:id="@+id/movie_rating_star_5"
                 style="@style/MovieRatingStar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/star_empty_description"
                 android:src="@drawable/ic_star"
-                app:layout_constraintStart_toEndOf="@id/MovieRatingStar4"
+                app:layout_constraintStart_toEndOf="@id/movie_rating_star_4"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/MovieDescription"
+                android:id="@+id/movie_description"
                 style="@style/MovieDescriptionText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/lorem"
-                app:layout_constraintTop_toBottomOf="@id/MovieRatingStar1" />
+                app:layout_constraintTop_toBottomOf="@id/movie_rating_star_1" />
 
             <TextView
+                android:id="@+id/movie_actors_header"
                 style="@style/MovieActorsHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
                 android:text="@string/actors"
-                app:layout_constraintTop_toBottomOf="@id/MovieDescription" />
+                app:layout_constraintTop_toBottomOf="@id/movie_description" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycle_view_actors"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="?attr/actionBarSize"
+                android:orientation="horizontal"
+                android:overScrollMode="never"
+                android:paddingVertical="16dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/movie_actors_header" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        android:paddingHorizontal="0dp"
+        app:itemBackground="@drawable/bottom_navigation_background"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_anchor="@+id/nested_scroll_view"
+        app:layout_anchorGravity="center"
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
