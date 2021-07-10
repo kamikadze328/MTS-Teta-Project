@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Theme.MTSTetaProject"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+
+        android:layout_height="@dimen/movie_page_poster_height">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:id="@+id/main.backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/img_movie_main_description"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_movie_main" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/toolbarBeforeCollapsed"
+                style="@style/MovieToolbarBeforeCollapsed"
+                android:layout_width="match_parent"
+                android:layout_gravity="bottom"
+                android:background="@drawable/half_rounded_shape_background">
+
+                <TextView
+                    android:id="@+id/MovieGenreText"
+                    style="@style/MovieGenreText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="боевики"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/MovieDateText"
+                    style="@style/MovieDateText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="22.04.2021"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/MovieGenreText"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    style="@style/MovieNameText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="Гнев человеческий"
+                    app:layout_constraintEnd_toStartOf="@id/MovieRatingText"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/MovieGenreText" />
+
+                <TextView
+                    android:id="@+id/MovieRatingText"
+                    style="@style/MovieRatingText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="18+"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="bottom"
+                android:background="@color/background"
+                android:visibility="invisible"
+                app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <TextView
+                    style="@style/MovieNameText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="4dp"
+                    android:text="Гнев человеческий" />
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/movie_page_padding_horizontal"
+        app:layout_anchor="@+id/nestedScrollView"
+        app:layout_anchorGravity="center"
+
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/MovieRatingStar1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/ic_star_filled"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/MovieRatingStar2"
+                style="@style/MovieRatingStar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_filled"
+                app:layout_constraintStart_toEndOf="@id/MovieRatingStar1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/MovieRatingStar3"
+                style="@style/MovieRatingStar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_filled"
+                app:layout_constraintStart_toEndOf="@id/MovieRatingStar2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/MovieRatingStar4"
+                style="@style/MovieRatingStar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_filled"
+                app:layout_constraintStart_toEndOf="@id/MovieRatingStar3"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/MovieRatingStar5"
+                style="@style/MovieRatingStar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star"
+                app:layout_constraintStart_toEndOf="@id/MovieRatingStar4"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/MovieDescription"
+                style="@style/MovieDescriptionText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/lorem"
+                app:layout_constraintTop_toBottomOf="@id/MovieRatingStar1" />
+
+            <TextView
+                style="@style/MovieActorsHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:text="@string/actors"
+                app:layout_constraintTop_toBottomOf="@id/MovieDescription" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
