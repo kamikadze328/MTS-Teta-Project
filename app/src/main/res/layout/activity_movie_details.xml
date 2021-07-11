@@ -10,8 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-
-        android:layout_height="@dimen/movie_page_poster_height">
+        android:layout_height="@dimen/movie_detail_poster_height">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar_layout"
@@ -21,20 +20,19 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
-                android:id="@+id/main.backdrop"
+                android:id="@+id/movie_poster"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/img_movie_main_description"
                 android:scaleType="centerCrop"
                 android:src="@drawable/img_movie_main" />
 
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/toolbar_before_collapsed"
                 style="@style/MovieToolbarBeforeCollapsed"
                 android:layout_width="match_parent"
                 android:layout_gravity="bottom"
-                android:background="@drawable/half_rounded_shape_background">
+                android:background="@drawable/movie_details_header_half_rounded_shape_background">
 
                 <TextView
                     android:id="@+id/movie_genre_text"
@@ -56,41 +54,40 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    style="@style/MovieNameText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="@string/movie_name_temp"
-                    app:layout_constraintEnd_toStartOf="@id/movie_rating_age_text"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/movie_genre_text" />
-
-                <TextView
                     android:id="@+id/movie_rating_age_text"
                     style="@style/MovieRatingAgeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/rating_age_18"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/movie_name_text"
                     app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/movie_name_text"
+                    style="@style/MovieNameText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_name_temp"
+                    app:layout_constraintEnd_toStartOf="@id/movie_rating_age_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/movie_genre_text" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
+                style="@style/MovieToolbarCollapsed"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="bottom"
-                android:background="@color/background"
                 android:visibility="invisible"
                 app:layout_collapseMode="pin"
                 app:layout_scrollFlags="scroll|enterAlways">
 
                 <TextView
-                    style="@style/MovieNameText"
+                    style="@style/MovieNameText.ToolBarCollapsedLand"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:paddingHorizontal="4dp"
                     android:text="@string/movie_name_temp" />
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -101,10 +98,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:overScrollMode="never"
-        android:paddingHorizontal="@dimen/movie_page_padding_horizontal"
-        app:layout_anchor="@+id/nested_scroll_view"
-        app:layout_anchorGravity="center"
-
+        android:paddingHorizontal="@dimen/movie_detail_padding_horizontal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -118,7 +112,6 @@
                 android:layout_marginEnd="20dp"
                 android:contentDescription="@string/star_filled_description"
                 android:src="@drawable/ic_star_filled"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -168,9 +161,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                tools:text="@string/lorem"
                 android:text="@string/movie_description_temp"
-                app:layout_constraintTop_toBottomOf="@id/movie_rating_star_1" />
+                app:layout_constraintTop_toBottomOf="@id/movie_rating_star_1"
+                tools:text="@string/lorem" />
 
             <TextView
                 android:id="@+id/movie_actors_header"
@@ -198,12 +191,10 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        style="@style/BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom"
-        android:paddingHorizontal="0dp"
-        app:itemBackground="@drawable/bottom_navigation_background"
-        app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

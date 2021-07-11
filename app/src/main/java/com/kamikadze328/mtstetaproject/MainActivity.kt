@@ -1,7 +1,10 @@
 package com.kamikadze328.mtstetaproject
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import android.widget.ScrollView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,16 +18,15 @@ import com.kamikadze328.mtstetaproject.objects.Actor
 
 
 class MainActivity : AppCompatActivity() {
-    private var scrollRange: Int = 0
     private lateinit var toolbar: Toolbar
-    private lateinit var toolbarBeforeCollapsed: ConstraintLayout
-    private var isCollapsed = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_details)
 
         prepareRecycleViewActors()
-        initToolBar()
+
+        prepareToolBar()
     }
 
     private fun prepareRecycleViewActors() {
@@ -65,10 +67,17 @@ class MainActivity : AppCompatActivity() {
             theme
         )
 
-
-    private fun initToolBar() {
+    private fun prepareToolBar(){
         toolbar = findViewById(R.id.toolbar)
-        toolbarBeforeCollapsed = findViewById(R.id.toolbar_before_collapsed)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+            prepareToolBarPortrait()
+        else prepareToolBarLand()
+    }
+    private fun prepareToolBarPortrait() {
+        val toolbarBeforeCollapsed: ConstraintLayout = findViewById(R.id.toolbar_before_collapsed)
+        var scrollRange = 0
+        var isCollapsed = false
+
         val appBarLayout = findViewById<AppBarLayout>(R.id.app_bar_layout)
         toolbar.doOnLayout {
             scrollRange = appBarLayout.totalScrollRange
@@ -79,14 +88,25 @@ class MainActivity : AppCompatActivity() {
             if (isCollapsed) {
                 isCollapsed = false
                 toolbarBeforeCollapsed.visibility = View.VISIBLE
-
                 toolbar.visibility = View.INVISIBLE
             } else if (scrollRange + verticalOffset == 0) {
                 isCollapsed = true
                 toolbar.visibility = View.VISIBLE
                 toolbarBeforeCollapsed.visibility = View.INVISIBLE
-
             }
         })
+    }
+
+    private fun prepareToolBarLand() {
+        val movieNameTextView = findViewById<TextView>(R.id.movie_name_text)
+
+        findViewById<ScrollView>(R.id.movie_content_scroll).viewTreeObserver.addOnScrollChangedListener {
+            val location = IntArray(2)
+            movieNameTextView.getLocationOnScreen(location)
+            val y = location[1]
+            toolbar.visibility =
+                if (y - movieNameTextView.lineHeight <= 0) View.VISIBLE else View.INVISIBLE
+        }
+
     }
 }
