@@ -182,6 +182,7 @@
                 android:orientation="horizontal"
                 android:overScrollMode="never"
                 android:paddingVertical="16dp"
+                tools:listitem="@layout/actor_view"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
