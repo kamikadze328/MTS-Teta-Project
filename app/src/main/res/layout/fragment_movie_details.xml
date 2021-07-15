@@ -109,7 +109,6 @@
                 android:id="@+id/movie_rating_star_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
                 android:contentDescription="@string/star_filled_description"
                 android:src="@drawable/ic_star_filled"
                 app:layout_constraintStart_toStartOf="parent"
@@ -182,12 +181,12 @@
                 android:orientation="horizontal"
                 android:overScrollMode="never"
                 android:paddingVertical="16dp"
-                tools:listitem="@layout/actor_view"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/movie_actors_header" />
+                app:layout_constraintTop_toBottomOf="@+id/movie_actors_header"
+                tools:listitem="@layout/item_actor" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
