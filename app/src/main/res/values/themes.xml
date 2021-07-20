@@ -41,6 +41,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="MovieNameText.Main" parent="MovieNameText">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="MovieNameText.ToolBarCollapsedLand" parent="MovieNameText">
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingStart">4dp</item>
@@ -54,8 +59,19 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <style name="MovieRatingAgeText.Main" parent="MovieRatingAgeText">
+        <item name="android:textSize">7sp</item>
+    </style>
+
     <style name="MovieDescriptionText">
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="MovieDescriptionText.Main" parent="MovieDescriptionText">
+        <item name="android:textSize">12sp</item>
+        <item name="android:maxLines">6</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">6</item>
     </style>
 
     <style name="MovieToolbarBeforeCollapsed">
@@ -72,7 +88,7 @@
     </style>
 
     <style name="MovieRatingStar">
-        <item name="android:layout_marginStart">2dp</item>
+        <item name="android:layout_marginStart">@dimen/rating_stars_margin_between</item>
     </style>
 
     <style name="MovieActorsHeader">
@@ -86,4 +102,23 @@
         <item name="labelVisibilityMode">unlabeled</item>
     </style>
 
+    <style name="MovieMainHeader">
+        <item name="maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="MovieMainFooter">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+
+    <style name="MyRatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@android:color/holo_green_light</item>
+        <item name="colorControlActivated">@android:color/holo_orange_dark</item>
+    </style>
 </resources>
