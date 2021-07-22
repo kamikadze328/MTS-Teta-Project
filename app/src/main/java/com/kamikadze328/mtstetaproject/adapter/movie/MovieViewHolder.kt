@@ -6,9 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import coil.load
-import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Movie
@@ -23,18 +21,18 @@ class MovieViewHolder(private val view: View) : MovieViewHolderSealed(view) {
     private val ageRestriction: TextView = view.findViewById(R.id.movie_main_age_rating)
     private val poster: ImageView = view.findViewById(R.id.movie_main_poster)
 
-    fun bind(data: Movie, click: (title: String) -> Unit) {
+    fun bind(movie: Movie, click: (id: Int) -> Unit) {
 
-        poster.load(data.imageUrl) {
+        poster.load(movie.poster_path) {
             transformations(RoundedCornersTransformation(view.context.resources.getDimension(R.dimen.movie_main_poster_border_radius)))
         }
-        root.setOnClickListener { click(data.title) }
-        title.text = data.title
-        description.text = data.description
-        rating.setRating(data.rateScore)
+        root.setOnClickListener { click(movie.id) }
+        title.text = movie.title
+        description.text = movie.overview
+        rating.setRating(movie.vote_average)
         ageRestriction.text = view.context.resources.getString(
             R.string.main_age_restriction_text,
-            data.ageRestriction
+            movie.ageRestriction
         )
     }
 

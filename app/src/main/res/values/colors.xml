@@ -11,4 +11,6 @@
     <color name="background">#F1F1F1</color>
     <color name="background_transparent">#AAF1F1F1</color>
     <color name="transparent">#00000000</color>
+    <color name="profile_special_background">#4DC4C4C4</color>
+
 </resources>

@@ -28,10 +28,23 @@
 
     <dimen name="movie_main_no_movies_img_size">150dp</dimen>
 
-
     <dimen name="rating_stars_margin_between">2dp</dimen>
 
     <dimen name="movie_item_name_margin">8dp</dimen>
     <dimen name="movie_item_margin_between">10dp</dimen>
+
+    <dimen name="profile_img_size">72dp</dimen>
+    <dimen name="profile_img_margin_top">12dp</dimen>
+    <dimen name="profile_img_padding_top">24dp</dimen>
+    <dimen name="profile_img_padding">20dp</dimen>
+    <dimen name="profile_padding_vertical">48dp</dimen>
+    <dimen name="profile_padding_horizontal">20dp</dimen>
+    <dimen name="profile_text_input_placeholder_font_size">12sp</dimen>
+    <dimen name="profile_text_input_font_size">14sp</dimen>
+
+    <dimen name="profile_margin_header">40dp</dimen>
+    <dimen name="profile_movies_offset">10dp</dimen>
+    <dimen name="profile_vertical_offset_between">10dp</dimen>
+
 
 </resources>

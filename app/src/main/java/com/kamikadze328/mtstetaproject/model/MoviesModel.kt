@@ -6,4 +6,7 @@ class MoviesModel(
     private val moviesDataSource: MoviesDataSource
 ) {
     fun getMovies() = moviesDataSource.getMovies()
+    fun getMovieById(id: Int) = moviesDataSource.getMovieById(id)
+    fun getFavouriteMoviesByUserId(id: Int) = moviesDataSource.getFavouriteMoviesByUserId(id)
+
 }

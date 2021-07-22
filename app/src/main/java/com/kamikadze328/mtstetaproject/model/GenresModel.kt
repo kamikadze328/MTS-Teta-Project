@@ -6,4 +6,6 @@ class GenresModel(
     private val genresDataSource: GenresDataSource
 ) {
     fun getGenres() = genresDataSource.getGenres()
+
+    fun getGenreById(id: Int) = genresDataSource.getGenreByIt(id)
 }

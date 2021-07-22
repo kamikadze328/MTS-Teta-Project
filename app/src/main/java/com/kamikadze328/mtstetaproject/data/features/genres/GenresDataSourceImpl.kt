@@ -82,4 +82,6 @@ class GenresDataSourceImpl : GenresDataSource {
             id = 10770
         ),
     )
+
+    override fun getGenreByIt(id: Int): Genre? = getGenres().find { it.id == id }
 }

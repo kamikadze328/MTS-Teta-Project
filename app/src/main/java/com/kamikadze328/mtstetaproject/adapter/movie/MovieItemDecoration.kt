@@ -10,8 +10,7 @@ class MovieItemDecoration(
     @Px private val offsetBetween: Int,
     @Px private val offsetBottom: Int,
     private val spanCount: Int
-) :
-    RecyclerView.ItemDecoration() {
+) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
