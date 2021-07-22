@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 
 
 fun ConstraintLayout.setRating(
-    rating: Int,
+    rating: Double,
     ids: IntArray = intArrayOf(
         R.id.movie_rating_star_1,
         R.id.movie_rating_star_2,

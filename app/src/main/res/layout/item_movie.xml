@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/movie_main_root"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="@dimen/main_side_offset">
 
@@ -11,6 +11,7 @@
         android:id="@+id/movie_main_poster"
         android:layout_width="@dimen/main_poster_width"
         android:layout_height="@dimen/main_poster_height"
+        android:contentDescription="@string/movie_poster_description"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -9,7 +9,7 @@
         android:id="@+id/movie_poster"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:contentDescription="@string/img_movie_main_description"
+        android:contentDescription="@string/movie_poster_description"
         android:scaleType="centerCrop"
         android:src="@drawable/img_movie_main"
         app:layout_constraintEnd_toStartOf="@id/movie_content_scroll"
@@ -31,31 +31,35 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/movie_detail_padding_top">
 
-            <TextView
-                android:id="@+id/movie_genre_text"
-                style="@style/MovieGenreText"
-                android:layout_width="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/movie_genres_recycler"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/movie_genre_action"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toStartOf="@id/movie_date_text"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_genre" />
 
             <TextView
                 android:id="@+id/movie_date_text"
                 style="@style/MovieDateText"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/movie_date_temp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/movie_genre_text"
+                android:text="@string/movie_date_tools"
+                app:layout_constraintEnd_toStartOf="@+id/movie_age_restriction_text"
+                app:layout_constraintStart_toEndOf="@+id/movie_genres_recycler"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/movie_rating_age_text"
+                android:id="@+id/movie_age_restriction_text"
                 style="@style/MovieRatingAgeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/rating_age_18"
+
                 app:layout_constraintBottom_toBottomOf="@id/movie_name_text"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -65,59 +69,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/movie_detail_header_padding_bottom"
-                android:text="@string/movie_name_temp"
-                app:layout_constraintEnd_toStartOf="@id/movie_rating_age_text"
+                android:text="@string/movie_name_tools"
+                app:layout_constraintEnd_toStartOf="@id/movie_age_restriction_text"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/movie_genre_text" />
+                app:layout_constraintTop_toBottomOf="@+id/movie_genres_recycler" />
 
-            <ImageView
-                android:id="@+id/movie_rating_star_1"
+            <include
+                android:id="@+id/rating_bar_root_include"
+                layout="@layout/my_rating_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:contentDescription="@string/star_filled_description"
-                android:src="@drawable/ic_star_filled"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/movie_name_text" />
-
-            <ImageView
-                android:id="@+id/movie_rating_star_2"
-                style="@style/MovieRatingStar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/star_filled_description"
-                android:src="@drawable/ic_star_filled"
-                app:layout_constraintStart_toEndOf="@id/movie_rating_star_1"
-                app:layout_constraintTop_toBottomOf="@id/movie_name_text" />
-
-            <ImageView
-                android:id="@+id/movie_rating_star_3"
-                style="@style/MovieRatingStar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/star_filled_description"
-                android:src="@drawable/ic_star_filled"
-                app:layout_constraintStart_toEndOf="@id/movie_rating_star_2"
-                app:layout_constraintTop_toBottomOf="@id/movie_name_text" />
-
-            <ImageView
-                android:id="@+id/movie_rating_star_4"
-                style="@style/MovieRatingStar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/star_filled_description"
-                android:src="@drawable/ic_star_filled"
-                app:layout_constraintStart_toEndOf="@id/movie_rating_star_3"
-                app:layout_constraintTop_toBottomOf="@id/movie_name_text" />
-
-            <ImageView
-                android:id="@+id/movie_rating_star_5"
-                style="@style/MovieRatingStar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/star_empty_description"
-                android:src="@drawable/ic_star"
-                app:layout_constraintStart_toEndOf="@id/movie_rating_star_4"
                 app:layout_constraintTop_toBottomOf="@id/movie_name_text" />
 
             <TextView
@@ -126,8 +88,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="@string/movie_description_temp"
-                app:layout_constraintTop_toBottomOf="@id/movie_rating_star_1"
+                android:text="@string/movie_description_tools"
+                app:layout_constraintTop_toBottomOf="@id/rating_bar_root_include"
                 tools:text="@string/lorem" />
 
             <TextView
@@ -167,18 +129,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/movie_name_text_toolbar"
             style="@style/MovieNameText.ToolBarCollapsedLand"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:text="@string/movie_name_temp" />
+            android:text="@string/movie_name_tools" />
     </androidx.appcompat.widget.Toolbar>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        style="@style/BottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
