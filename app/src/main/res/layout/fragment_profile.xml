@@ -9,6 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="@dimen/profile_padding_vertical"
+        android:paddingTop="@dimen/profile_padding_vertical"
+        android:paddingBottom="30dp"
         tools:context=".fragment.ProfileFragment">
 
         <ImageView
@@ -16,7 +18,6 @@
             android:layout_width="@dimen/profile_img_size"
             android:layout_height="@dimen/profile_img_size"
             android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
-            android:layout_marginTop="@dimen/profile_img_margin_top"
             android:background="@drawable/profile_img_background"
             android:contentDescription="@string/profile_img_description"
             android:paddingHorizontal="@dimen/profile_img_padding"
@@ -190,7 +191,9 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
             android:layout_marginTop="@dimen/profile_vertical_offset_between"
+            android:layout_marginBottom="20dp"
             android:text="@string/profile_logout_button"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_app_info_recycler" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

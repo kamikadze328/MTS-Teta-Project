@@ -236,31 +236,30 @@ class ProfileFragment : Fragment() {
                 countDeleted++
             }
         }
-
-        when (s[0]) {
-            seven -> {
-                s.insert(0, "$plus")
-                s.insert(2, "$space")
+        if (s.isNotEmpty()) {
+            when (s[0]) {
+                seven -> {
+                    s.insert(0, "$plus")
+                    s.insert(2, "$space")
+                }
+                plus -> s.insert(1, "$seven$space")
+                else -> s.insert(0, "$plus$seven$space")
             }
-            plus -> s.insert(1, "$seven$space")
-            else -> s.insert(0, "$plus$seven$space")
-        }
-        if (s.length > 3) {
-            if (editText.selectionStart == 3) editText.setSelection(4)
-        }
-        if (s.length > 6) {
-            s.insert(6, space.toString())
-            if (editText.selectionStart == 7) editText.setSelection(6)
-        }
-        if (s.length > 10) {
-            s.insert(10, minus.toString())
-            if (editText.selectionStart == 11) editText.setSelection(10)
-        }
-        if (s.length > 13) {
-            s.insert(13, minus.toString())
-            if (editText.selectionStart == 14) editText.setSelection(13)
+            if (s.length > 3) {
+                if (editText.selectionStart == 3) editText.setSelection(4)
+            }
+            if (s.length > 6) {
+                s.insert(6, space.toString())
+                if (editText.selectionStart == 7) editText.setSelection(6)
+            }
+            if (s.length > 10) {
+                s.insert(10, minus.toString())
+                if (editText.selectionStart == 11) editText.setSelection(10)
+            }
+            if (s.length > 13) {
+                s.insert(13, minus.toString())
+                if (editText.selectionStart == 14) editText.setSelection(13)
+            }
         }
     }
-
-
 }

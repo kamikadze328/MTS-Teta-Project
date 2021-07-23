@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
+    android:shape="rectangle">
     <solid android:color="@color/profile_special_background" />
-    <size
-        android:width="@dimen/profile_img_size"
-        android:height="@dimen/profile_img_size" />
-
+    <corners android:radius="@dimen/profile_buttons_border_radius" />
 </shape>
