@@ -81,7 +81,7 @@ class HomeFragment : Fragment() {
     private fun setupMoviesAdapter() {
         val recyclerMovies = binding.movieMainRecycleView
         val adapter =
-            MovieAdapter(::onClickListenerMovies, getString(R.string.movie_main_header_popular))
+            MovieAdapter(::onClickListenerMovies/*, getString(R.string.movie_main_header_popular)*/)
 
 
         viewModel.filteredMovies.observe(viewLifecycleOwner, {
@@ -104,7 +104,7 @@ class HomeFragment : Fragment() {
         val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, false)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int = when (position) {
-                0, adapter.itemCount - 1 -> spanCount
+                /*0, */adapter.itemCount - 1 -> spanCount
                 else -> 1
             }
         }

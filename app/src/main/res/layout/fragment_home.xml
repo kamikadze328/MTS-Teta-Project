@@ -7,11 +7,20 @@
     tools:context=".fragment.HomeFragment">
 
     <androidx.appcompat.widget.SearchView
-        android:id="@+id/search"
+        android:id="@+id/home_search"
         android:layout_width="wrap_content"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_marginHorizontal="@dimen/movie_main_movie_offset"
+        android:id="@+id/home_category_header"
+        style="@style/MovieMainHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/movie_main_header_popular"
+        app:layout_constraintTop_toBottomOf="@id/home_search" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/movie_main_genres"
@@ -20,7 +29,7 @@
         android:layout_marginTop="12dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/search"
+        app:layout_constraintTop_toBottomOf="@id/home_category_header"
         tools:listitem="@layout/item_genre" />
 
     <androidx.recyclerview.widget.RecyclerView
