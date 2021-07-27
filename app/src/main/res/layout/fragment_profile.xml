@@ -67,7 +67,7 @@
             android:overScrollMode="never"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@id/profile_header_interests"
-            tools:listitem="@layout/item_movie_short" />
+            tools:listitem="@layout/item_genre" />
 
         <TextView
             android:id="@+id/profile_header_personal_info"

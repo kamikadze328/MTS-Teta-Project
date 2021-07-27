@@ -9,9 +9,7 @@ import javax.inject.Singleton
 class GenreRepository @Inject constructor(
     private val webservice: Webservice
 ) {
-
     suspend fun refreshGenres(): List<Genre> {
         return webservice.getGenres()
     }
-
 }

@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
-import com.kamikadze328.mtstetaproject.adapter.movieshort.MovieShortAdapter
+import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.settings.SettingsAdapter
 import com.kamikadze328.mtstetaproject.data.dto.User
 import com.kamikadze328.mtstetaproject.databinding.FragmentProfileBinding
@@ -136,9 +136,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initRecycleViewFavouriteMovies() {
-        val adapter = MovieShortAdapter(::onClickListenerMovies)
+        val adapter = GenreAdapter(::onClickListenerGenre)
 
-        viewModel.favouriteMovies.observe(viewLifecycleOwner, {
+        viewModel.favouriteGenres.observe(viewLifecycleOwner, {
             adapter.submitList(it)
         })
         binding.profileFavouriteMoviesRecycler.adapter = adapter
@@ -154,7 +154,7 @@ class ProfileFragment : Fragment() {
         Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
     }
 
-    private fun onClickListenerMovies(id: Int) {
+    private fun onClickListenerGenre(id: Int) {
         (activity as MainActivity).onMovieClicked(id)
     }
 

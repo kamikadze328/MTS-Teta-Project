@@ -1,12 +1,13 @@
 package com.kamikadze328.mtstetaproject.presentation.profile
 
 import androidx.lifecycle.*
-import com.kamikadze328.mtstetaproject.data.dto.Movie
+import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.User
 import com.kamikadze328.mtstetaproject.repository.AccountRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,8 +18,8 @@ class ProfileViewModel @Inject constructor(
 
     private val accountId: MutableLiveData<Int> = MutableLiveData(savedStateHandle[PROFILE_ID_ARG])
 
-    private val _favouriteMovies = MutableLiveData<List<Movie>>()
-    val favouriteMovies: LiveData<List<Movie>> = _favouriteMovies
+    private val _favouriteGenres = MutableLiveData<List<Genre>>()
+    val favouriteGenres: LiveData<List<Genre>> = _favouriteGenres
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User> = _user
@@ -56,29 +57,31 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadFavouritesMovies() {
         viewModelScope.launch(Dispatchers.IO) {
-            _favouriteMovies.postValue(accountRepository.getFavouriteMovies(accountId.value!!))
+            _favouriteGenres.postValue(accountRepository.getFavouriteGenres(accountId.value!!))
         }
     }
 
     private fun loadUser() {
         viewModelScope.launch(Dispatchers.IO) {
             accountRepository.refreshUser(accountId.value!!).let {
-                _user.postValue(it)
-                setChangedUser(it)
-                setWasDataChanged(false)
+                withContext(Dispatchers.Main) {
+                    _user.value = it
+                    setChangedUser(it)
+                    setWasDataChanged(false)
+                }
             }
         }
     }
 
     private fun setWasDataChanged(newVal: Boolean) {
         savedStateHandle.set(WAS_DATA_CHANGED_ARG, newVal)
-        this._wasDataChanged.postValue(newVal)
+        this._wasDataChanged.value = newVal
     }
 
     private fun setChangedUser(user: User) {
         user.id = accountId.value!!
         savedStateHandle.set(CHANGED_USER_ARG, user)
-        _changedUser.postValue(user)
+        _changedUser.value = user
     }
 
     fun updateChangedUser(newChangedUser: User) {
