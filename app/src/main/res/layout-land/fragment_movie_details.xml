@@ -48,20 +48,21 @@
                 style="@style/MovieDateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/movie_date_tools"
+                android:text="@string/movie_date_loading"
                 app:layout_constraintEnd_toStartOf="@+id/movie_age_restriction_text"
                 app:layout_constraintStart_toEndOf="@+id/movie_genres_recycler"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/movie_date_tools" />
 
             <TextView
                 android:id="@+id/movie_age_restriction_text"
                 style="@style/MovieRatingAgeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/rating_age_18"
-
+                android:text="@string/rating_age_loading"
                 app:layout_constraintBottom_toBottomOf="@id/movie_name_text"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="@string/rating_age_18" />
 
             <TextView
                 android:id="@+id/movie_name_text"
@@ -69,10 +70,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/movie_detail_header_padding_bottom"
-                android:text="@string/movie_name_tools"
+                android:text="@string/movie_name_loading"
                 app:layout_constraintEnd_toStartOf="@id/movie_age_restriction_text"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/movie_genres_recycler" />
+                app:layout_constraintTop_toBottomOf="@+id/movie_genres_recycler"
+                tools:text="@string/movie_name_tools" />
 
             <include
                 android:id="@+id/rating_bar_root_include"
@@ -88,9 +90,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="@string/movie_description_tools"
+                android:text="@string/movie_description_loading"
                 app:layout_constraintTop_toBottomOf="@id/rating_bar_root_include"
-                tools:text="@string/lorem" />
+                tools:text="@string/movie_description_tools" />
 
             <TextView
                 android:id="@+id/movie_actors_header"

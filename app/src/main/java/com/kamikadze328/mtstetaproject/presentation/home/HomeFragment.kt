@@ -1,4 +1,4 @@
-package com.kamikadze328.mtstetaproject.fragment
+package com.kamikadze328.mtstetaproject.presentation.home
 
 import android.os.Bundle
 import android.util.Log
@@ -7,24 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kamikadze328.mtstetaproject.MainActivity
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.movie.MovieAdapter
 import com.kamikadze328.mtstetaproject.adapter.movie.MovieItemDecoration
 import com.kamikadze328.mtstetaproject.databinding.FragmentHomeBinding
-import com.kamikadze328.mtstetaproject.viewmodel.HomeViewModel
+import com.kamikadze328.mtstetaproject.presentation.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: HomeViewModel by activityViewModels()
+    private val viewModel: HomeViewModel by viewModels()
 
     private var isMovieDetailsOpened = false
     private var movieDetailsId = 0
@@ -69,6 +69,7 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         Log.d("kek", "onCreateView home")
+
         setupAdapters()
         return binding.root
     }
@@ -83,9 +84,9 @@ class HomeFragment : Fragment() {
         val adapter =
             MovieAdapter(::onClickListenerMovies/*, getString(R.string.movie_main_header_popular)*/)
 
-
-        viewModel.filteredMovies.observe(viewLifecycleOwner, {
+        viewModel.movies.observe(viewLifecycleOwner, {
             adapter.submitList(it)
+            recyclerMovies.scrollToPosition(0)
         })
         recyclerMovies.adapter = adapter
 
@@ -124,6 +125,8 @@ class HomeFragment : Fragment() {
         val adapter = GenreAdapter(::onClickListenerGenres)
 
         viewModel.genres.observe(viewLifecycleOwner, {
+            adapter.notifyItemRangeRemoved(0, 1)
+            adapter.notifyItemRangeInserted(0, it.size)
             adapter.submitList(it)
         })
         recyclerGenres.adapter = adapter

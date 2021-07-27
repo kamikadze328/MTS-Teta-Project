@@ -6,9 +6,13 @@
     <string name="movie_name_tools">Гнев человеческий</string>
     <string name="movie_date_tools">22.04.2021</string>
 
+    <string name="movie_description_loading">Описание прибудет с минуты на минуту</string>
+    <string name="movie_name_loading">Загружаю данные</string>
+    <string name="movie_date_loading">01.01.1900</string>
+    <string name="genre_loading">Жанр</string>
+
     <string name="movie_genre_action">боевики</string>
 
-    <string name="lorem">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</string>
     <string name="actors">Актёры</string>
     <string name="star_empty_description">Пустая звезда</string>
     <string name="star_filled_description">Звезда</string>
@@ -18,6 +22,7 @@
     <string name="rating_age_12">12+</string>
     <string name="rating_age_6">6+</string>
     <string name="rating_age_0">0+</string>
+    <string name="rating_age_loading">/?+</string>
 
     <string name="title_home">Дом</string>
     <string name="title_profile">Профиль</string>
@@ -68,4 +73,17 @@
     <string name="app_info_header_ask_question">Задать вопрос</string>
     <string name="app_info_header_notify_about_problem">Сообщить о проблеме</string>
 
+
+    <string-array name="settings_headers">
+        <item>@string/settings_header_notification_and_sound</item>
+        <item>@string/settings_header_privacy_policy</item>
+        <item>@string/settings_header_theme</item>
+        <item>@string/settings_header_language</item>
+        <item>@string/settings_header_data_and_memory</item>
+    </string-array>
+
+    <string-array name="app_info_headers">
+        <item>@string/app_info_header_ask_question</item>
+        <item>@string/app_info_header_notify_about_problem</item>
+    </string-array>
 </resources>

@@ -11,7 +11,7 @@
         android:paddingVertical="@dimen/profile_padding_vertical"
         android:paddingTop="@dimen/profile_padding_vertical"
         android:paddingBottom="30dp"
-        tools:context=".fragment.ProfileFragment">
+        tools:context=".presentation.profile.ProfileFragment">
 
         <ImageView
             android:id="@+id/profile_img"

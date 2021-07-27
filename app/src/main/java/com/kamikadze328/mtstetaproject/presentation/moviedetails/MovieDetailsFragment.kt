@@ -1,4 +1,4 @@
-package com.kamikadze328.mtstetaproject.fragment
+package com.kamikadze328.mtstetaproject.presentation.moviedetails
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -8,56 +8,46 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import coil.load
 import com.google.android.material.appbar.AppBarLayout
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.moviedetailsactor.ActorAdapter
-import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.Movie
-import com.kamikadze328.mtstetaproject.data.features.actors.ActorsDataSourceImpl
-import com.kamikadze328.mtstetaproject.data.features.genres.GenresDataSourceImpl
-import com.kamikadze328.mtstetaproject.data.features.movies.MoviesDataSourceImpl
 import com.kamikadze328.mtstetaproject.databinding.FragmentMovieDetailsBinding
-import com.kamikadze328.mtstetaproject.model.ActorsModel
-import com.kamikadze328.mtstetaproject.model.GenresModel
-import com.kamikadze328.mtstetaproject.model.MoviesModel
 import com.kamikadze328.mtstetaproject.setRating
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
     private var _binding: FragmentMovieDetailsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var actorsModel: ActorsModel
-    private lateinit var moviesModel: MoviesModel
-    private lateinit var genresModel: GenresModel
+    private val viewModel: MovieDetailsViewModel by viewModels()
 
-    private var movie: Movie? = null
-
-    private var movieId = 0
 
     companion object {
-        private const val MOVIE_ID_ARG = "movie_id_arg"
         const val PARENT_ID_ARG = "parent_id_arg"
 
         @JvmStatic
         fun newInstance(movieId: Int, parentTag: String) =
             MovieDetailsFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(MOVIE_ID_ARG, movieId)
+                    putInt(MovieDetailsViewModel.MOVIE_ID_ARG, movieId)
                     putString(PARENT_ID_ARG, parentTag)
                 }
             }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("kek", "onCreate moviedetails")
         super.onCreate(savedInstanceState)
-        initDataSource()
         arguments?.let {
-            movieId = it.getInt(MOVIE_ID_ARG)
+            viewModel.setMovieId(it.getInt(MovieDetailsViewModel.MOVIE_ID_ARG))
         }
+
     }
 
     override fun onCreateView(
@@ -66,42 +56,44 @@ class MovieDetailsFragment : Fragment() {
     ): View {
         _binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
 
-        movie = moviesModel.getMovieById(movieId)
+        Log.d("kek", "onCreateView moviedetails")
 
-        if (movie != null) {
-            binding.movieNameText.text = movie!!.title
-            binding.movieNameTextToolbar.text = movie!!.title
-            binding.moviePoster.load(movie!!.poster_path)
-            binding.movieDescription.text = movie!!.overview
-            binding.movieAgeRestrictionText.text =
-                getString(R.string.main_age_restriction_text, movie!!.ageRestriction)
+        viewModel.movie.observe(viewLifecycleOwner, {
+            updateUI(it)
+        })
 
-            binding.ratingBarRootInclude.ratingBarRoot.setRating(movie!!.vote_average)
-            prepareRecycleViewActors()
-            prepareRecycleViewGenres()
-        }
+
+        prepareRecycleViewActors()
+        prepareRecycleViewGenres()
 
         prepareToolBar()
         return binding.root
     }
 
+    private fun updateUI(movie: Movie) {
+        binding.moviePoster.load(movie.poster_path)
 
-    private fun initDataSource() {
-        actorsModel = ActorsModel(ActorsDataSourceImpl())
-        moviesModel = MoviesModel(MoviesDataSourceImpl())
-        genresModel = GenresModel(GenresDataSourceImpl())
+        binding.movieDateText.text = movie.release_date
+        binding.movieNameText.text = movie.title
+        binding.movieNameTextToolbar.text = movie.title
+        binding.movieDescription.text = movie.overview
+        binding.movieAgeRestrictionText.text =
+            getString(R.string.main_age_restriction_text, movie.ageRestriction)
+
+        binding.ratingBarRootInclude.ratingBarRoot.setRating(movie.vote_average)
+
     }
+
 
     private fun prepareRecycleViewGenres() {
         val recyclerGenres = binding.movieGenresRecycler
-
         val adapter = GenreAdapter(::onClickListenerGenres)
 
-        val genres: List<Genre> = movie!!.genre_ids
-            .filter { genresModel.getGenreById(it) != null }
-            .map { genresModel.getGenreById(it)!! }
-
-        adapter.submitList(genres)
+        viewModel.genres.observe(viewLifecycleOwner, {
+            adapter.notifyItemRangeRemoved(0, 1)
+            adapter.notifyItemRangeInserted(0, it.size)
+            adapter.submitList(it)
+        })
 
         recyclerGenres.adapter = adapter
 
@@ -118,16 +110,19 @@ class MovieDetailsFragment : Fragment() {
     private fun onClickListenerGenres(id: Int) {}
 
     private fun prepareRecycleViewActors() {
-        val genres = actorsModel.getActors()
+        val recyclerActors = binding.recycleViewActors
         val adapter = ActorAdapter()
 
-        adapter.submitList(genres)
-        binding.recycleViewActors.adapter = adapter
+        viewModel.actors.observe(viewLifecycleOwner, {
+            adapter.submitList(it)
+        })
+
+        recyclerActors.adapter = adapter
 
         val offset = resources.getDimension(R.dimen.movie_detail_actors_offset).toInt()
 
         val itemDecorator = LinearHorizontalItemDecorator(offset, 0, 0)
-        binding.recycleViewActors.addItemDecoration(itemDecorator)
+        recyclerActors.addItemDecoration(itemDecorator)
 
     }
 

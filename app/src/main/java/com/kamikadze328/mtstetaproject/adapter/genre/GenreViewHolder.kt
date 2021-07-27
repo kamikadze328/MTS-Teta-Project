@@ -4,11 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 
-class GenreViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class GenreViewHolder(view: View) : GenreViewHolderSealed(view) {
     private val root: TextView = view.findViewById(R.id.movie_genre)
 
     fun bind(data: Genre, click: (id: Int) -> Unit) {

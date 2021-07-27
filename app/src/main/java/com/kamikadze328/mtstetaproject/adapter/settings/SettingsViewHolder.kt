@@ -8,14 +8,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.kamikadze328.mtstetaproject.R
 
-class SettingsViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+class SettingsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val textView: TextView = view.findViewById(R.id.settings_item_name)
     private val root: ConstraintLayout = view.findViewById(R.id.settings_item_root)
 
-    fun bind(nameId: Int, click: (nameId: Int) -> Unit) {
-
-        textView.text = view.context.resources.getString(nameId)
-        root.setOnClickListener { click(nameId) }
+    fun bind(name: String, click: (name: String) -> Unit) {
+        textView.text = name
+        root.setOnClickListener { click(name) }
     }
 
     companion object {

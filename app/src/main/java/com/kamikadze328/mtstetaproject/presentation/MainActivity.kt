@@ -1,17 +1,19 @@
-package com.kamikadze328.mtstetaproject
+package com.kamikadze328.mtstetaproject.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.databinding.ActivityMainBinding
-import com.kamikadze328.mtstetaproject.fragment.CallbackMovieClicked
-import com.kamikadze328.mtstetaproject.fragment.HomeFragment
-import com.kamikadze328.mtstetaproject.fragment.MovieDetailsFragment
-import com.kamikadze328.mtstetaproject.fragment.ProfileFragment
+import com.kamikadze328.mtstetaproject.presentation.home.HomeFragment
+import com.kamikadze328.mtstetaproject.presentation.moviedetails.MovieDetailsFragment
+import com.kamikadze328.mtstetaproject.presentation.profile.ProfileFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), CallbackMovieClicked {
     private lateinit var binding: ActivityMainBinding
 
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("kek", "onCreate main")
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -46,7 +49,6 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked {
         }
 
         //initNavController()
-
     }
 
     private fun initNavController() {
@@ -58,13 +60,13 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked {
 
     private fun initFragments() {
         homeFragment = HomeFragment.newInstance()
-        profileFragment = ProfileFragment.newInstance()
+        profileFragment = ProfileFragment.newInstance(10)
         supportFragmentManager
             .beginTransaction()
             .add(R.id.nav_host_fragment, homeFragment, HOME_FRAGMENT_TAG)
             .add(R.id.nav_host_fragment, profileFragment, PROFILE_FRAGMENT_TAG)
             .hide(profileFragment)
-            .commit()
+            .commitNow()
         currentFragment = homeFragment
     }
 
@@ -150,6 +152,8 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        Log.d("kek", "onSaveInstanceState main")
+
         outState.putString(CURRENT_FRAGMENT_TAG, currentFragment.tag)
         super.onSaveInstanceState(outState)
     }
