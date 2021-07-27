@@ -72,7 +72,7 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         initRecyclerViewsSetting()
-        initRecycleViewFavouriteMovies()
+        initRecycleViewFavouriteGenres()
 
         setOnChangeListeners()
         viewModel.wasDataChanged.observe(viewLifecycleOwner, ::updateSubmitButtonUI)
@@ -135,7 +135,7 @@ class ProfileFragment : Fragment() {
         )
     }
 
-    private fun initRecycleViewFavouriteMovies() {
+    private fun initRecycleViewFavouriteGenres() {
         val adapter = GenreAdapter(::onClickListenerGenre)
 
         viewModel.favouriteGenres.observe(viewLifecycleOwner, {
