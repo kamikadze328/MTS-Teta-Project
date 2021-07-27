@@ -1,7 +1,6 @@
 package com.kamikadze328.mtstetaproject.presentation
 
 import android.text.Editable
-import android.util.Log
 import android.widget.EditText
 
 private const val SPACE = ' '

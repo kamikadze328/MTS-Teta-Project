@@ -2,7 +2,6 @@ package com.kamikadze328.mtstetaproject.adapter.settings
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.kamikadze328.mtstetaproject.R
 
 class SettingsAdapter(
     private val dataSet: Array<String>,

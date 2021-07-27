@@ -1,6 +1,5 @@
 package com.kamikadze328.mtstetaproject.presentation.profile
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.data.dto.User
@@ -71,7 +70,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun setWasDataChanged(newVal: Boolean){
+    private fun setWasDataChanged(newVal: Boolean) {
         savedStateHandle.set(WAS_DATA_CHANGED_ARG, newVal)
         this._wasDataChanged.postValue(newVal)
     }

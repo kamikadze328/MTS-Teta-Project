@@ -77,10 +77,10 @@ class ProfileFragment : Fragment() {
         setOnChangeListeners()
         viewModel.wasDataChanged.observe(viewLifecycleOwner, ::updateSubmitButtonUI)
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             viewModel.user.observe(viewLifecycleOwner, ::updateUserInfoUI)
         } else {
-            viewModel.changedUser.value?.let{
+            viewModel.changedUser.value?.let {
                 updateUserInfoUI(it)
             }
         }
