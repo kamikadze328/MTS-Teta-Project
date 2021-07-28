@@ -19,6 +19,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val actorRepository: ActorRepository,
     private val genreRepository: GenreRepository
 ) : ViewModel() {
+    //TODO initial args in savedstatehandle
     private val movieId: MutableLiveData<Int> = MutableLiveData(savedStateHandle[MOVIE_ID_ARG])
 
     private val _movie = MutableLiveData<Movie>()
@@ -45,6 +46,8 @@ class MovieDetailsViewModel @Inject constructor(
         loadActors()
     }
 
+    fun getMovieId() = movieId.value!!
+
 
     private fun loadMovie() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -53,7 +56,7 @@ class MovieDetailsViewModel @Inject constructor(
                 allGenres = loadGenres()
             }
 
-            val newMovieState = movieRepository.refreshMovie(movieId.value!!)
+            val newMovieState = movieRepository.refreshMovie(getMovieId())
 
             _movie.postValue(newMovieState)
 
@@ -72,7 +75,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun loadActors() {
         viewModelScope.launch(Dispatchers.IO) {
-            _actors.postValue(actorRepository.getActorsByMovieId(movieId.value!!))
+            _actors.postValue(actorRepository.getActorsByMovieId(getMovieId()))
         }
     }
 }

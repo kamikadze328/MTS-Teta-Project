@@ -115,15 +115,16 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
             }
         }
 
-        supportFragmentManager.fragments.find { f -> f.isVisible }!!.let {
-            viewModel.setCurrentFragment(it)
+        supportFragmentManager.fragments.find { f -> f.isVisible }!!.let { currFrag ->
+            viewModel.setCurrentFragment(currFrag)
 
             clearNavigationSelectedListener()
-            when (it) {
+            when (currFrag) {
                 is ProfileFragment -> setNavigationItem(R.id.navigation_profile)
                 is HomeFragment -> setNavigationItem(R.id.navigation_home)
                 is MovieDetailsFragment -> {
-                    when (it.requireArguments().getString(MovieDetailsFragment.PARENT_ID_ARG)!!) {
+                    when (currFrag.requireArguments()
+                        .getString(MovieDetailsFragment.PARENT_ID_ARG)!!) {
                         MainViewModel.HOME_FRAGMENT_TAG -> setNavigationItem(R.id.navigation_home)
                         MainViewModel.PROFILE_FRAGMENT_TAG -> setNavigationItem(R.id.navigation_profile)
                         else -> throw IllegalStateException()
@@ -141,18 +142,19 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
     }
 
     override fun onMovieClicked(movieId: Int) {
-        val movieDetails =
-            MovieDetailsFragment.newInstance(movieId, viewModel.getCurrentFragment().tag!!)
-        supportFragmentManager.beginTransaction()
-            .add(
-                R.id.nav_host_fragment,
-                movieDetails,
-                MainViewModel.MOVIE_DETAILS_FRAGMENT_TAG(movieId)
-            )
-            .hide(movieDetails)
-            .commit()
+        MovieDetailsFragment.newInstance(movieId, viewModel.getCurrentFragmentTag())
+            .let { detailsFrag ->
+                supportFragmentManager.beginTransaction()
+                    .add(
+                        R.id.nav_host_fragment,
+                        detailsFrag,
+                        MainViewModel.MOVIE_DETAILS_FRAGMENT_TAG(movieId)
+                    )
+                    .hide(detailsFrag)
+                    .commit()
 
-        openFragment(movieDetails)
+                openFragment(detailsFrag)
+            }
     }
 
     override fun onGenreClicked(genreId: Int) {

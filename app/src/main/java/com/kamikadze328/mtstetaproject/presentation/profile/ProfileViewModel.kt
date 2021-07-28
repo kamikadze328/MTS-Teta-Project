@@ -57,13 +57,13 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadFavouritesMovies() {
         viewModelScope.launch(Dispatchers.IO) {
-            _favouriteGenres.postValue(accountRepository.getFavouriteGenres(accountId.value!!))
+            _favouriteGenres.postValue(accountRepository.getFavouriteGenres(getAccountId()))
         }
     }
 
     private fun loadUser() {
         viewModelScope.launch(Dispatchers.IO) {
-            accountRepository.refreshUser(accountId.value!!).let {
+            accountRepository.refreshUser(getAccountId()).let {
                 withContext(Dispatchers.Main) {
                     _user.value = it
                     setChangedUser(it)
@@ -79,7 +79,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun setChangedUser(user: User) {
-        user.id = accountId.value!!
+        user.id = getAccountId()
         savedStateHandle.set(CHANGED_USER_ARG, user)
         _changedUser.value = user
     }
