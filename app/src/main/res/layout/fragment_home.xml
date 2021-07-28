@@ -23,7 +23,7 @@
         app:layout_constraintTop_toBottomOf="@id/home_search" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/movie_main_genres"
+        android:id="@+id/movie_main_genres_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -32,16 +32,22 @@
         app:layout_constraintTop_toBottomOf="@id/home_category_header"
         tools:listitem="@layout/item_genre" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/movie_main_recycle_view"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/movie_main_swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
-        android:orientation="vertical"
-        android:overScrollMode="never"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/movie_main_genres"
-        app:spanCount="2"
-        tools:listitem="@layout/item_movie" />
+        app:layout_constraintTop_toBottomOf="@id/movie_main_genres_recycler">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/movie_main_movies_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            tools:listitem="@layout/item_movie" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.kamikadze328.mtstetaproject.presentation.moviedetails
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Actor
 import com.kamikadze328.mtstetaproject.data.dto.Genre
@@ -42,15 +41,12 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private fun init() {
-        Log.d("kek", "MovieDetailsViewModel init")
         loadMovie()
         loadActors()
-        Log.d("kek", "MovieDetailsViewModel init end")
     }
 
 
     private fun loadMovie() {
-        Log.d("kek", "MovieDetailsViewModel loadMovie")
         viewModelScope.launch(Dispatchers.IO) {
             var allGenres: List<Genre> = emptyList()
             val genreJob = viewModelScope.launch(Dispatchers.IO) {
@@ -63,12 +59,11 @@ class MovieDetailsViewModel @Inject constructor(
 
             genreJob.join()
             if (newMovieState != null) {
-                _genres.postValue(newMovieState.genre_ids.map { genreId ->
-                    allGenres.find { genre -> genre.id == genreId }!!
-                })
+                _genres.postValue(newMovieState.genre_ids
+                    .mapNotNull { genreId -> allGenres.find { genre -> genre.id == genreId } }
+                )
             }
         }
-        Log.d("kek", "MovieDetailsViewModel loadMovie end")
     }
 
 
@@ -76,10 +71,8 @@ class MovieDetailsViewModel @Inject constructor(
 
 
     private fun loadActors() {
-        Log.d("kek", "MovieDetailsViewModel loadActors")
         viewModelScope.launch(Dispatchers.IO) {
             _actors.postValue(actorRepository.getActorsByMovieId(movieId.value!!))
         }
-        Log.d("kek", "MovieDetailsViewModel loadActors end")
     }
 }

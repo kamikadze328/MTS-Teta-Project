@@ -17,6 +17,7 @@ import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.moviedetailsactor.ActorAdapter
 import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.databinding.FragmentMovieDetailsBinding
+import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import com.kamikadze328.mtstetaproject.setRating
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,10 +45,10 @@ class MovieDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("kek", "onCreate moviedetails")
         super.onCreate(savedInstanceState)
+
         arguments?.let {
             viewModel.setMovieId(it.getInt(MovieDetailsViewModel.MOVIE_ID_ARG))
         }
-
     }
 
     override fun onCreateView(
@@ -62,12 +63,15 @@ class MovieDetailsFragment : Fragment() {
             updateUI(it)
         })
 
-
-        prepareRecycleViewActors()
-        prepareRecycleViewGenres()
+        setupRecyclerAdapters()
 
         prepareToolBar()
         return binding.root
+    }
+
+    private fun setupRecyclerAdapters() {
+        setupRecyclerAdapterActors()
+        setupRecyclerAdapterGenres()
     }
 
     private fun updateUI(movie: Movie) {
@@ -80,12 +84,11 @@ class MovieDetailsFragment : Fragment() {
         binding.movieAgeRestrictionText.text =
             getString(R.string.main_age_restriction_text, movie.ageRestriction)
 
-        binding.ratingBarRootInclude.ratingBarRoot.setRating(movie.vote_average)
-
+        binding.movieRatingBarRootInclude.ratingBarRoot.setRating(movie.vote_average)
     }
 
 
-    private fun prepareRecycleViewGenres() {
+    private fun setupRecyclerAdapterGenres() {
         val recyclerGenres = binding.movieGenresRecycler
         val adapter = GenreAdapter(::onClickListenerGenres)
 
@@ -101,16 +104,15 @@ class MovieDetailsFragment : Fragment() {
 
         val itemDecorator = LinearHorizontalItemDecorator(offset, 0, 0)
         recyclerGenres.addItemDecoration(itemDecorator)
+    }
 
-
-        //recyclerGenres.scrollToPosition(recyclerGenresPosition)
+    private fun onClickListenerGenres(genreId: Int) {
+        (activity as MainActivity).onGenreClicked(genreId)
 
     }
 
-    private fun onClickListenerGenres(id: Int) {}
-
-    private fun prepareRecycleViewActors() {
-        val recyclerActors = binding.recycleViewActors
+    private fun setupRecyclerAdapterActors() {
+        val recyclerActors = binding.movieActorsRecycler
         val adapter = ActorAdapter()
 
         viewModel.actors.observe(viewLifecycleOwner, {
@@ -137,10 +139,10 @@ class MovieDetailsFragment : Fragment() {
         var isCollapsed = false
 
         binding.toolbar.doOnLayout {
-            scrollRange = binding.appBarLayout?.totalScrollRange ?: 0
+            scrollRange = binding.movieAppBar?.totalScrollRange ?: 0
         }
 
-        binding.appBarLayout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+        binding.movieAppBar?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             if (isCollapsed) {
                 isCollapsed = false
                 binding.toolbarBeforeCollapsed?.visibility = View.VISIBLE
@@ -161,10 +163,5 @@ class MovieDetailsFragment : Fragment() {
             binding.toolbar.visibility =
                 if (y - binding.movieNameText.lineHeight <= 0) View.VISIBLE else View.INVISIBLE
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        Log.d("kek", "onSaveInstanceState details")
-        super.onSaveInstanceState(outState)
     }
 }

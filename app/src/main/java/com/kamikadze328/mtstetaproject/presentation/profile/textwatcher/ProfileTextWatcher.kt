@@ -1,4 +1,4 @@
-package com.kamikadze328.mtstetaproject.presentation
+package com.kamikadze328.mtstetaproject.presentation.profile.textwatcher
 
 import android.text.Editable
 import android.text.TextWatcher

@@ -216,7 +216,7 @@ class Webservice @Inject constructor() {
                 vote_average = 4.0,
                 ageRestriction = 16,
                 poster_path = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/mbtN6V6y5kdawvAkzqN4ohi576a.jpg",
-                genre_ids = listOf(20, 12, 53, 879),
+                genre_ids = listOf(28, 12, 53, 879),
                 release_date = "2021-05-28"
             ),
         ).shuffled()

@@ -16,10 +16,10 @@ import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.settings.SettingsAdapter
 import com.kamikadze328.mtstetaproject.data.dto.User
 import com.kamikadze328.mtstetaproject.databinding.FragmentProfileBinding
-import com.kamikadze328.mtstetaproject.presentation.MainActivity
-import com.kamikadze328.mtstetaproject.presentation.ProfilePhoneTextWatcher
-import com.kamikadze328.mtstetaproject.presentation.ProfileTextWatcher
-import com.kamikadze328.mtstetaproject.presentation.formatPhoneNumber
+import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
+import com.kamikadze328.mtstetaproject.presentation.profile.textwatcher.ProfilePhoneTextWatcher
+import com.kamikadze328.mtstetaproject.presentation.profile.textwatcher.ProfileTextWatcher
+import com.kamikadze328.mtstetaproject.presentation.profile.textwatcher.formatPhoneNumber
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -71,8 +71,7 @@ class ProfileFragment : Fragment() {
         Log.d("kek", "onCreateView profile")
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        initRecyclerViewsSetting()
-        initRecycleViewFavouriteGenres()
+        setupRecyclerAdapters()
 
         setOnChangeListeners()
         viewModel.wasDataChanged.observe(viewLifecycleOwner, ::updateSubmitButtonUI)
@@ -85,12 +84,15 @@ class ProfileFragment : Fragment() {
             }
         }
 
-
         return binding.root
     }
 
+    private fun setupRecyclerAdapters() {
+        setupRecyclerAdapterSetting()
+        setupRecycleAdapterFavouriteGenres()
+    }
+
     private fun applyChangedUserToViewModel() {
-        Log.d("kek", "applyChangedUserToViewModel profile")
         viewModel.updateChangedUser(
             User(
                 name = binding.profileTextInputName.text.toString(),
@@ -124,7 +126,7 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun initRecyclerViewsSetting() {
+    private fun setupRecyclerAdapterSetting() {
         binding.profileSettingsRecycler.adapter = SettingsAdapter(
             resources.getStringArray(R.array.settings_headers),
             ::onSettingsItemClick
@@ -135,7 +137,7 @@ class ProfileFragment : Fragment() {
         )
     }
 
-    private fun initRecycleViewFavouriteGenres() {
+    private fun setupRecycleAdapterFavouriteGenres() {
         val adapter = GenreAdapter(::onClickListenerGenre)
 
         viewModel.favouriteGenres.observe(viewLifecycleOwner, {
@@ -154,8 +156,8 @@ class ProfileFragment : Fragment() {
         Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
     }
 
-    private fun onClickListenerGenre(id: Int) {
-        (activity as MainActivity).onMovieClicked(id)
+    private fun onClickListenerGenre(genreId: Int) {
+        (activity as MainActivity).onGenreClicked(genreId)
     }
 
     private fun setOnChangeListeners() {

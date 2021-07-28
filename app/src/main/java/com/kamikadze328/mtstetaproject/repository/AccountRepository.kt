@@ -27,6 +27,6 @@ class AccountRepository @Inject constructor(
 
         val isMaxMoreOne = countGenres[0].second > 1
         return countGenres.filter { isMaxMoreOne && it.second > 1 }
-            .map { sorted -> allGenres.find { genre -> sorted.first == genre.id }!! }
+            .mapNotNull { sorted -> allGenres.find { genre -> sorted.first == genre.id } }
     }
 }

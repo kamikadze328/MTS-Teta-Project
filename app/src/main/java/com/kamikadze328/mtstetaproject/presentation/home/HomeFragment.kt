@@ -5,18 +5,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.movie.MovieAdapter
 import com.kamikadze328.mtstetaproject.adapter.movie.MovieItemDecoration
 import com.kamikadze328.mtstetaproject.databinding.FragmentHomeBinding
-import com.kamikadze328.mtstetaproject.presentation.MainActivity
+import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,24 +25,16 @@ class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
 
-    private var isMovieDetailsOpened = false
-    private var movieDetailsId = 0
     private var recyclerMoviesPosition = 0
-    private var recyclerGenresPosition = 0
 
 
     companion object {
         private const val RECYCLER_MOVIES_POSITION = "recycler_movies_position"
-        private const val RECYCLER_GENRES_POSITION = "recycler_genres_position"
-        private const val IS_MOVIE_DETAILS_OPENED = "is_movie_details_opened"
-        private const val MOVIE_DETAILS_ID = "movie_details_id"
-
 
         @JvmStatic
         fun newInstance() =
             HomeFragment().apply {
-                arguments = Bundle().apply {
-                }
+                arguments = Bundle().apply {}
             }
     }
 
@@ -55,11 +46,6 @@ class HomeFragment : Fragment() {
             Log.d("kek", "onCreate home saved instance")
 
             recyclerMoviesPosition = savedInstanceState.getInt(RECYCLER_MOVIES_POSITION)
-            recyclerGenresPosition = savedInstanceState.getInt(RECYCLER_GENRES_POSITION)
-            isMovieDetailsOpened = savedInstanceState.getBoolean(IS_MOVIE_DETAILS_OPENED)
-            movieDetailsId = savedInstanceState.getInt(MOVIE_DETAILS_ID)
-            /*if(isMovieDetailsOpened)
-                openMovieDetailsFragment()*/
         }
     }
 
@@ -70,26 +56,37 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         Log.d("kek", "onCreateView home")
 
-        setupAdapters()
+        setupRecyclerAdapters()
+
+        setupSwipeRefresh()
+
         return binding.root
     }
 
-    private fun setupAdapters() {
-        setupMoviesAdapter()
-        setupGenresAdapter()
+    private fun setupSwipeRefresh() {
+        binding.movieMainSwiperefresh.isRefreshing = true
+        binding.movieMainSwiperefresh.setOnRefreshListener(::onRefreshMovies)
     }
 
-    private fun setupMoviesAdapter() {
-        val recyclerMovies = binding.movieMainRecycleView
+    private fun onRefreshMovies() {
+        viewModel.loadMovies()
+    }
+
+    private fun setupRecyclerAdapters() {
+        setupRecyclerAdapterMovies()
+        setupRecyclerAdapterGenres()
+    }
+
+    private fun setupRecyclerAdapterMovies() {
+        val recyclerMovies = binding.movieMainMoviesRecycler
         val adapter =
             MovieAdapter(::onClickListenerMovies/*, getString(R.string.movie_main_header_popular)*/)
 
         viewModel.movies.observe(viewLifecycleOwner, {
             adapter.submitList(it)
-            recyclerMovies.scrollToPosition(0)
+            binding.movieMainSwiperefresh.isRefreshing = false
         })
         recyclerMovies.adapter = adapter
-
 
         val widthPoster = resources.getDimension(R.dimen.main_poster_width)
         val widthScreen = resources.displayMetrics.widthPixels
@@ -111,6 +108,22 @@ class HomeFragment : Fragment() {
         }
         recyclerMovies.layoutManager = layoutManager
 
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                Log.d("kek", "onItemRangeChanged")
+                super.onItemRangeChanged(positionStart, itemCount)
+            }
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                layoutManager.scrollToPosition(0)
+            }
+
+            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                layoutManager.scrollToPosition(0)
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+            }
+        })
 
         val itemDecorator = MovieItemDecoration(offsetBetween.toInt(), offsetBottom, spanCount)
         recyclerMovies.addItemDecoration(itemDecorator)
@@ -119,9 +132,8 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun setupGenresAdapter() {
-        val recyclerGenres = binding.movieMainGenres
-
+    private fun setupRecyclerAdapterGenres() {
+        val recyclerGenres = binding.movieMainGenresRecycler
         val adapter = GenreAdapter(::onClickListenerGenres)
 
         viewModel.genres.observe(viewLifecycleOwner, {
@@ -137,41 +149,37 @@ class HomeFragment : Fragment() {
         val itemDecorator = LinearHorizontalItemDecorator(offset, firstLastOffset, firstLastOffset)
         recyclerGenres.addItemDecoration(itemDecorator)
 
-
-        recyclerGenres.scrollToPosition(recyclerGenresPosition)
     }
 
     private fun onClickListenerMovies(id: Int) {
-        movieDetailsId = id
-
         (activity as MainActivity).onMovieClicked(id)
-        //openMovieDetailsFragment()
     }
 
-    private fun openMovieDetailsFragment() {
-        /*val action =
+    /*private fun openMovieDetailsFragment() {
+        val action =
             HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(movieDetailsId)
-        findNavController().navigate(action)*/
+        findNavController().navigate(action)
         isMovieDetailsOpened = true
-    }
+    }*/
 
-    private fun onClickListenerGenres(id: Int) {
-        Toast.makeText(context, "genre id - $id", Toast.LENGTH_SHORT).show()
+    private fun onClickListenerGenres(genreId: Int) {
+        (activity as MainActivity).onGenreClicked(genreId)
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         Log.d("kek", "onSaveInstanceState")
+        // Save state
+        //Parcelable recyclerViewState
+        /*val recyclerViewState = binding.movieMainMoviesRecycler.layoutManager?.onSaveInstanceState()
+        savedInstanceState.putParcelable(RECYCLER_MOVIES_POSITION, recyclerViewState)*/
+        /*
+        // Restore state
+        recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);*/
 
         val moviesPosition =
-            (binding.movieMainRecycleView.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
-        //val moviesPosition = recyclerMovies.computeVerticalScrollExtent()
-        val genresPosition =
-            (binding.movieMainGenres.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+            (binding.movieMainMoviesRecycler.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
 
         savedInstanceState.putInt(RECYCLER_MOVIES_POSITION, moviesPosition)
-        savedInstanceState.putInt(RECYCLER_GENRES_POSITION, genresPosition)
-        savedInstanceState.putBoolean(IS_MOVIE_DETAILS_OPENED, isMovieDetailsOpened)
-        savedInstanceState.putInt(MOVIE_DETAILS_ID, movieDetailsId)
 
         super.onSaveInstanceState(savedInstanceState)
     }

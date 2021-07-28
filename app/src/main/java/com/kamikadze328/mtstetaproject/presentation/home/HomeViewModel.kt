@@ -30,7 +30,7 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    private fun loadMovies() {
+    fun loadMovies() {
         viewModelScope.launch(Dispatchers.IO) {
             _movies.postValue(movieRepository.refreshPopularMovies())
         }
