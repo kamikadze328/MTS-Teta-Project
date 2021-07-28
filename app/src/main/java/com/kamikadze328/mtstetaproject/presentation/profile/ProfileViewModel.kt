@@ -1,9 +1,11 @@
 package com.kamikadze328.mtstetaproject.presentation.profile
 
+import android.content.res.Resources
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.User
 import com.kamikadze328.mtstetaproject.repository.AccountRepository
+import com.kamikadze328.mtstetaproject.repository.GenreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,6 +16,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val accountRepository: AccountRepository,
+    private val genreRepository: GenreRepository
 ) : ViewModel() {
 
     private val accountId: MutableLiveData<Int> = MutableLiveData(savedStateHandle[PROFILE_ID_ARG])
@@ -94,4 +97,5 @@ class ProfileViewModel @Inject constructor(
     private fun wasDataChanged(oldUser: User, newChangedUser: User): Boolean =
         oldUser.compareTo(newChangedUser) != 0
 
+    fun getLoadingGenre(resources: Resources): Genre = genreRepository.getLoadingGenre(resources)
 }

@@ -61,7 +61,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@id/movie_name_text"
                     app:layout_constraintEnd_toEndOf="parent"
-                    tools:text="@string/rating_age_18" />
+                    android:text="@string/age_restricting_loading"
+                    tools:text="@string/age_restricting_loading" />
 
                 <TextView
                     android:id="@+id/movie_name_text"

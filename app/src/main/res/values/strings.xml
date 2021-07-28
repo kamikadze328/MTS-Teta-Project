@@ -17,12 +17,7 @@
     <string name="star_empty_description">Пустая звезда</string>
     <string name="star_filled_description">Звезда</string>
 
-    <string name="rating_age_18">18+</string>
-    <string name="rating_age_16">16+</string>
-    <string name="rating_age_12">12+</string>
-    <string name="rating_age_6">6+</string>
-    <string name="rating_age_0">0+</string>
-    <string name="rating_age_loading">/?+</string>
+    <string name="age_restricting_loading">\?+</string>
 
     <string name="title_home">Дом</string>
     <string name="title_profile">Профиль</string>

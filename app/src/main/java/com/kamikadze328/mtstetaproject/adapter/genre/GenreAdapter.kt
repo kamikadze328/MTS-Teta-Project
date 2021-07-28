@@ -16,7 +16,6 @@ class GenreAdapter(private val click: (id: Int) -> Unit) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenreViewHolderSealed {
         return when (viewType) {
             TYPE_GENRE -> GenreViewHolder.from(parent)
-            TYPE_LOADING -> GenreLoadingViewHolder.from(parent)
             else -> throw IllegalStateException()
         }
     }
@@ -25,17 +24,13 @@ class GenreAdapter(private val click: (id: Int) -> Unit) :
     override fun onBindViewHolder(holder: GenreViewHolderSealed, position: Int) {
         when (holder) {
             is GenreViewHolder -> holder.bind(getItem(position), click)
-            is GenreLoadingViewHolder -> return
         }
     }
 
-    override fun getItemCount(): Int {
-        return if (currentList.size == 0) 1 else currentList.size
-    }
+    override fun getItemCount(): Int = if (currentList.size == 0) 0 else currentList.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (currentList.size) {
-            0 -> TYPE_LOADING
+        return when {
             else -> TYPE_GENRE
         }
     }

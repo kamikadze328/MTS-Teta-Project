@@ -1,5 +1,6 @@
 package com.kamikadze328.mtstetaproject.presentation.home
 
+import android.content.res.Resources
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.Movie
@@ -38,10 +39,11 @@ class HomeViewModel @Inject constructor(
 
     private fun loadGenres() {
         viewModelScope.launch(Dispatchers.IO) {
+            /*val genres = */
             _genres.postValue(genreRepository.refreshGenres())
         }
     }
 
-
+    fun getLoadingGenre(resources: Resources): Genre = genreRepository.getLoadingGenre(resources)
 }
 

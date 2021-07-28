@@ -92,9 +92,11 @@ class MovieDetailsFragment : Fragment() {
         val recyclerGenres = binding.movieGenresRecycler
         val adapter = GenreAdapter(::onClickListenerGenres)
 
+        listOf(viewModel.getLoadingGenre(resources)).let {
+            adapter.submitList(it)
+        }
+
         viewModel.genres.observe(viewLifecycleOwner, {
-            adapter.notifyItemRangeRemoved(0, 1)
-            adapter.notifyItemRangeInserted(0, it.size)
             adapter.submitList(it)
         })
 
@@ -164,4 +166,6 @@ class MovieDetailsFragment : Fragment() {
                 if (y - binding.movieNameText.lineHeight <= 0) View.VISIBLE else View.INVISIBLE
         }
     }
+
+
 }

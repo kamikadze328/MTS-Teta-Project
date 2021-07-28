@@ -1,5 +1,6 @@
 package com.kamikadze328.mtstetaproject.presentation.moviedetails
 
+import android.content.res.Resources
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Actor
 import com.kamikadze328.mtstetaproject.data.dto.Genre
@@ -56,6 +57,8 @@ class MovieDetailsViewModel @Inject constructor(
                 allGenres = loadGenres()
             }
 
+
+            //TODO load genres by id
             val newMovieState = movieRepository.refreshMovie(getMovieId())
 
             _movie.postValue(newMovieState)
@@ -72,10 +75,11 @@ class MovieDetailsViewModel @Inject constructor(
 
     private suspend fun loadGenres() = genreRepository.refreshGenres()
 
-
     private fun loadActors() {
         viewModelScope.launch(Dispatchers.IO) {
             _actors.postValue(actorRepository.getActorsByMovieId(getMovieId()))
         }
     }
+
+    fun getLoadingGenre(resources: Resources): Genre = genreRepository.getLoadingGenre(resources)
 }

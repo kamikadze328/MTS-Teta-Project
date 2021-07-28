@@ -140,6 +140,10 @@ class ProfileFragment : Fragment() {
     private fun setupRecycleAdapterFavouriteGenres() {
         val adapter = GenreAdapter(::onClickListenerGenre)
 
+        listOf(viewModel.getLoadingGenre(resources)).let {
+            adapter.submitList(it)
+        }
+
         viewModel.favouriteGenres.observe(viewLifecycleOwner, {
             adapter.submitList(it)
         })
