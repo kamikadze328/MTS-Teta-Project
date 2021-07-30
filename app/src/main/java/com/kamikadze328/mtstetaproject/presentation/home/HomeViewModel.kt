@@ -1,6 +1,6 @@
 package com.kamikadze328.mtstetaproject.presentation.home
 
-import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.Movie
@@ -17,9 +17,8 @@ import kotlin.coroutines.CoroutineContext
 class HomeViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val movieRepository: MovieRepository,
-    private val genreRepository: GenreRepository,
-    application: Application
-) : AndroidViewModel(application) {
+    private val genreRepository: GenreRepository
+) : ViewModel() {
     private val _moviesState: MutableLiveData<State<List<Movie>>> =
         MutableLiveData(State.LoadingState)
     val moviesState: LiveData<State<List<Movie>>> = _moviesState
@@ -34,6 +33,8 @@ class HomeViewModel @Inject constructor(
     private val genresCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler(::onGenresLoadFailed)
     }
+
+    var kek = 0
 
     init {
         loadAllData()

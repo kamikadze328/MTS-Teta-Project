@@ -27,7 +27,7 @@ class MovieRepository @Inject constructor(
         )
     }
 
-    val movieDetailsLoading: Movie by lazy {
+    private val movieDetailsLoading: Movie by lazy {
         Movie(
             id = -2,
             title = application.resources.getString(R.string.movie_name_loading),

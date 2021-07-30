@@ -1,6 +1,5 @@
 package com.kamikadze328.mtstetaproject.presentation.moviedetails
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Actor
 import com.kamikadze328.mtstetaproject.data.dto.Genre
@@ -21,9 +20,8 @@ class MovieDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val movieRepository: MovieRepository,
     private val actorRepository: ActorRepository,
-    private val genreRepository: GenreRepository,
-    application: Application
-) : AndroidViewModel(application) {
+    private val genreRepository: GenreRepository
+) : ViewModel() {
     //TODO initial args in savedstatehandle
     private val movieId: MutableLiveData<Int> = MutableLiveData(savedStateHandle[MOVIE_ID_ARG])
 

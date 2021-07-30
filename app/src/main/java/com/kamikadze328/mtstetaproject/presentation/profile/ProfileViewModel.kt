@@ -1,6 +1,5 @@
 package com.kamikadze328.mtstetaproject.presentation.profile
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.User
@@ -19,9 +18,8 @@ import kotlin.coroutines.CoroutineContext
 class ProfileViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val accountRepository: AccountRepository,
-    private val genreRepository: GenreRepository,
-    application: Application
-) : AndroidViewModel(application) {
+    private val genreRepository: GenreRepository
+) : ViewModel() {
     private val accountId: MutableLiveData<Int> = MutableLiveData(savedStateHandle[PROFILE_ID_ARG])
 
     private val _favouriteGenresState: MutableLiveData<State<List<Genre>>> =
