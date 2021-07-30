@@ -16,6 +16,7 @@ import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.settings.SettingsAdapter
 import com.kamikadze328.mtstetaproject.data.dto.User
 import com.kamikadze328.mtstetaproject.databinding.FragmentProfileBinding
+import com.kamikadze328.mtstetaproject.presentation.State
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import com.kamikadze328.mtstetaproject.presentation.profile.textwatcher.ProfilePhoneTextWatcher
 import com.kamikadze328.mtstetaproject.presentation.profile.textwatcher.ProfileTextWatcher
@@ -52,7 +53,6 @@ class ProfileFragment : Fragment() {
             }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("kek", "onCreate profile")
         super.onCreate(savedInstanceState)
@@ -77,7 +77,23 @@ class ProfileFragment : Fragment() {
         viewModel.wasDataChanged.observe(viewLifecycleOwner, ::updateSubmitButtonUI)
 
         if (savedInstanceState == null) {
-            viewModel.user.observe(viewLifecycleOwner, ::updateUserInfoUI)
+            viewModel.userState.observe(viewLifecycleOwner, {
+                when (it) {
+                    is State.LoadingState -> {
+                        updateUserInfoUI(viewModel.loadUserLoading())
+                        setEditTextEnable(false)
+                    }
+                    is State.ErrorState -> {
+                        updateUserInfoUI(viewModel.loadUserError())
+                        setEditTextEnable(false)
+                        clearEditText()
+                    }
+                    is State.DataState -> {
+                        updateUserInfoUI(it.data)
+                        setEditTextEnable(true)
+                    }
+                }
+            })
         } else {
             viewModel.changedUser.value?.let {
                 updateUserInfoUI(it)
@@ -104,9 +120,23 @@ class ProfileFragment : Fragment() {
         )
     }
 
+    private fun setEditTextEnable(newState: Boolean) {
+        binding.profileTextInputName.isEnabled = newState
+        binding.profileTextInputPassword.isEnabled = newState
+        binding.profileTextInputEmail.isEnabled = newState
+        binding.profileTextInputPhone.isEnabled = newState
+    }
+
+    private fun clearEditText() {
+        binding.profileTextInputName.setText("")
+        binding.profileTextInputPassword.setText("")
+        binding.profileTextInputEmail.setText("")
+        binding.profileTextInputPhone.setText("")
+    }
 
     private fun updateUserInfoUI(user: User) {
         removeOnChangeListeners()
+
         binding.profileTextInputName.setText(user.name)
         binding.profileTextInputPassword.setText(user.password)
         binding.profileTextInputEmail.setText(user.email)
@@ -119,12 +149,10 @@ class ProfileFragment : Fragment() {
         setOnChangeListeners()
     }
 
-
     private fun updateSubmitButtonUI(wasDataChanged: Boolean) {
         binding.profileSavePersonalInfoButton.visibility =
             if (wasDataChanged) View.VISIBLE else View.INVISIBLE
     }
-
 
     private fun setupRecyclerAdapterSetting() {
         binding.profileSettingsRecycler.adapter = SettingsAdapter(
@@ -140,12 +168,12 @@ class ProfileFragment : Fragment() {
     private fun setupRecycleAdapterFavouriteGenres() {
         val adapter = GenreAdapter(::onClickListenerGenre)
 
-        listOf(viewModel.getLoadingGenre(resources)).let {
-            adapter.submitList(it)
-        }
-
-        viewModel.favouriteGenres.observe(viewLifecycleOwner, {
-            adapter.submitList(it)
+        viewModel.favouriteGenresState.observe(viewLifecycleOwner, {
+            when (it) {
+                is State.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
+                is State.ErrorState -> adapter.submitList(viewModel.loadGenreError())
+                is State.DataState -> adapter.submitList(it.data)
+            }
         })
         binding.profileFavouriteMoviesRecycler.adapter = adapter
 

@@ -17,6 +17,7 @@ import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.moviedetailsactor.ActorAdapter
 import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.databinding.FragmentMovieDetailsBinding
+import com.kamikadze328.mtstetaproject.presentation.State
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import com.kamikadze328.mtstetaproject.setRating
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,8 +60,12 @@ class MovieDetailsFragment : Fragment() {
 
         Log.d("kek", "onCreateView moviedetails")
 
-        viewModel.movie.observe(viewLifecycleOwner, {
-            updateUI(it)
+        viewModel.movieState.observe(viewLifecycleOwner, {
+            when (it) {
+                is State.LoadingState -> updateUI(viewModel.loadMovieLoading())
+                is State.ErrorState -> updateUI(viewModel.loadMovieError())
+                is State.DataState -> updateUI(it.data)
+            }
         })
 
         setupRecyclerAdapters()
@@ -81,8 +86,7 @@ class MovieDetailsFragment : Fragment() {
         binding.movieNameText.text = movie.title
         binding.movieNameTextToolbar.text = movie.title
         binding.movieDescription.text = movie.overview
-        binding.movieAgeRestrictionText.text =
-            getString(R.string.main_age_restriction_text, movie.ageRestriction)
+        binding.movieAgeRestrictionText.text = movie.ageRestriction
 
         binding.movieRatingBarRootInclude.ratingBarRoot.setRating(movie.vote_average)
     }
@@ -92,12 +96,12 @@ class MovieDetailsFragment : Fragment() {
         val recyclerGenres = binding.movieGenresRecycler
         val adapter = GenreAdapter(::onClickListenerGenres)
 
-        listOf(viewModel.getLoadingGenre(resources)).let {
-            adapter.submitList(it)
-        }
-
-        viewModel.genres.observe(viewLifecycleOwner, {
-            adapter.submitList(it)
+        viewModel.genresState.observe(viewLifecycleOwner, {
+            when (it) {
+                is State.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
+                is State.ErrorState -> adapter.submitList(viewModel.loadGenreError())
+                is State.DataState -> adapter.submitList(it.data)
+            }
         })
 
         recyclerGenres.adapter = adapter

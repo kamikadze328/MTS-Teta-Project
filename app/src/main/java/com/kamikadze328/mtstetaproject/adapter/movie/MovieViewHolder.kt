@@ -22,7 +22,6 @@ class MovieViewHolder(private val view: View) : MovieViewHolderSealed(view) {
     private val poster: ImageView = view.findViewById(R.id.movie_main_poster)
 
     fun bind(movie: Movie, click: (id: Int) -> Unit) {
-
         poster.load(movie.poster_path) {
             transformations(RoundedCornersTransformation(view.context.resources.getDimension(R.dimen.movie_main_poster_border_radius)))
         }
@@ -30,10 +29,7 @@ class MovieViewHolder(private val view: View) : MovieViewHolderSealed(view) {
         title.text = movie.title
         description.text = movie.overview
         rating.setRating(movie.vote_average)
-        ageRestriction.text = view.context.resources.getString(
-            R.string.main_age_restriction_text,
-            movie.ageRestriction
-        )
+        ageRestriction.text = movie.ageRestriction
     }
 
 

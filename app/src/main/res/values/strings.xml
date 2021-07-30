@@ -9,7 +9,13 @@
     <string name="movie_description_loading">Описание прибудет с минуты на минуту</string>
     <string name="movie_name_loading">Загружаю данные</string>
     <string name="movie_date_loading">01.01.1900</string>
-    <string name="genre_loading">Жанр</string>
+    <string name="genre_loading">Загружаю жанры</string>
+    <string name="user_loading">Загружаю данные</string>
+
+    <string name="user_loading_error">Что-то пошло не так</string>
+    <string name="genre_loading_error">Что-то пошло не так</string>
+    <string name="movie_loading_error">Что-то пошло не так</string>
+    <string name="movie_description_loading_error">Похоже описание потерялось по пути(((</string>
 
     <string name="movie_genre_action">боевики</string>
 

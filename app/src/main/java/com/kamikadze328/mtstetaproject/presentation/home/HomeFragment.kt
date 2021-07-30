@@ -15,6 +15,7 @@ import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.movie.MovieAdapter
 import com.kamikadze328.mtstetaproject.adapter.movie.MovieItemDecoration
 import com.kamikadze328.mtstetaproject.databinding.FragmentHomeBinding
+import com.kamikadze328.mtstetaproject.presentation.State
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -64,12 +65,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSwipeRefresh() {
-        binding.movieMainSwiperefresh.isRefreshing = true
-        binding.movieMainSwiperefresh.setOnRefreshListener(::onRefreshMovies)
+        binding.movieMainSwiperefresh.setOnRefreshListener(::onRefresh)
     }
 
-    private fun onRefreshMovies() {
-        viewModel.loadMovies()
+    private fun onRefresh() {
+        viewModel.loadAllData()
     }
 
     private fun setupRecyclerAdapters() {
@@ -82,10 +82,22 @@ class HomeFragment : Fragment() {
         val adapter =
             MovieAdapter(::onClickListenerMovies/*, getString(R.string.movie_main_header_popular)*/)
 
-        viewModel.movies.observe(viewLifecycleOwner, {
-            adapter.submitList(it)
-            binding.movieMainSwiperefresh.isRefreshing = false
+        viewModel.moviesState.observe(viewLifecycleOwner, {
+            when (it) {
+                is State.LoadingState -> {
+                    binding.movieMainSwiperefresh.isRefreshing = true
+                }
+                is State.ErrorState -> {
+                    adapter.submitList(emptyList())
+                    binding.movieMainSwiperefresh.isRefreshing = false
+                }
+                is State.DataState -> {
+                    adapter.submitList(it.data)
+                    binding.movieMainSwiperefresh.isRefreshing = false
+                }
+            }
         })
+
         recyclerMovies.adapter = adapter
 
         val widthPoster = resources.getDimension(R.dimen.main_poster_width)
@@ -136,13 +148,15 @@ class HomeFragment : Fragment() {
         val recyclerGenres = binding.movieMainGenresRecycler
         val adapter = GenreAdapter(::onClickListenerGenres)
 
-        listOf(viewModel.getLoadingGenre(resources)).let {
-            adapter.submitList(it)
-        }
 
-        viewModel.genres.observe(viewLifecycleOwner, {
-            adapter.submitList(it)
+        viewModel.genresState.observe(viewLifecycleOwner, {
+            when (it) {
+                is State.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
+                is State.ErrorState -> adapter.submitList(viewModel.loadGenreError())
+                is State.DataState -> adapter.submitList(it.data)
+            }
         })
+
         recyclerGenres.adapter = adapter
 
         val offset = resources.getDimension(R.dimen.movie_main_genres_offset).toInt()
