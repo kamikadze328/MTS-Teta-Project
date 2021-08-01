@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/profile_padding_vertical"
+        android:paddingTop="@dimen/profile_padding_vertical"
+        android:paddingBottom="30dp"
+        tools:context=".presentation.profile.ProfileFragment">
+
+        <ImageView
+            android:id="@+id/profile_img"
+            android:layout_width="@dimen/profile_img_size"
+            android:layout_height="@dimen/profile_img_size"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:background="@drawable/profile_img_background"
+            android:contentDescription="@string/profile_img_description"
+            android:paddingHorizontal="@dimen/profile_img_padding"
+            android:paddingTop="@dimen/profile_img_padding_top"
+            android:paddingBottom="@dimen/profile_img_padding"
+            android:src="@drawable/ic_profile_img_default"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/profile_name"
+            style="@style/ProfileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/profile_img"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/profile_img"
+            tools:text="@string/profile_name_tools" />
+
+        <TextView
+            android:id="@+id/profile_email"
+            style="@style/ProfileEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_name"
+            tools:text="@string/profile_email_tools" />
+
+        <TextView
+            android:id="@+id/profile_header_interests"
+            style="@style/ProfileBlockHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:text="@string/profile_header_interests"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_img" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profile_favourite_movies_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/profile_vertical_offset_between"
+            android:orientation="horizontal"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/profile_header_interests"
+            tools:listitem="@layout/item_genre" />
+
+        <TextView
+            android:id="@+id/profile_header_personal_info"
+            style="@style/ProfileBlockHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:text="@string/profile_header_personal_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_favourite_movies_recycler" />
+
+        <Button
+            android:id="@+id/profile_save_personal_info_button"
+            style="@style/ProfileSaveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:text="@string/profile_save_personal_info_button"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_header_personal_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/profile_header_personal_info"
+            tools:visibility="visible" />
+
+
+        <EditText
+            android:id="@+id/profile_text_input_name"
+            style="@style/ProfileTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:autofillHints="@string/profile_personal_info_name"
+            android:hint="@string/profile_personal_info_name"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/profile_save_personal_info_button" />
+
+        <EditText
+            android:id="@+id/profile_text_input_password"
+            style="@style/ProfileTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:autofillHints="@string/profile_personal_info_password"
+            android:hint="@string/profile_personal_info_password"
+            android:inputType="textPassword"
+            app:layout_constraintTop_toBottomOf="@id/profile_text_input_name" />
+
+        <EditText
+            android:id="@+id/profile_text_input_email"
+            style="@style/ProfileTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:autofillHints="@string/profile_personal_info_email"
+            android:hint="@string/profile_personal_info_email"
+            android:inputType="textEmailAddress"
+            app:layout_constraintTop_toBottomOf="@id/profile_text_input_password" />
+
+        <EditText
+            android:id="@+id/profile_text_input_phone"
+            style="@style/ProfileTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:autofillHints="@string/profile_personal_info_phone"
+            android:digits="0123456789+- "
+            android:hint="@string/profile_personal_info_phone"
+            android:inputType="phone"
+            app:layout_constraintTop_toBottomOf="@id/profile_text_input_email" />
+
+        <TextView
+            android:id="@+id/profile_header_settings"
+            style="@style/ProfileBlockHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:text="@string/profile_header_settings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_text_input_phone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profile_settings_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:layout_marginTop="@dimen/profile_vertical_offset_between"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/profile_header_settings"
+            tools:itemCount="5"
+            tools:listitem="@layout/item_setting_menu" />
+
+        <TextView
+            android:id="@+id/profile_header_app_info"
+            style="@style/ProfileBlockHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:text="@string/profile_header_app_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_settings_recycler" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profile_app_info_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:layout_marginTop="@dimen/profile_vertical_offset_between"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/profile_header_app_info"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_setting_menu" />
+
+        <Button
+            android:id="@+id/profile_logout_button"
+            style="@style/ProfileLogoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/profile_padding_horizontal"
+            android:layout_marginTop="@dimen/profile_vertical_offset_between"
+            android:layout_marginBottom="20dp"
+            android:text="@string/profile_logout_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_app_info_recycler" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

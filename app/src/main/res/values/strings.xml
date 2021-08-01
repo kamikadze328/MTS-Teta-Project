@@ -1,3 +1,90 @@
 <resources>
     <string name="app_name">MTS Teta Project</string>
+    <string name="movie_poster_description">Постер фильма</string>
+    <string name="actor_image_description">Фото актёра</string>
+    <string name="movie_description_tools">Эйч — загадочный и холодный на вид джентльмен, но внутри него пылает жажда справедливости. Преследуя свои мотивы, он внедряется в инкассаторскую компанию, чтобы выйти на соучастников серии многомиллионных ограблений, потрясших Лос-Анджелес. В этой запутанной игре у каждого своя роль, но под подозрением оказываются все. Виновных же обязательно постигнет гнев человеческий. Эйч — загадочный и холодный на вид джентльмен, но внутри него пылает жажда справедливости. Преследуя свои мотивы, он внедряется в инкассаторскую компанию, чтобы выйти на соучастников серии многомиллионных ограблений, потрясших Лос-Анджелес. В этой запутанной игре у каждого своя роль, но под подозрением оказываются все. Виновных же обязательно постигнет гнев человеческий. Эйч — загадочный и холодный на вид джентльмен, но внутри него пылает жажда справедливости. Преследуя свои мотивы, он внедряется в инкассаторскую компанию, чтобы выйти на соучастников серии многомиллионных ограблений, потрясших Лос-Анджелес. В этой запутанной игре у каждого своя роль, но под подозрением оказываются все. Виновных же обязательно постигнет гнев человеческий.</string>
+    <string name="movie_name_tools">Гнев человеческий</string>
+    <string name="movie_date_tools">22.04.2021</string>
+
+    <string name="movie_description_loading">Описание прибудет с минуты на минуту</string>
+    <string name="movie_name_loading">Загружаю данные</string>
+    <string name="movie_date_loading">01.01.1900</string>
+    <string name="genre_loading">Загружаю жанры</string>
+    <string name="user_loading">Загружаю данные</string>
+
+    <string name="user_loading_error">Что-то пошло не так</string>
+    <string name="genre_loading_error">Что-то пошло не так</string>
+    <string name="movie_loading_error">Что-то пошло не так</string>
+    <string name="movie_description_loading_error">Похоже описание потерялось по пути(((</string>
+
+    <string name="movie_genre_action">боевики</string>
+
+    <string name="actors">Актёры</string>
+    <string name="star_empty_description">Пустая звезда</string>
+    <string name="star_filled_description">Звезда</string>
+
+    <string name="age_restricting_loading">\?+</string>
+
+    <string name="title_home">Дом</string>
+    <string name="title_profile">Профиль</string>
+
+
+    <string name="main_age_restriction_text">%1$d+</string>
+    <string name="main_click_message">Название: %1$s</string>
+    <string name="main_empty_message">Тут должен был быть текст</string>
+
+    <string name="tools_text_movie_title">Фильм</string>
+    <string name="tools_text_movie_description">Кстати, многие известные личности освещают чрезвычайно интересные особенности картины в целом, однако конкретные выводы, разумеется, подвергнуты целой серии независимых исследований.</string>
+    <string name="tools_text_movie_rating">Рейтинг: 4</string>
+    <string name="tools_text_movie_age_description">18+</string>
+
+    <string name="movie_main_header_popular">Популярное сейчас</string>
+    <string name="movie_main_footer">Сервис "My Movie DB" может содержать информацию, не предназначенную для несовершеннолетних</string>
+
+    <string name="movie_main_no_movies_header">Нет данных</string>
+    <string name="movie_main_no_movies_description">Сейчас здесь нет фильмов, но мы уже отправили режиссёра снимать фильм для вас</string>
+
+    <string name="movie_id_arg">movie_id</string>
+
+    <string name="profile_name_tools">Банан</string>
+    <string name="profile_email_tools">bananbananovich1093@gmail.com</string>
+
+    <string name="profile_header_interests">Интересы</string>
+    <string name="profile_header_personal_info">Личные данные</string>
+    <string name="profile_header_settings">Настройки</string>
+    <string name="profile_header_app_info">Приложение</string>
+
+    <string name="settings_arrow_description">Стрелочка</string>
+
+    <string name="profile_logout_button">Выйти</string>
+    <string name="profile_save_personal_info_button">Сохранить</string>
+    <string name="profile_personal_info_name">Имя</string>
+    <string name="profile_personal_info_password">Пароль</string>
+    <string name="profile_personal_info_email">Почта</string>
+    <string name="profile_personal_info_phone">Телефон</string>
+    <string name="profile_img_description">Аватар</string>
+    <string name="edit_text_username">Имя</string>
+
+    <string name="settings_header_notification_and_sound">Уведомления и звуки</string>
+    <string name="settings_header_privacy_policy">Конфедициальность</string>
+    <string name="settings_header_theme">Тема</string>
+    <string name="settings_header_language">Язык</string>
+    <string name="settings_header_data_and_memory">Данные и память</string>
+
+    <string name="app_info_header_ask_question">Задать вопрос</string>
+    <string name="app_info_header_notify_about_problem">Сообщить о проблеме</string>
+
+
+    <string-array name="settings_headers">
+        <item>@string/settings_header_notification_and_sound</item>
+        <item>@string/settings_header_privacy_policy</item>
+        <item>@string/settings_header_theme</item>
+        <item>@string/settings_header_language</item>
+        <item>@string/settings_header_data_and_memory</item>
+    </string-array>
+
+    <string-array name="app_info_headers">
+        <item>@string/app_info_header_ask_question</item>
+        <item>@string/app_info_header_notify_about_problem</item>
+    </string-array>
 </resources>
