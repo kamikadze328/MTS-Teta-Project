@@ -13,6 +13,9 @@
     <dimen name="main_poster_width">150dp</dimen>
     <dimen name="main_poster_height">216dp</dimen>
 
+    <dimen name="actor_container_width">150dp</dimen>
+    <dimen name="actor_container_height">216dp</dimen>
+
     <dimen name="main_side_offset">3dp</dimen>
 
     <dimen name="movie_main_age_restriction_size">21dp</dimen>

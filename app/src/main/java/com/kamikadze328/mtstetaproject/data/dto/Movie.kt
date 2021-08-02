@@ -1,5 +1,9 @@
 package com.kamikadze328.mtstetaproject.data.dto
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Movie(
     val id: Int,
     val title: String,
@@ -9,4 +13,4 @@ data class Movie(
     val ageRestriction: String,
     val genre_ids: List<Int>,
     val poster_path: String
-)
+) : Parcelable

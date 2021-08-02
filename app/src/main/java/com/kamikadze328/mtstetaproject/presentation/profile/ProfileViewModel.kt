@@ -1,6 +1,11 @@
 package com.kamikadze328.mtstetaproject.presentation.profile
 
+import android.app.Application
+import android.content.Context
+import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.*
+import androidx.preference.PreferenceManager
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.User
 import com.kamikadze328.mtstetaproject.presentation.State
@@ -18,8 +23,9 @@ import kotlin.coroutines.CoroutineContext
 class ProfileViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val accountRepository: AccountRepository,
-    private val genreRepository: GenreRepository
-) : ViewModel() {
+    private val genreRepository: GenreRepository,
+    application: Application
+) : AndroidViewModel(application) {
     private val accountId: MutableLiveData<Int> = MutableLiveData(savedStateHandle[PROFILE_ID_ARG])
 
     private val _favouriteGenresState: MutableLiveData<State<List<Genre>>> =
@@ -29,7 +35,7 @@ class ProfileViewModel @Inject constructor(
     private val _changedUser = MutableLiveData<User>(savedStateHandle[CHANGED_USER_ARG])
     val changedUser: LiveData<User> = _changedUser
 
-    private val _userState: MutableLiveData<State<User>> = MutableLiveData()
+    private val _userState: MutableLiveData<State<User>> = MutableLiveData(State.LoadingState)
     val userState: LiveData<State<User>> = _userState
 
     private val _wasDataChanged = MutableLiveData(savedStateHandle[WAS_DATA_CHANGED_ARG] ?: false)
@@ -43,30 +49,56 @@ class ProfileViewModel @Inject constructor(
     }
 
     init {
-        savedStateHandle.set(WAS_DATA_CHANGED_ARG, this._wasDataChanged.value)
+        if (accountId.value == null) {
+            setupAccountId(application)
+        }
+        init()
+    }
+
+    private fun setAccountId(uid: Int) {
+        savedStateHandle.set(PROFILE_ID_ARG, uid)
+        accountId.value = uid
+    }
+
+    private fun setupAccountId(context: Context) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val newId = 10
+
+        //TODO singleton str
+        if (!prefs.contains(PROFILE_ID_ARG)) {
+            prefs.edit {
+                putInt(PROFILE_ID_ARG, newId)
+                commit()
+            }
+        }
+
+        setAccountId(prefs.getInt("uid", newId))
     }
 
     companion object {
-        const val PROFILE_ID_ARG = "uid"
-        const val CHANGED_USER_ARG = "ch_usr"
-        const val WAS_DATA_CHANGED_ARG = "ws_dt_ch"
+        private const val PROFILE_ID_ARG = "uid"
+        private const val CHANGED_USER_ARG = "ch_usr"
+        private const val WAS_DATA_CHANGED_ARG = "ws_dt_ch"
+        private const val GENRES = "grns"
 
-    }
-
-    fun setAccountId(newAccountId: Int) {
-        savedStateHandle.set(PROFILE_ID_ARG, newAccountId)
-        accountId.value = newAccountId
-        init()
     }
 
     fun getAccountId(): Int = accountId.value!!
 
     private fun init() {
-        loadFavouritesGenres()
+        val genres: List<Genre>? = savedStateHandle[GENRES]
+        val isGenresNotCached = genres == null
+        if (isGenresNotCached) loadFavouritesGenres()
+
+        viewModelScope.launch {
+            if (!isGenresNotCached) setFavouriteGenres(genres!!)
+        }
+
         loadUser()
     }
 
     private fun onGenresLoadFailed(context: CoroutineContext, exception: Throwable) {
+        Log.d("kek", "$exception")
         _favouriteGenresState.postValue(State.ErrorState(exception))
     }
 
@@ -74,11 +106,17 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch(genresCoroutineExceptionHandler) {
             _favouriteGenresState.postValue(State.LoadingState)
             val genres = accountRepository.getFavouriteGenres(getAccountId())
-            _favouriteGenresState.postValue(State.DataState(genres))
+            setFavouriteGenres(genres)
         }
     }
 
+    private suspend fun setFavouriteGenres(genres: List<Genre>) = withContext(Dispatchers.Default) {
+        _favouriteGenresState.postValue(State.DataState(genres))
+        savedStateHandle.set(GENRES, genres)
+    }
+
     private fun onUserLoadFailed(context: CoroutineContext, exception: Throwable) {
+        Log.d("kek", "$exception")
         _userState.postValue(State.ErrorState(exception))
         onGenresLoadFailed(context, exception)
     }

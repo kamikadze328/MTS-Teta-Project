@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import coil.load
 import com.google.android.material.appbar.AppBarLayout
 import com.kamikadze328.mtstetaproject.R
@@ -29,27 +30,21 @@ class MovieDetailsFragment : Fragment() {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
 
+    private val args: MovieDetailsFragmentArgs by navArgs()
 
     companion object {
-        const val PARENT_ID_ARG = "parent_id_arg"
 
         @JvmStatic
         fun newInstance(movieId: Int, parentTag: String) =
             MovieDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(MovieDetailsViewModel.MOVIE_ID_ARG, movieId)
-                    putString(PARENT_ID_ARG, parentTag)
-                }
+                arguments = Bundle().apply {}
             }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("kek", "onCreate moviedetails")
+        viewModel.setMovieId(args.movieId)
         super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            viewModel.setMovieId(it.getInt(MovieDetailsViewModel.MOVIE_ID_ARG))
-        }
     }
 
     override fun onCreateView(
@@ -57,8 +52,6 @@ class MovieDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
-
-        Log.d("kek", "onCreateView moviedetails")
 
         viewModel.movieState.observe(viewLifecycleOwner, {
             when (it) {
@@ -114,15 +107,18 @@ class MovieDetailsFragment : Fragment() {
 
     private fun onClickListenerGenres(genreId: Int) {
         (activity as MainActivity).onGenreClicked(genreId)
-
     }
 
     private fun setupRecyclerAdapterActors() {
         val recyclerActors = binding.movieActorsRecycler
         val adapter = ActorAdapter()
 
-        viewModel.actors.observe(viewLifecycleOwner, {
-            adapter.submitList(it)
+        viewModel.actorsState.observe(viewLifecycleOwner, {
+            when (it) {
+                is State.LoadingState -> adapter.submitList(viewModel.loadActorsLoading())
+                is State.ErrorState -> adapter.submitList(viewModel.loadActorsError())
+                is State.DataState -> adapter.submitList(it.data)
+            }
         })
 
         recyclerActors.adapter = adapter

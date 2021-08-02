@@ -1,5 +1,6 @@
 package com.kamikadze328.mtstetaproject.presentation.moviedetails
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Actor
 import com.kamikadze328.mtstetaproject.data.dto.Genre
@@ -12,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -25,8 +27,8 @@ class MovieDetailsViewModel @Inject constructor(
     //TODO initial args in savedstatehandle
     private val movieId: MutableLiveData<Int> = MutableLiveData(savedStateHandle[MOVIE_ID_ARG])
 
-    private val _actors = MutableLiveData<List<Actor>>()
-    val actors: LiveData<List<Actor>> = _actors
+    private val _actorsState = MutableLiveData<State<List<Actor>>>(State.LoadingState)
+    val actorsState: LiveData<State<List<Actor>>> = _actorsState
 
     private val _movieState: MutableLiveData<State<Movie>> = MutableLiveData(State.LoadingState)
     val movieState: LiveData<State<Movie>> = _movieState
@@ -41,61 +43,112 @@ class MovieDetailsViewModel @Inject constructor(
     private val genresCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler(::onGenresLoadFailed)
     }
-
-
-    companion object {
-        const val MOVIE_ID_ARG = "mid"
+    private val actorsCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
+        CoroutineExceptionHandler(::onActorsLoadFailed)
     }
 
-    private fun onMoviesLoadFailed(context: CoroutineContext, exception: Throwable) {
-        _movieState.postValue(State.ErrorState(exception))
-        onGenresLoadFailed(context, exception)
-    }
-
-    private fun onGenresLoadFailed(context: CoroutineContext, exception: Throwable) {
-        _genresState.postValue(State.ErrorState(exception))
-    }
 
     fun setMovieId(newMovieId: Int) {
+        Log.d("kek", "$newMovieId -> ${movieId.value} (${savedStateHandle.get<Int>(MOVIE_ID_ARG)})")
+
         movieId.value = newMovieId
         savedStateHandle.set(MOVIE_ID_ARG, newMovieId)
         init()
     }
 
     private fun init() {
-        loadMovie()
-        loadActors()
+        val movie: Movie? = savedStateHandle[MOVIE]
+        val genres: List<Genre>? = savedStateHandle[GENRES]
+        val actors: List<Actor>? = savedStateHandle[ACTORS]
+
+        val isMovieNotCached = movie == null
+        val isGenresNotCached = genres == null
+        val isActorsNotCached = actors == null
+
+        if (isMovieNotCached) loadMovie()
+        if (!isMovieNotCached && isGenresNotCached) loadGenresByIds(movie!!.genre_ids)
+        if (!isMovieNotCached && isActorsNotCached) loadActors()
+
+        viewModelScope.launch {
+            if (!isMovieNotCached) setMovie(movie!!)
+            if (!isGenresNotCached) setGenres(genres!!)
+            if (!isActorsNotCached) setActors(actors!!)
+        }
+
+        Log.d("kek", "init movie details View model")
+
+    }
+
+    companion object {
+        private const val MOVIE_ID_ARG = "mid"
+        private const val MOVIE = "mv"
+        private const val GENRES = "gnrs"
+        private const val ACTORS = "actrs"
     }
 
     private fun getMovieId() = movieId.value!!
 
+    private fun onMoviesLoadFailed(context: CoroutineContext, exception: Throwable) {
+        Log.d("kek", "$exception")
+        _movieState.postValue(State.ErrorState(exception))
+        onActorsLoadFailed(context, exception)
+        onGenresLoadFailed(context, exception)
+    }
+
+    private fun onGenresLoadFailed(context: CoroutineContext, exception: Throwable) {
+        Log.d("kek", "$exception")
+        _genresState.postValue(State.ErrorState(exception))
+    }
+
+    private fun onActorsLoadFailed(context: CoroutineContext, exception: Throwable) {
+        Log.d("kek", "$exception")
+        _actorsState.postValue(State.ErrorState(exception))
+    }
 
     private fun loadMovie() {
         viewModelScope.launch(moviesCoroutineExceptionHandler) {
             _movieState.postValue(State.LoadingState)
             val newMovieState = movieRepository.refreshMovie(getMovieId())
-            if (newMovieState != null) {
-                _movieState.postValue(State.DataState(newMovieState))
-                loadGenresByIds(newMovieState.genre_ids)
-            } else {
-                throw Exception("Can't load the movie")
-            }
+                ?: throw Exception("Can't load the movie")
+
+            setMovie(newMovieState)
+            loadGenresByIds(newMovieState.genre_ids)
+            loadActors()
         }
     }
 
-    private suspend fun loadGenresByIds(genre_ids: List<Int>) {
+    private fun loadGenresByIds(genre_ids: List<Int>) {
         viewModelScope.launch(genresCoroutineExceptionHandler) {
             _genresState.postValue(State.LoadingState)
             val genres = genreRepository.loadGenresByIds(genre_ids)
-            _genresState.postValue(State.DataState(genres))
+            setGenres(genres)
         }
     }
 
     private fun loadActors() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _actors.postValue(actorRepository.getActorsByMovieId(getMovieId()))
+        viewModelScope.launch(actorsCoroutineExceptionHandler) {
+            _actorsState.postValue(State.LoadingState)
+            val actors = actorRepository.getActorsByMovieId(getMovieId())
+            setActors(actors)
         }
     }
+
+    private suspend fun setMovie(movie: Movie) = withContext(Dispatchers.Default) {
+        Log.d("kek", "setMovie - $movie")
+        _movieState.postValue(State.DataState(movie))
+        savedStateHandle.set(MOVIE, movie)
+    }
+
+    private suspend fun setGenres(genres: List<Genre>) = withContext(Dispatchers.Default) {
+        _genresState.postValue(State.DataState(genres))
+        savedStateHandle.set(GENRES, genres)
+    }
+
+    private suspend fun setActors(actors: List<Actor>) = withContext(Dispatchers.Default) {
+        _actorsState.postValue(State.DataState(actors))
+        savedStateHandle.set(ACTORS, actors)
+    }
+
 
     fun loadGenreLoading(): List<Genre> {
         return listOf(genreRepository.loadGenreLoading())
@@ -111,6 +164,14 @@ class MovieDetailsViewModel @Inject constructor(
 
     fun loadMovieError(): Movie {
         return movieRepository.loadMovieError()
+    }
+
+    fun loadActorsLoading(): List<Actor> {
+        return listOf(actorRepository.loadActorLoading())
+    }
+
+    fun loadActorsError(): List<Actor> {
+        return listOf(actorRepository.loadActorError())
     }
 
 }

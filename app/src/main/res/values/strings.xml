@@ -5,17 +5,20 @@
     <string name="movie_description_tools">Эйч — загадочный и холодный на вид джентльмен, но внутри него пылает жажда справедливости. Преследуя свои мотивы, он внедряется в инкассаторскую компанию, чтобы выйти на соучастников серии многомиллионных ограблений, потрясших Лос-Анджелес. В этой запутанной игре у каждого своя роль, но под подозрением оказываются все. Виновных же обязательно постигнет гнев человеческий. Эйч — загадочный и холодный на вид джентльмен, но внутри него пылает жажда справедливости. Преследуя свои мотивы, он внедряется в инкассаторскую компанию, чтобы выйти на соучастников серии многомиллионных ограблений, потрясших Лос-Анджелес. В этой запутанной игре у каждого своя роль, но под подозрением оказываются все. Виновных же обязательно постигнет гнев человеческий. Эйч — загадочный и холодный на вид джентльмен, но внутри него пылает жажда справедливости. Преследуя свои мотивы, он внедряется в инкассаторскую компанию, чтобы выйти на соучастников серии многомиллионных ограблений, потрясших Лос-Анджелес. В этой запутанной игре у каждого своя роль, но под подозрением оказываются все. Виновных же обязательно постигнет гнев человеческий.</string>
     <string name="movie_name_tools">Гнев человеческий</string>
     <string name="movie_date_tools">22.04.2021</string>
+    <string name="actor_name_tools">Джейсон Стэйтем</string>
 
     <string name="movie_description_loading">Описание прибудет с минуты на минуту</string>
     <string name="movie_name_loading">Загружаю данные</string>
     <string name="movie_date_loading">01.01.1900</string>
     <string name="genre_loading">Загружаю жанры</string>
     <string name="user_loading">Загружаю данные</string>
+    <string name="actors_loading">Загружаю актёров</string>
 
     <string name="user_loading_error">Что-то пошло не так</string>
     <string name="genre_loading_error">Что-то пошло не так</string>
     <string name="movie_loading_error">Что-то пошло не так</string>
     <string name="movie_description_loading_error">Похоже описание потерялось по пути(((</string>
+    <string name="actors_loading_error">Что-то пошло не так</string>
 
     <string name="movie_genre_action">боевики</string>
 
@@ -87,4 +90,6 @@
         <item>@string/app_info_header_ask_question</item>
         <item>@string/app_info_header_notify_about_problem</item>
     </string-array>
+
+    <string name="msg_token_fmt">msg_token_fmt</string>
 </resources>

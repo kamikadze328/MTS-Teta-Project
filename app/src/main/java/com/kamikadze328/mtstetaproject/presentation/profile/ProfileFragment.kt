@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
@@ -28,7 +28,7 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ProfileViewModel by viewModels()
+    private val viewModel: ProfileViewModel by activityViewModels()
 
     private val defaultTextWatcher: ProfileTextWatcher by lazy {
         ProfileTextWatcher {
@@ -45,11 +45,9 @@ class ProfileFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(accountId: Int) =
+        fun newInstance() =
             ProfileFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ProfileViewModel.PROFILE_ID_ARG, accountId)
-                }
+                arguments = Bundle().apply {}
             }
     }
 
@@ -58,9 +56,7 @@ class ProfileFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            arguments?.let {
-                viewModel.setAccountId(it.getInt(ProfileViewModel.PROFILE_ID_ARG))
-            }
+            arguments?.let {}
         }
     }
 
@@ -76,28 +72,28 @@ class ProfileFragment : Fragment() {
         setOnChangeListeners()
         viewModel.wasDataChanged.observe(viewLifecycleOwner, ::updateSubmitButtonUI)
 
-        if (savedInstanceState == null) {
-            viewModel.userState.observe(viewLifecycleOwner, {
-                when (it) {
-                    is State.LoadingState -> {
-                        updateUserInfoUI(viewModel.loadUserLoading())
-                        setEditTextEnable(false)
-                    }
-                    is State.ErrorState -> {
-                        updateUserInfoUI(viewModel.loadUserError())
-                        setEditTextEnable(false)
-                        clearEditText()
-                    }
-                    is State.DataState -> {
+
+        viewModel.userState.observe(viewLifecycleOwner, {
+            when (it) {
+                is State.LoadingState -> {
+                    updateUserInfoHeaderUI(viewModel.loadUserLoading())
+                    setEditTextEnable(false)
+                }
+                is State.ErrorState -> {
+                    updateUserInfoHeaderUI(viewModel.loadUserError())
+                    setEditTextEnable(false)
+                }
+                is State.DataState -> {
+                    if (viewModel.wasDataChanged.value == false) {
                         updateUserInfoUI(it.data)
                         setEditTextEnable(true)
                     }
                 }
-            })
-        } else {
-            viewModel.changedUser.value?.let {
-                updateUserInfoUI(it)
             }
+        })
+
+        viewModel.changedUser.value?.let {
+            updateUserInfoUI(it)
         }
 
         return binding.root
@@ -127,14 +123,17 @@ class ProfileFragment : Fragment() {
         binding.profileTextInputPhone.isEnabled = newState
     }
 
-    private fun clearEditText() {
-        binding.profileTextInputName.setText("")
-        binding.profileTextInputPassword.setText("")
-        binding.profileTextInputEmail.setText("")
-        binding.profileTextInputPhone.setText("")
+    private fun updateUserInfoUI(user: User) {
+        updateUserInfoHeaderUI(user)
+        updateUserInfoBodyUI(user)
     }
 
-    private fun updateUserInfoUI(user: User) {
+    private fun updateUserInfoHeaderUI(user: User) {
+        binding.profileName.text = user.name
+        binding.profileEmail.text = user.email
+    }
+
+    private fun updateUserInfoBodyUI(user: User) {
         removeOnChangeListeners()
 
         binding.profileTextInputName.setText(user.name)
@@ -142,9 +141,6 @@ class ProfileFragment : Fragment() {
         binding.profileTextInputEmail.setText(user.email)
         binding.profileTextInputPhone.setText(user.phone)
         formatPhoneNumber(binding.profileTextInputPhone.text, binding.profileTextInputPhone)
-
-        binding.profileName.text = user.name
-        binding.profileEmail.text = user.email
 
         setOnChangeListeners()
     }
