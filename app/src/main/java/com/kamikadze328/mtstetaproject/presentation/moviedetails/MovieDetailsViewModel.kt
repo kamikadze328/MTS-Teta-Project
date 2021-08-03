@@ -49,8 +49,6 @@ class MovieDetailsViewModel @Inject constructor(
 
 
     fun setMovieId(newMovieId: Int) {
-        Log.d("kek", "$newMovieId -> ${movieId.value} (${savedStateHandle.get<Int>(MOVIE_ID_ARG)})")
-
         movieId.value = newMovieId
         savedStateHandle.set(MOVIE_ID_ARG, newMovieId)
         init()
@@ -134,7 +132,6 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private suspend fun setMovie(movie: Movie) = withContext(Dispatchers.Default) {
-        Log.d("kek", "setMovie - $movie")
         _movieState.postValue(State.DataState(movie))
         savedStateHandle.set(MOVIE, movie)
     }

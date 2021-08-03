@@ -91,5 +91,9 @@
         <item>@string/app_info_header_notify_about_problem</item>
     </string-array>
 
-    <string name="msg_token_fmt">msg_token_fmt</string>
+    <string name="msg_token_fmt">msg_token_fmt %1$s</string>
+
+    <string name="fcm_message">Может быть вам понравится этот фильм?</string>
+    <string name="fcm_message_body">Заценить</string>
+    <string name="default_notification_channel_name">Популярные фильмы</string>
 </resources>

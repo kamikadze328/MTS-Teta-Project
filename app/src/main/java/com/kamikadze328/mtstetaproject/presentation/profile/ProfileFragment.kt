@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
@@ -53,6 +54,9 @@ class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("kek", "onCreate profile")
+        Log.d("kek", "${findNavController().backQueue}")
+        Log.d("kek", "cur - ${findNavController().currentBackStackEntry}")
+        Log.d("kek", "to - ${findNavController().currentDestination}")
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
