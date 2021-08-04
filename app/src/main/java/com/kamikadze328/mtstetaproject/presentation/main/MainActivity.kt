@@ -110,14 +110,10 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
     //A -> B -> C -> (click system back - see start destination of app) A -> (click start destination's bottomNavigationView item - see C) C -> WHF??
     override fun onBackPressed() {
         if (navController.currentDestination?.id != R.id.navigation_home && binding.bottomNavigationView.selectedItemId != R.id.navigation_home) {
-            Log.d("kek", "here!!!!!")
             binding.bottomNavigationView.selectedItemId = R.id.navigation_home
         } else {
             super.onBackPressed()
         }
-        navController.navigateUp()
-        Log.d("kek", "${navController.backQueue}")
-        Log.d("kek", "to - ${navController.currentDestination}")
     }
 
 
