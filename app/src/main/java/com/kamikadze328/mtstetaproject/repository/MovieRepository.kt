@@ -1,7 +1,6 @@
 package com.kamikadze328.mtstetaproject.repository
 
 import android.app.Application
-import android.util.Log
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.data.network.Webservice
@@ -42,11 +41,7 @@ class MovieRepository @Inject constructor(
     }
 
     suspend fun loadRandomPopularMovie(): Movie? {
-        Log.d("kek", "loadRandomPopularMovie")
-        val movie = webservice.getPopularMovies().shuffled().getOrNull(0)
-        Log.d("kek", "loadRandomPopularMovie end $movie")
-
-        return movie
+        return webservice.getPopularMovies().shuffled().getOrNull(0)
     }
 
     suspend fun refreshPopularMovies(): List<Movie> = withContext(Dispatchers.IO) {

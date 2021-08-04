@@ -8,7 +8,6 @@ import androidx.work.WorkRequest
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.kamikadze328.mtstetaproject.R
-import kotlinx.coroutines.SupervisorJob
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
