@@ -37,8 +37,6 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("kek", "onCreate home")
-        Log.d("kek", "${findNavController().backQueue}")
-        Log.d("kek", "to - ${findNavController().currentDestination}")
         super.onCreate(savedInstanceState)
     }
 
