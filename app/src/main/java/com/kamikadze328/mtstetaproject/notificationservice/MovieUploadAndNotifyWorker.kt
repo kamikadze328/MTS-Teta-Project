@@ -9,7 +9,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.media.RingtoneManager
 import android.os.Build
-import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.navigation.NavDeepLinkBuilder
@@ -20,6 +19,7 @@ import coil.request.ImageRequest
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
+import com.kamikadze328.mtstetaproject.presentation.moviedetails.MovieDetailsFragmentArgs
 import com.kamikadze328.mtstetaproject.repository.MovieRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -59,9 +59,8 @@ class MovieUploadAndNotifyWorker @AssistedInject constructor(
     }
 
     private fun sendNotificationToMovie(movieName: String, movieId: Int, movieIcon: Bitmap) {
-        val args = Bundle().apply {
-            putInt("movieId", movieId)
-        }
+        val args = MovieDetailsFragmentArgs.Builder(movieId).build().toBundle()
+
         val pendingIntent = NavDeepLinkBuilder(appContext)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.navigation)
