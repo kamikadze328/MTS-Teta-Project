@@ -24,7 +24,6 @@ class MovieDetailsViewModel @Inject constructor(
     private val actorRepository: ActorRepository,
     private val genreRepository: GenreRepository
 ) : ViewModel() {
-    //TODO initial args in savedstatehandle
     private val movieId: MutableLiveData<Int> = MutableLiveData(savedStateHandle[MOVIE_ID_ARG])
 
     private val _actorsState = MutableLiveData<State<List<Actor>>>(State.LoadingState)
@@ -47,14 +46,7 @@ class MovieDetailsViewModel @Inject constructor(
         CoroutineExceptionHandler(::onActorsLoadFailed)
     }
 
-
-    fun setMovieId(newMovieId: Int) {
-        movieId.value = newMovieId
-        savedStateHandle.set(MOVIE_ID_ARG, newMovieId)
-        init()
-    }
-
-    private fun init() {
+    init {
         val movie: Movie? = savedStateHandle[MOVIE]
         val genres: List<Genre>? = savedStateHandle[GENRES]
         val actors: List<Actor>? = savedStateHandle[ACTORS]
@@ -72,13 +64,10 @@ class MovieDetailsViewModel @Inject constructor(
             if (!isGenresNotCached) setGenres(genres!!)
             if (!isActorsNotCached) setActors(actors!!)
         }
-
-        Log.d("kek", "init movie details View model")
-
     }
 
     companion object {
-        private const val MOVIE_ID_ARG = "mid"
+        private const val MOVIE_ID_ARG = "movieId"
         private const val MOVIE = "mv"
         private const val GENRES = "gnrs"
         private const val ACTORS = "actrs"

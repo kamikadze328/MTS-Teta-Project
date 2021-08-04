@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import coil.load
 import com.google.android.material.appbar.AppBarLayout
 import com.kamikadze328.mtstetaproject.R
@@ -31,7 +29,8 @@ class MovieDetailsFragment : Fragment() {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
 
-    private val args: MovieDetailsFragmentArgs by navArgs()
+    //args automatically passed to viewModel's savedStateHandle
+    //private val args: MovieDetailsFragmentArgs by navArgs()
 
     companion object {
 
@@ -44,9 +43,6 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("kek", "onCreate moviedetails")
-        Log.d("kek", "${findNavController().backQueue}")
-        Log.d("kek", "to - ${findNavController().currentDestination}")
-        viewModel.setMovieId(args.movieId)
         super.onCreate(savedInstanceState)
     }
 
