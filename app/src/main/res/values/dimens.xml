@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="movie_detail_border_radius">30dp</dimen>
     <dimen name="movie_detail_padding_horizontal">20dp</dimen>
     <dimen name="movie_detail_padding_top">32dp</dimen>
@@ -12,6 +12,9 @@
 
     <dimen name="main_poster_width">150dp</dimen>
     <dimen name="main_poster_height">216dp</dimen>
+
+    <dimen name="actor_container_width">150dp</dimen>
+    <dimen name="actor_container_height">216dp</dimen>
 
     <dimen name="main_side_offset">3dp</dimen>
 
@@ -34,7 +37,7 @@
     <dimen name="movie_item_margin_between">10dp</dimen>
 
     <dimen name="profile_img_size">72dp</dimen>
-    <dimen name="profile_img_margin_top">12dp</dimen>
+    <dimen name="profile_img_margin_top">24dp</dimen>
     <dimen name="profile_img_padding_top">24dp</dimen>
     <dimen name="profile_img_padding">20dp</dimen>
     <dimen name="profile_padding_vertical">48dp</dimen>
@@ -45,6 +48,12 @@
     <dimen name="profile_margin_header">40dp</dimen>
     <dimen name="profile_movies_offset">10dp</dimen>
     <dimen name="profile_vertical_offset_between">10dp</dimen>
+    <dimen name="profile_buttons_border_radius">10dp</dimen>
 
+    <dimen name="bottom_navigation_bar_bottom_border_height">2dp</dimen>
+
+    <dimen name="design_bottom_navigation_item_max_width" tools:override="true">6000dp</dimen>
+    <dimen name="design_bottom_navigation_active_item_max_width" tools:override="true">6000dp
+    </dimen>
 
 </resources>

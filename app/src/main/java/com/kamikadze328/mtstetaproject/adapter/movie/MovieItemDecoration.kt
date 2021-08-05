@@ -20,7 +20,7 @@ class MovieItemDecoration(
         val itemPosition = parent.getChildAdapterPosition(view)
         if (itemPosition == RecyclerView.NO_POSITION) return
         val itemCount = state.itemCount
-        val isHeader = itemPosition == 0
+        val isHeader = /*itemPosition == 0*/ false
         val isFooter = itemPosition == itemCount - 1
 
         when {
@@ -29,12 +29,12 @@ class MovieItemDecoration(
                 outRect.left = offsetBetween
                 outRect.right = offsetBetween
             }
-            itemPosition % spanCount == 1 -> {
+            itemPosition % spanCount == /*1*/ 0 -> {
                 outRect.left = offsetBetween
                 outRect.right = offsetBetween / 2
                 outRect.bottom = offsetBottom
             }
-            itemPosition % spanCount == 0 -> {
+            itemPosition % spanCount == /*0*/ 1 -> {
                 outRect.left = offsetBetween / 2
                 outRect.right = offsetBetween
                 outRect.bottom = offsetBottom

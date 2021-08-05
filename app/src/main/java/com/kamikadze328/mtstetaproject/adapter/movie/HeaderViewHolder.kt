@@ -1,5 +1,5 @@
 package com.kamikadze328.mtstetaproject.adapter.movie
-
+/*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,4 +19,4 @@ class HeaderViewHolder(view: View) : MovieViewHolderSealed(view) {
             return HeaderViewHolder(view)
         }
     }
-}
+}*/
