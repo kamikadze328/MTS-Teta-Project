@@ -42,6 +42,13 @@ class HomeViewModel @Inject constructor(
         CoroutineExceptionHandler(::onGenresLoadFailed)
     }
 
+    private val _selectedGenresId: MutableSet<Int> = mutableSetOf()
+    private var _filterStr: String =
+        HomeFragmentArgs.fromSavedStateHandle(savedStateHandle).searchQuery
+
+    private var _movies: List<Movie> = emptyList()
+    private var _filteredMovies: List<Movie> = emptyList()
+
     init {
         Log.d("kek", "init home View model")
         val movies: List<Movie>? = savedStateHandle[MOVIES]
@@ -54,7 +61,7 @@ class HomeViewModel @Inject constructor(
         if (isGenresNotCached) loadGenres()
 
         viewModelScope.launch {
-            if (!isMoviesNotCached) setMovies(movies!!)
+            if (!isMoviesNotCached) updateMovies(movies!!)
             if (!isGenresNotCached) setGenres(genres!!)
         }
 
@@ -86,7 +93,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(moviesCoroutineExceptionHandler) {
             _moviesState.postValue(State.LoadingState)
             val movies = movieRepository.refreshPopularMovies()
-            setMovies(movies)
+            updateMovies(movies)
         }
     }
 
@@ -98,14 +105,30 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun setMovies(movies: List<Movie>) = withContext(Dispatchers.Default) {
-        _moviesState.postValue(State.DataState(movies))
-        savedStateHandle.set(MOVIES, movies)
-    }
+    private suspend fun updateMovies(movies: List<Movie> = _movies) =
+        withContext(Dispatchers.Default) {
+            _movies = movies
+            val filteredMovies = getFilteredMovies(movies)
+            _moviesState.postValue(State.DataState(filteredMovies))
+            savedStateHandle.set(MOVIES, movies)
+        }
+
 
     private suspend fun setGenres(genres: List<Genre>) = withContext(Dispatchers.Default) {
         _genresState.postValue(State.DataState(genres))
         savedStateHandle.set(GENRES, genres)
+    }
+
+    private fun getFilteredMovies(movies: List<Movie>): List<Movie> {
+        return movies.filter { movie ->
+            val containsGenre =
+                if (_selectedGenresId.isNotEmpty()) movie.genre_ids.any { it in _selectedGenresId } else true
+
+            /* Log.d("kek", "${movie.title} ${_filterStr}")
+             Log.d("kek", "${movie.title.contains(_filterStr)} && ${containsGenre}")*/
+
+            movie.title.contains(_filterStr, ignoreCase = true) && containsGenre
+        }
     }
 
     fun loadGenreLoading(): List<Genre> {
@@ -133,4 +156,39 @@ class HomeViewModel @Inject constructor(
             setRecyclerMoviesState(null)
         }
     }
+
+    fun updateGenresFilter(genreId: Int) {
+        if (_genresState.value is State.DataState) {
+            viewModelScope.launch {
+                val genres =
+                    (_genresState.value as State.DataState<List<Genre>>).data.toMutableList()
+                val index = genres.indexOfFirst { it.id == genreId }
+                val genre = genres[index].copy()
+                val selectedCount = genres.count { it.isSelected }
+                genre.isSelected = !genre.isSelected
+
+                genres.removeAt(index)
+                genres.add(selectedCount, genre)
+
+                genres.sort()
+
+                setGenres(genres)
+                updateSelectedGenres(genre)
+            }
+        }
+    }
+
+    private suspend fun updateSelectedGenres(genre: Genre) {
+        if (genre.isSelected) _selectedGenresId.add(genre.id)
+        else _selectedGenresId.remove(genre.id)
+        updateMovies()
+    }
+
+    fun setNewTextFilter(str: String) {
+        _filterStr = str
+        viewModelScope.launch {
+            updateMovies()
+        }
+    }
+
 }

@@ -45,7 +45,8 @@ class MovieRepository @Inject constructor(
     }
 
     suspend fun refreshPopularMovies(): List<Movie> = withContext(Dispatchers.IO) {
-        return@withContext webservice.getPopularMovies().slice(0..3)
+        val movies = webservice.getPopularMovies()
+        return@withContext movies.slice(0..movies.size - 2)
     }
 
     suspend fun refreshMovie(movieId: Int): Movie? = withContext(Dispatchers.IO) {

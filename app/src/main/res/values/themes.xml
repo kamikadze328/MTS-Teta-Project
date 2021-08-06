@@ -17,7 +17,7 @@
     </style>
 
     <style name="MovieGenreText">
-        <item name="android:background">@drawable/movie_genre_rounded_oval</item>
+        <item name="android:background">@drawable/genre_background</item>
         <item name="android:paddingStart">9dp</item>
         <item name="android:paddingEnd">9dp</item>
         <item name="android:paddingBottom">4dp</item>

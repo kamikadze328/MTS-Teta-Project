@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -19,6 +20,7 @@ import com.kamikadze328.mtstetaproject.databinding.FragmentHomeBinding
 import com.kamikadze328.mtstetaproject.presentation.State
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -50,7 +52,20 @@ class HomeFragment : Fragment() {
         setupRecyclerAdapters()
 
         setupSwipeRefresh()
+
+        setupStringSearch()
+
         return binding.root
+    }
+
+    private fun setupStringSearch() {
+        binding.homeSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.setNewTextFilter(newText ?: "")
+                return true
+            }
+        })
     }
 
     private fun setupSwipeRefresh() {
@@ -136,6 +151,7 @@ class HomeFragment : Fragment() {
                 is State.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
                 is State.ErrorState -> adapter.submitList(viewModel.loadGenreError())
                 is State.DataState -> adapter.submitList(it.data)
+                else -> throw IllegalStateException()
             }
         })
 
@@ -146,16 +162,18 @@ class HomeFragment : Fragment() {
 
         val itemDecorator = LinearHorizontalItemDecorator(offset, firstLastOffset, firstLastOffset)
         recyclerGenres.addItemDecoration(itemDecorator)
-
     }
 
     private fun onClickListenerMovies(movieId: Int) {
+        if (movieId <= 0) return
         val actions = HomeFragmentDirections.actionHomeToMovieDetails(movieId)
         findNavController().navigate(actions)
         //(activity as MainActivity).onMovieClicked(movieId)
     }
 
     private fun onClickListenerGenres(genreId: Int) {
+        if (genreId <= 0) return
         (activity as MainActivity).onGenreClicked(genreId)
+        viewModel.updateGenresFilter(genreId)
     }
 }

@@ -8,6 +8,10 @@
     <dimen name="movie_detail_poster_height">330dp</dimen>
     <dimen name="movie_detail_actors_offset">10dp</dimen>
 
+    <dimen name="genre_border_width">1dp</dimen>
+    <dimen name="genre_border_width_selected">2dp</dimen>
+    <dimen name="genre_border_radius">10dp</dimen>
+
     <dimen name="age_restriction_stroke_width">1dp</dimen>
 
     <dimen name="main_poster_width">150dp</dimen>

@@ -23,7 +23,7 @@ class GenreRepository @Inject constructor(
     }
 
     suspend fun refreshGenres(): List<Genre> = withContext(Dispatchers.IO) {
-        return@withContext webservice.getGenres()
+        return@withContext webservice.getGenres().sorted()
     }
 
     suspend fun loadGenresByIds(genre_ids: List<Int>): List<Genre> = withContext(Dispatchers.IO) {
