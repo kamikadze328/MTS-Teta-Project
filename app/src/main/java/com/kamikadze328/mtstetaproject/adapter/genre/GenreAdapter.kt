@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 
 
-class GenreAdapter(private val click: (id: Int) -> Unit) :
+class GenreAdapter(private val click: (id: Long) -> Unit) :
     ListAdapter<Genre, GenreViewHolderSealed>(GenreCallback()) {
 
     companion object {

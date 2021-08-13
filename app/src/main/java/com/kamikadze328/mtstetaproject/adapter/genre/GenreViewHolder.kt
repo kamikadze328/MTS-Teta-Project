@@ -11,11 +11,11 @@ import com.kamikadze328.mtstetaproject.data.dto.Genre
 class GenreViewHolder(view: View) : GenreViewHolderSealed(view) {
     private val root: TextView = view.findViewById(R.id.genre_root)
 
-    fun bind(data: Genre, click: (id: Int) -> Unit) {
+    fun bind(data: Genre, click: (id: Long) -> Unit) {
         root.text = data.name
         itemView.isActivated = data.isSelected
         root.setTypeface(null, if (data.isSelected) Typeface.BOLD else Typeface.NORMAL)
-        root.setOnClickListener { click(data.id) }
+        root.setOnClickListener { click(data.genreId) }
     }
 
     companion object {

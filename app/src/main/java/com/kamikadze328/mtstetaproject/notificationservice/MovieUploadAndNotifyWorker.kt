@@ -9,6 +9,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.media.RingtoneManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.navigation.NavDeepLinkBuilder
@@ -18,9 +19,9 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Movie
+import com.kamikadze328.mtstetaproject.data.repository.MovieDetailsRepository
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import com.kamikadze328.mtstetaproject.presentation.moviedetails.MovieDetailsFragmentArgs
-import com.kamikadze328.mtstetaproject.repository.MovieRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
@@ -28,7 +29,7 @@ import dagger.assisted.AssistedInject
 class MovieUploadAndNotifyWorker @AssistedInject constructor(
     @Assisted val appContext: Context,
     @Assisted val workerParams: WorkerParameters,
-    val movieRepository: MovieRepository
+    private val movieDetailsRepository: MovieDetailsRepository
 ) : CoroutineWorker(appContext, workerParams) {
     companion object {
         const val CHANNEL_ID = "default_01"
@@ -36,13 +37,14 @@ class MovieUploadAndNotifyWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         try {
-            val movie: Movie? = movieRepository.loadRandomPopularMovie()
+            val movie: Movie? = movieDetailsRepository.loadRandomPopularMovie()
             movie?.let {
                 val req = ImageRequest.Builder(appContext)
                     .data(it.poster_path)
                     .target { result ->
                         val bitmap = (result as BitmapDrawable).bitmap
-                        sendNotificationToMovie(it.title, it.id, bitmap)
+                        Log.d("kek", "do work")
+                        sendNotificationToMovie(it.title, it.movieId, bitmap)
                     }
                     .build()
                 ImageLoader(appContext).execute(req)
@@ -58,13 +60,13 @@ class MovieUploadAndNotifyWorker @AssistedInject constructor(
 
     }
 
-    private fun sendNotificationToMovie(movieName: String, movieId: Int, movieIcon: Bitmap) {
+    private fun sendNotificationToMovie(movieName: String, movieId: Long, movieIcon: Bitmap) {
         val args = MovieDetailsFragmentArgs.Builder(movieId).build().toBundle()
 
         val pendingIntent = NavDeepLinkBuilder(appContext)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.navigation)
-            .setDestination(R.id.navigation_movie_details)
+            .setDestination(R.id.fragment_movie_details)
             .setArguments(args)
             .createPendingIntent()
 

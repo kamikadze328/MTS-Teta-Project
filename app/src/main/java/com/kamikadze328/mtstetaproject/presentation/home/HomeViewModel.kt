@@ -6,9 +6,10 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.Movie
-import com.kamikadze328.mtstetaproject.presentation.State
-import com.kamikadze328.mtstetaproject.repository.GenreRepository
-import com.kamikadze328.mtstetaproject.repository.MovieRepository
+import com.kamikadze328.mtstetaproject.data.repository.GenreRepository
+import com.kamikadze328.mtstetaproject.data.repository.MovieRepository
+import com.kamikadze328.mtstetaproject.data.util.SelectableGenreComparator
+import com.kamikadze328.mtstetaproject.data.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -23,13 +24,13 @@ class HomeViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val genreRepository: GenreRepository
 ) : ViewModel() {
-    private val _moviesState: MutableLiveData<State<List<Movie>>> =
-        MutableLiveData(State.LoadingState)
-    val moviesState: LiveData<State<List<Movie>>> = _moviesState
+    private val _moviesState: MutableLiveData<UIState<List<Movie>>> =
+        MutableLiveData(UIState.LoadingState)
+    val moviesState: LiveData<UIState<List<Movie>>> = _moviesState
 
-    private val _genresState: MutableLiveData<State<List<Genre>>> =
-        MutableLiveData(State.LoadingState)
-    val genresState: LiveData<State<List<Genre>>> = _genresState
+    private val _genresState: MutableLiveData<UIState<List<Genre>>> =
+        MutableLiveData(UIState.LoadingState)
+    val genresState: LiveData<UIState<List<Genre>>> = _genresState
 
     private val _recyclerMoviesState =
         MutableLiveData<Parcelable>(savedStateHandle[RECYCLER_MOVIES_STATE])
@@ -42,7 +43,7 @@ class HomeViewModel @Inject constructor(
         CoroutineExceptionHandler(::onGenresLoadFailed)
     }
 
-    private val _selectedGenresId: MutableSet<Int> = mutableSetOf()
+    private val _selectedGenresId: MutableSet<Long> = mutableSetOf()
     private var _filterStr: String =
         HomeFragmentArgs.fromSavedStateHandle(savedStateHandle).searchQuery
 
@@ -57,8 +58,8 @@ class HomeViewModel @Inject constructor(
         val isMoviesNotCached = movies == null
         val isGenresNotCached = genres == null
 
-        if (isMoviesNotCached) loadMovies()
         if (isGenresNotCached) loadGenres()
+        if (isMoviesNotCached) loadMovies()
 
         viewModelScope.launch {
             if (!isMoviesNotCached) updateMovies(movies!!)
@@ -82,16 +83,16 @@ class HomeViewModel @Inject constructor(
 
     private fun onMoviesLoadFailed(context: CoroutineContext, exception: Throwable) {
         Log.d("kek", "onMoviesLoadFailed - ${exception.localizedMessage}")
-        _moviesState.postValue(State.ErrorState(exception))
+        _moviesState.postValue(UIState.ErrorState(exception))
     }
 
     private fun onGenresLoadFailed(context: CoroutineContext, exception: Throwable) {
-        _genresState.postValue(State.ErrorState(exception))
+        _genresState.postValue(UIState.ErrorState(exception))
     }
 
     private fun loadMovies() {
         viewModelScope.launch(moviesCoroutineExceptionHandler) {
-            _moviesState.postValue(State.LoadingState)
+            _moviesState.postValue(UIState.LoadingState)
             val movies = movieRepository.refreshPopularMovies()
             updateMovies(movies)
         }
@@ -99,8 +100,8 @@ class HomeViewModel @Inject constructor(
 
     private fun loadGenres() {
         viewModelScope.launch(genresCoroutineExceptionHandler) {
-            _genresState.postValue(State.LoadingState)
-            val genres = genreRepository.refreshGenres()
+            _genresState.postValue(UIState.LoadingState)
+            val genres = genreRepository.refreshAll()
             setGenres(genres)
         }
     }
@@ -109,24 +110,20 @@ class HomeViewModel @Inject constructor(
         withContext(Dispatchers.Default) {
             _movies = movies
             val filteredMovies = getFilteredMovies(movies)
-            _moviesState.postValue(State.DataState(filteredMovies))
+            _moviesState.postValue(UIState.DataState(filteredMovies))
             savedStateHandle.set(MOVIES, movies)
         }
 
 
     private suspend fun setGenres(genres: List<Genre>) = withContext(Dispatchers.Default) {
-        _genresState.postValue(State.DataState(genres))
+        _genresState.postValue(UIState.DataState(genres))
         savedStateHandle.set(GENRES, genres)
     }
 
     private fun getFilteredMovies(movies: List<Movie>): List<Movie> {
         return movies.filter { movie ->
             val containsGenre =
-                if (_selectedGenresId.isNotEmpty()) movie.genre_ids.any { it in _selectedGenresId } else true
-
-            /* Log.d("kek", "${movie.title} ${_filterStr}")
-             Log.d("kek", "${movie.title.contains(_filterStr)} && ${containsGenre}")*/
-
+                if (_selectedGenresId.isNotEmpty()) movie.genres.any { it.genreId in _selectedGenresId } else true
             movie.title.contains(_filterStr, ignoreCase = true) && containsGenre
         }
     }
@@ -157,12 +154,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun updateGenresFilter(genreId: Int) {
-        if (_genresState.value is State.DataState) {
+    fun updateGenresFilter(genreId: Long) {
+        if (_genresState.value is UIState.DataState) {
             viewModelScope.launch {
                 val genres =
-                    (_genresState.value as State.DataState<List<Genre>>).data.toMutableList()
-                val index = genres.indexOfFirst { it.id == genreId }
+                    (_genresState.value as UIState.DataState<List<Genre>>).data.toMutableList()
+                val index = genres.indexOfFirst { it.genreId == genreId }
                 val genre = genres[index].copy()
                 val selectedCount = genres.count { it.isSelected }
                 genre.isSelected = !genre.isSelected
@@ -170,7 +167,7 @@ class HomeViewModel @Inject constructor(
                 genres.removeAt(index)
                 genres.add(selectedCount, genre)
 
-                genres.sort()
+                genres.sortWith(SelectableGenreComparator())
 
                 setGenres(genres)
                 updateSelectedGenres(genre)
@@ -179,8 +176,8 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun updateSelectedGenres(genre: Genre) {
-        if (genre.isSelected) _selectedGenresId.add(genre.id)
-        else _selectedGenresId.remove(genre.id)
+        if (genre.isSelected) _selectedGenresId.add(genre.genreId)
+        else _selectedGenresId.remove(genre.genreId)
         updateMovies()
     }
 

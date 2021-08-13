@@ -1,16 +1,14 @@
 package com.kamikadze328.mtstetaproject.presentation.profile
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
-import androidx.core.content.edit
 import androidx.lifecycle.*
-import androidx.preference.PreferenceManager
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.User
-import com.kamikadze328.mtstetaproject.presentation.State
-import com.kamikadze328.mtstetaproject.repository.AccountRepository
-import com.kamikadze328.mtstetaproject.repository.GenreRepository
+import com.kamikadze328.mtstetaproject.data.mapper.toUser
+import com.kamikadze328.mtstetaproject.data.repository.AccountRepository
+import com.kamikadze328.mtstetaproject.data.repository.GenreRepository
+import com.kamikadze328.mtstetaproject.data.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -26,19 +24,22 @@ class ProfileViewModel @Inject constructor(
     private val genreRepository: GenreRepository,
     application: Application
 ) : AndroidViewModel(application) {
-    private val accountId: MutableLiveData<Int> = MutableLiveData(savedStateHandle[PROFILE_ID_ARG])
+    private val uid: MutableLiveData<String> = MutableLiveData(savedStateHandle[PROFILE_ID])
 
-    private val _favouriteGenresState: MutableLiveData<State<List<Genre>>> =
-        MutableLiveData(State.LoadingState)
-    val favouriteGenresState: LiveData<State<List<Genre>>> = _favouriteGenresState
+    private val _isAuthorized = MutableLiveData(true)
+    val isAuthorized: LiveData<Boolean> = _isAuthorized
 
-    private val _changedUser = MutableLiveData<User>(savedStateHandle[CHANGED_USER_ARG])
+    private val _favouriteGenresState: MutableLiveData<UIState<List<Genre>>> =
+        MutableLiveData(UIState.LoadingState)
+    val favouriteGenresState: LiveData<UIState<List<Genre>>> = _favouriteGenresState
+
+    private val _changedUser = MutableLiveData<User>(savedStateHandle[CHANGED_USER])
     val changedUser: LiveData<User> = _changedUser
 
-    private val _userState: MutableLiveData<State<User>> = MutableLiveData(State.LoadingState)
-    val userState: LiveData<State<User>> = _userState
+    private val _userState: MutableLiveData<UIState<User>> = MutableLiveData(UIState.LoadingState)
+    val userState: LiveData<UIState<User>> = _userState
 
-    private val _wasDataChanged = MutableLiveData(savedStateHandle[WAS_DATA_CHANGED_ARG] ?: false)
+    private val _wasDataChanged = MutableLiveData(savedStateHandle[WAS_DATA_CHANGED] ?: false)
     val wasDataChanged: LiveData<Boolean> = _wasDataChanged
 
     private val genresCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
@@ -48,44 +49,20 @@ class ProfileViewModel @Inject constructor(
         CoroutineExceptionHandler(::onUserLoadFailed)
     }
 
+    companion object {
+        private const val PROFILE_ID = "uid"
+        private const val CHANGED_USER = "ch_usr"
+        private const val WAS_DATA_CHANGED = "ws_dt_ch"
+        private const val GENRES = "grns"
+    }
+
     init {
-        if (accountId.value == null) {
-            setupAccountId(application)
-        }
         init()
     }
 
-    private fun setAccountId(uid: Int) {
-        savedStateHandle.set(PROFILE_ID_ARG, uid)
-        accountId.value = uid
-    }
+    fun init() {
+        setupUser()
 
-    private fun setupAccountId(context: Context) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val newId = 10
-
-        //TODO singleton str
-        if (!prefs.contains(PROFILE_ID_ARG)) {
-            prefs.edit {
-                putInt(PROFILE_ID_ARG, newId)
-                commit()
-            }
-        }
-
-        setAccountId(prefs.getInt("uid", newId))
-    }
-
-    companion object {
-        private const val PROFILE_ID_ARG = "uid"
-        private const val CHANGED_USER_ARG = "ch_usr"
-        private const val WAS_DATA_CHANGED_ARG = "ws_dt_ch"
-        private const val GENRES = "grns"
-
-    }
-
-    fun getAccountId(): Int = accountId.value!!
-
-    private fun init() {
         val genres: List<Genre>? = savedStateHandle[GENRES]
         val isGenresNotCached = genres == null
         if (isGenresNotCached) loadFavouritesGenres()
@@ -93,64 +70,77 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             if (!isGenresNotCached) setFavouriteGenres(genres!!)
         }
-
-        loadUser()
     }
 
+    private fun setUserId(uid: String) {
+        savedStateHandle.set(PROFILE_ID, uid)
+        this.uid.value = uid
+    }
+
+    fun getUseId() = uid.value!!
+
+
     private fun onGenresLoadFailed(context: CoroutineContext, exception: Throwable) {
-        Log.d("kek", "$exception")
-        _favouriteGenresState.postValue(State.ErrorState(exception))
+        Log.d("kek", exception.stackTraceToString())
+        _favouriteGenresState.postValue(UIState.ErrorState(exception))
     }
 
     private fun loadFavouritesGenres() {
         viewModelScope.launch(genresCoroutineExceptionHandler) {
-            _favouriteGenresState.postValue(State.LoadingState)
-            val genres = accountRepository.getFavouriteGenres(getAccountId())
+            _favouriteGenresState.postValue(UIState.LoadingState)
+            val genres = accountRepository.getFavouriteGenres(getUseId())
             setFavouriteGenres(genres)
         }
     }
 
     private suspend fun setFavouriteGenres(genres: List<Genre>) = withContext(Dispatchers.Default) {
-        _favouriteGenresState.postValue(State.DataState(genres))
+        _favouriteGenresState.postValue(UIState.DataState(genres))
         savedStateHandle.set(GENRES, genres)
     }
 
     private fun onUserLoadFailed(context: CoroutineContext, exception: Throwable) {
         Log.d("kek", "$exception")
-        _userState.postValue(State.ErrorState(exception))
+        _userState.postValue(UIState.ErrorState(exception))
         onGenresLoadFailed(context, exception)
     }
 
-    private fun loadUser() {
-        viewModelScope.launch(userCoroutineExceptionHandler) {
-            _userState.postValue(State.LoadingState)
-            accountRepository.refreshUser(getAccountId()).let {
-                withContext(Dispatchers.Main) {
-                    setWasDataChanged(false)
-                    _userState.value = State.DataState(it)
-                    setChangedUser(it)
-                }
-            }
-        }
+    private fun setupUser() {
+        _userState.postValue(UIState.LoadingState)
+        accountRepository.currentUser?.let {
+            _isAuthorized.value = true
+            setNewUser(it.toUser())
+        } ?: logout()
+    }
+
+    private fun setNewUser(user: User) {
+        setUserId(user.id)
+        _userState.postValue(UIState.DataState(user))
+        setChangedUser(user)
+        setWasDataChanged(false)
     }
 
     private fun setWasDataChanged(newVal: Boolean) {
-        savedStateHandle.set(WAS_DATA_CHANGED_ARG, newVal)
+        savedStateHandle.set(WAS_DATA_CHANGED, newVal)
         this._wasDataChanged.value = newVal
     }
 
     private fun setChangedUser(user: User) {
-        user.id = getAccountId()
-        savedStateHandle.set(CHANGED_USER_ARG, user)
+        user.id = getUseId()
+        savedStateHandle.set(CHANGED_USER, user)
         _changedUser.value = user
     }
 
     fun updateChangedUser(newChangedUser: User) {
         setChangedUser(newChangedUser)
         _userState.value?.let {
-            if (it is State.DataState)
+            if (it is UIState.DataState)
                 setWasDataChanged(wasDataChanged(it.data, newChangedUser))
         }
+    }
+
+    fun logout() {
+        accountRepository.logout()
+        _isAuthorized.value = false
     }
 
     private fun wasDataChanged(oldUser: User, newChangedUser: User): Boolean =

@@ -16,8 +16,8 @@ import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.moviedetailsactor.ActorAdapter
 import com.kamikadze328.mtstetaproject.data.dto.Movie
+import com.kamikadze328.mtstetaproject.data.util.UIState
 import com.kamikadze328.mtstetaproject.databinding.FragmentMovieDetailsBinding
-import com.kamikadze328.mtstetaproject.presentation.State
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import com.kamikadze328.mtstetaproject.setRating
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,9 +54,9 @@ class MovieDetailsFragment : Fragment() {
 
         viewModel.movieState.observe(viewLifecycleOwner, {
             when (it) {
-                is State.LoadingState -> updateUI(viewModel.loadMovieLoading())
-                is State.ErrorState -> updateUI(viewModel.loadMovieError())
-                is State.DataState -> updateUI(it.data)
+                is UIState.LoadingState -> updateUI(viewModel.loadMovieLoading())
+                is UIState.ErrorState -> updateUI(viewModel.loadMovieError())
+                is UIState.DataState -> updateUI(it.data)
             }
         })
 
@@ -78,7 +78,7 @@ class MovieDetailsFragment : Fragment() {
         binding.movieNameText.text = movie.title
         binding.movieNameTextToolbar.text = movie.title
         binding.movieDescription.text = movie.overview
-        binding.movieAgeRestrictionText.text = movie.ageRestriction
+        binding.movieAgeRestrictionText.text = movie.age_restriction
 
         binding.movieRatingBarRootInclude.ratingBarRoot.setRating(movie.vote_average)
     }
@@ -88,11 +88,11 @@ class MovieDetailsFragment : Fragment() {
         val recyclerGenres = binding.movieGenresRecycler
         val adapter = GenreAdapter(::onClickListenerGenres)
 
-        viewModel.genresState.observe(viewLifecycleOwner, {
+        viewModel.movieState.observe(viewLifecycleOwner, {
             when (it) {
-                is State.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
-                is State.ErrorState -> adapter.submitList(viewModel.loadGenreError())
-                is State.DataState -> adapter.submitList(it.data)
+                is UIState.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
+                is UIState.ErrorState -> adapter.submitList(viewModel.loadGenreError())
+                is UIState.DataState -> adapter.submitList(it.data.genres)
             }
         })
 
@@ -104,7 +104,7 @@ class MovieDetailsFragment : Fragment() {
         recyclerGenres.addItemDecoration(itemDecorator)
     }
 
-    private fun onClickListenerGenres(genreId: Int) {
+    private fun onClickListenerGenres(genreId: Long) {
         (activity as MainActivity).onGenreClicked(genreId)
     }
 
@@ -112,11 +112,11 @@ class MovieDetailsFragment : Fragment() {
         val recyclerActors = binding.movieActorsRecycler
         val adapter = ActorAdapter()
 
-        viewModel.actorsState.observe(viewLifecycleOwner, {
+        viewModel.movieState.observe(viewLifecycleOwner, {
             when (it) {
-                is State.LoadingState -> adapter.submitList(viewModel.loadActorsLoading())
-                is State.ErrorState -> adapter.submitList(viewModel.loadActorsError())
-                is State.DataState -> adapter.submitList(it.data)
+                is UIState.LoadingState -> adapter.submitList(viewModel.loadActorsLoading())
+                is UIState.ErrorState -> adapter.submitList(viewModel.loadActorsError())
+                is UIState.DataState -> adapter.submitList(it.data.actors)
             }
         })
 

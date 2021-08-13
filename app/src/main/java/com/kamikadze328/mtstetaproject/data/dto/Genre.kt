@@ -1,11 +1,20 @@
 package com.kamikadze328.mtstetaproject.data.dto
 
-data class Genre(val name: String, val id: Int, var isSelected: Boolean = false) :
-    Comparable<Genre> {
-    override fun compareTo(other: Genre): Int {
-        return if (isSelected != other.isSelected)
-            other.isSelected.compareTo(isSelected)
-        else name.compareTo(other.name)
-    }
+import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
+
+@Parcelize
+@Entity
+data class Genre(
+    @PrimaryKey val genreId: Long,
+    val name: String,
+) : Parcelable {
+    @Ignore
+    @IgnoredOnParcel
+    var isSelected: Boolean = false
 }

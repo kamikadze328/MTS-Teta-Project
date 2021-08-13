@@ -10,17 +10,18 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.settings.SettingsAdapter
 import com.kamikadze328.mtstetaproject.data.dto.User
+import com.kamikadze328.mtstetaproject.data.util.UIState
+import com.kamikadze328.mtstetaproject.data.util.phone.PhoneTextWatcher
+import com.kamikadze328.mtstetaproject.data.util.phone.PhoneTextWatcherImpl
+import com.kamikadze328.mtstetaproject.data.util.phone.formatPhoneNumber
 import com.kamikadze328.mtstetaproject.databinding.FragmentProfileBinding
-import com.kamikadze328.mtstetaproject.presentation.State
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
-import com.kamikadze328.mtstetaproject.presentation.profile.textwatcher.ProfilePhoneTextWatcher
-import com.kamikadze328.mtstetaproject.presentation.profile.textwatcher.ProfileTextWatcher
-import com.kamikadze328.mtstetaproject.presentation.profile.textwatcher.formatPhoneNumber
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,14 +31,12 @@ class ProfileFragment : Fragment() {
 
     private val viewModel: ProfileViewModel by activityViewModels()
 
-    private val defaultTextWatcher: ProfileTextWatcher by lazy {
-        ProfileTextWatcher {
-            applyChangedUserToViewModel()
-        }
+    private val defaultTextWatcher: PhoneTextWatcher by lazy {
+        PhoneTextWatcher { applyChangedUserToViewModel() }
     }
 
-    private val phoneTextWatcher: ProfilePhoneTextWatcher by lazy {
-        object : ProfilePhoneTextWatcher(binding.profileTextInputPhone) {
+    private val phoneTextWatcher: PhoneTextWatcherImpl by lazy {
+        object : PhoneTextWatcherImpl(binding.profileTextInputPhone) {
             override fun applyChangedUserToViewModel() =
                 this@ProfileFragment.applyChangedUserToViewModel()
         }
@@ -54,6 +53,7 @@ class ProfileFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("kek", "onCreate profile")
         super.onCreate(savedInstanceState)
+        viewModel.init()
         if (savedInstanceState == null) {
             arguments?.let {}
         }
@@ -68,21 +68,29 @@ class ProfileFragment : Fragment() {
 
         setupRecyclerAdapters()
 
+        binding.profileLogoutButton.setOnClickListener {
+            viewModel.logout()
+        }
+
+        viewModel.isAuthorized.observe(viewLifecycleOwner, {
+            if (it == false) toLoginFragment()
+        })
         setOnChangeListeners()
+
         viewModel.wasDataChanged.observe(viewLifecycleOwner, ::updateSubmitButtonUI)
 
 
         viewModel.userState.observe(viewLifecycleOwner, {
             when (it) {
-                is State.LoadingState -> {
+                is UIState.LoadingState -> {
                     updateUserInfoHeaderUI(viewModel.loadUserLoading())
                     setEditTextEnable(false)
                 }
-                is State.ErrorState -> {
+                is UIState.ErrorState -> {
                     updateUserInfoHeaderUI(viewModel.loadUserError())
                     setEditTextEnable(false)
                 }
-                is State.DataState -> {
+                is UIState.DataState -> {
                     if (viewModel.wasDataChanged.value == false) {
                         updateUserInfoUI(it.data)
                         setEditTextEnable(true)
@@ -110,7 +118,7 @@ class ProfileFragment : Fragment() {
                 password = binding.profileTextInputPassword.text.toString(),
                 email = binding.profileTextInputEmail.text.toString(),
                 phone = binding.profileTextInputPhone.text.toString(),
-                id = viewModel.getAccountId()
+                id = viewModel.getUseId(),
             )
         )
     }
@@ -165,9 +173,9 @@ class ProfileFragment : Fragment() {
 
         viewModel.favouriteGenresState.observe(viewLifecycleOwner, {
             when (it) {
-                is State.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
-                is State.ErrorState -> adapter.submitList(viewModel.loadGenreError())
-                is State.DataState -> adapter.submitList(it.data)
+                is UIState.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
+                is UIState.ErrorState -> adapter.submitList(viewModel.loadGenreError())
+                is UIState.DataState -> adapter.submitList(it.data)
             }
         })
         binding.profileFavouriteMoviesRecycler.adapter = adapter
@@ -183,7 +191,7 @@ class ProfileFragment : Fragment() {
         Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
     }
 
-    private fun onClickListenerGenre(genreId: Int) {
+    private fun onClickListenerGenre(genreId: Long) {
         (activity as MainActivity).onGenreClicked(genreId)
     }
 
@@ -251,5 +259,9 @@ class ProfileFragment : Fragment() {
             binding.profileTextInputPhone,
             phoneTextWatcher
         )
+    }
+
+    private fun toLoginFragment() {
+        findNavController().navigate(R.id.action_to_login)
     }
 }

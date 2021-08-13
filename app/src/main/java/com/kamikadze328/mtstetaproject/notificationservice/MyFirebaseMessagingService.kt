@@ -43,6 +43,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         // Check if message contains a notification payload.
+
         remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
             scheduleJob(it.body ?: resources.getString(R.string.fcm_message_body))

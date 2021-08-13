@@ -1,10 +1,13 @@
-package com.kamikadze328.mtstetaproject.data.network
+package com.kamikadze328.mtstetaproject.data.remote
 
+import android.util.Log
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Actor
 import com.kamikadze328.mtstetaproject.data.dto.Genre
-import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.data.dto.User
+import com.kamikadze328.mtstetaproject.data.mapper.toGenres
+import com.kamikadze328.mtstetaproject.data.remote.dao.MovieRemote
+import com.kamikadze328.mtstetaproject.data.remote.dao.MovieShortRemote
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,7 +16,7 @@ class Webservice @Inject constructor() {
     suspend fun getAccountDetails(accountId: String): User {
         Thread.sleep(2000)
         return User(
-            id = accountId.toInt(),
+            id = accountId,
             name = "Банан$accountId",
             password = "12345678",
             email = "bananbananovich@gmail.com",
@@ -22,7 +25,7 @@ class Webservice @Inject constructor() {
     }
 
 
-    suspend fun getUserFavouriteMovies(accountId: String): List<Movie> {
+    suspend fun getUserFavouriteMovies(accountId: String): List<MovieShortRemote> {
         Thread.sleep(2000)
         return getMoviesByCategory("popular").shuffled().subList(0, 5)
     }
@@ -31,14 +34,17 @@ class Webservice @Inject constructor() {
         Thread.sleep(2000)
         return listOf(
             Actor(
+                1,
                 R.drawable.img_actor_statham,
                 "Джейсон Стэйтем"
             ),
             Actor(
+                2,
                 R.drawable.img_actor_mccallany,
                 "Холт Маккэллани"
             ),
             Actor(
+                3,
                 R.drawable.img_actor_hartnett,
                 "Джош Харнетт"
             )
@@ -46,185 +52,254 @@ class Webservice @Inject constructor() {
     }
 
     suspend fun getGenres(): List<Genre> {
-        Thread.sleep(2000)
-
         return listOf(
             Genre(
                 name = "Боевик",
-                id = 28
+                genreId = 28
             ),
             Genre(
                 name = "Приключения",
-                id = 12
+                genreId = 12
             ),
             Genre(
                 name = "Мультик",
-                id = 16
+                genreId = 16
             ),
             Genre(
                 name = "Комедия",
-                id = 35
+                genreId = 35
             ),
             Genre(
                 name = "Криминал",
-                id = 80
+                genreId = 80
             ),
             Genre(
                 name = "Документальное",
-                id = 99
+                genreId = 99
             ),
             Genre(
                 name = "Драма",
-                id = 18
+                genreId = 18
             ),
             Genre(
                 name = "Семейный",
-                id = 10751
+                genreId = 10751
             ),
             Genre(
                 name = "Фантастика",
-                id = 14
+                genreId = 14
             ),
             Genre(
                 name = "Исторический",
-                id = 36
+                genreId = 36
             ),
             Genre(
                 name = "Ужасы",
-                id = 27
+                genreId = 27
             ),
             Genre(
                 name = "Музыка",
-                id = 10402
+                genreId = 10402
             ),
             Genre(
                 name = "Мистика",
-                id = 9648
+                genreId = 9648
             ),
             Genre(
                 name = "Романтика",
-                id = 10749
+                genreId = 10749
             ),
             Genre(
                 name = "Научная фантастика",
-                id = 879
+                genreId = 879
             ),
             Genre(
                 name = "Триллер",
-                id = 53
+                genreId = 53
             ),
             Genre(
                 name = "Военный",
-                id = 10752
+                genreId = 10752
             ),
             Genre(
                 name = "Вестерн",
-                id = 37
+                genreId = 37
             ),
             Genre(
                 name = "Рельное ТВ",
-                id = 10770
+                genreId = 10770
             ),
         )
     }
 
-    suspend fun getGenresById(genreId: String): Genre? {
-        Thread.sleep(2000)
-        val id = genreId.toInt()
-        return getGenres().find { it.id == id }
-    }
-
     suspend fun getPopularMovies() = getMoviesByCategory("popular")
 
-    suspend fun getMoviesByCategory(category: String): List<Movie> {
+    suspend fun getMoviesByCategory(category: String): List<MovieShortRemote> {
         Thread.sleep(2000)
         return listOf(
-            Movie(
+            MovieShortRemote(
                 id = 637649,
                 title = "Гнев человеческий",
                 overview = "Эйч — загадочный и холодный на вид джентльмен, но внутри него пылает жажда справедливости. Преследуя свои мотивы, он внедряется в инкассаторскую компанию, чтобы выйти на соучастников серии многомиллионных ограблений, потрясших Лос-Анджелес. В этой запутанной игре у каждого своя роль, но под подозрением оказываются все. Виновных же обязательно постигнет гнев человеческий.",
                 vote_average = 3.9,
-                ageRestriction = "18+",
+                adult = true,
                 poster_path = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/5JP9X5tCZ6qz7DYMabLmrQirlWh.jpg",
+                release_date = "2021-07-23",
                 genre_ids = listOf(28, 80),
-                release_date = "2021-07-23"
+                backdrop_path = "",
+                original_language = "",
+                original_title = "",
+                popularity = .0,
+                video = false,
+                vote_count = 0
             ),
-            Movie(
+            MovieShortRemote(
                 id = 460465,
                 title = "Мортал Комбат",
                 overview = "Боец смешанных единоборств Коул Янг не раз соглашался проиграть за деньги. Он не знает о своем наследии и почему император Внешнего мира Шан Цзун посылает могущественного криомансера Саб-Зиро на охоту за Коулом. Янг боится за безопасность своей семьи, и майор спецназа Джакс, обладатель такой же отметки в виде дракона, как и у Коула, советует ему отправиться на поиски Сони Блейд. Вскоре Коул, Соня и наёмник Кано оказываются в храме Лорда Рейдена, Старшего Бога и защитника Земного царства, который дает убежище тем, кто носит метку. Здесь прибывшие тренируются с опытными воинами Лю Каном и Кун Лао, готовясь противостоять врагам из Внешнего мира, а для этого им нужно раскрыть в себе аркану — могущественную силу души.",
                 vote_average = 3.75,
-                ageRestriction = "18+",
+                adult = true,
                 poster_path = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pMIixvHwsD5RZxbvgsDSNkpKy0R.jpg",
+                release_date = "2021-04-23",
                 genre_ids = listOf(28, 12, 14),
-                release_date = "2021-04-23"
+                backdrop_path = "",
+                original_language = "",
+                original_title = "",
+                popularity = .0,
+                video = false,
+                vote_count = 0
             ),
-            Movie(
+            MovieShortRemote(
                 id = 587562,
                 title = "Упс... Приплыли!",
                 overview = "От Великого потопа зверей спас ковчег. Но спустя полгода скитаний они готовы сбежать с него куда угодно. Нервы на пределе. Хищники готовы забыть про запреты и заглядываются на травоядных. Единственное спасение — найти райский остров. Там простор и полно еды. Но даже если он совсем близко, будут ли рады местные такому количеству гостей?",
                 vote_average = 3.9,
-                ageRestriction = "6+",
+                adult = false, //"6+",
                 poster_path = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/546RNYy9Wi5wgboQ7EtD6i0DY5D.jpg",
+                release_date = "2020-10-23",
                 genre_ids = listOf(16, 12, 10751, 35),
-                release_date = "2020-10-23"
+                backdrop_path = "",
+                original_language = "",
+                original_title = "",
+                popularity = .0,
+                video = false,
+                vote_count = 0
             ),
-            Movie(
+            MovieShortRemote(
                 id = 728814,
                 title = "The Box",
                 overview = "Уличный музыкант знакомится с музыкальным продюсером, и они вдвоём отправляются в путешествие, которое перевернёт их жизни.",
                 vote_average = 3.0,
-                ageRestriction = "12+",
+                adult = false,//"12+",
                 poster_path = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/fq3DSw74fAodrbLiSv0BW1Ya4Ae.jpg",
+                release_date = "2021-03-24",
                 genre_ids = listOf(18, 10402),
-                release_date = "2021-03-24"
+                backdrop_path = "",
+                original_language = "",
+                original_title = "",
+                popularity = .0,
+                video = false,
+                vote_count = 0
             ),
-            Movie(
+            MovieShortRemote(
                 id = 765057,
                 title = "Сага о Дэнни Эрнандесе",
                 overview = "Tekashi69 или Сикснайн — знаменитый бруклинский рэпер с радужным волосам —  прогремел синглом «Gummo», коллабом с Ники Минаж, а также многочисленными преступлениями. В документальном расследовании о жизни и творчестве рэпера разворачивается настоящая гангстерская история, в которой количество обвинений растет пропорционально интернет-популярности, а репутация секс-наркомана получает свое подтверждение не только в скандальных видео музыканта. Похоже, это последний герой нашего времени, которого не коснулась культура отмены: у Tekashi69 24 млн. подписчиков в Instagram, миллиард просмотров на Youtube и несколько судимостей.",
                 vote_average = 2.5,
-                ageRestriction = "18+",
+                adult = true, //"18+",
                 poster_path = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/5xXGQLVtTAExHY92DHD9ewGmKxf.jpg",
+                release_date = "2021-04-29",
                 genre_ids = listOf(10402, 99),
-                release_date = "2021-04-29"
+                backdrop_path = "",
+                original_language = "",
+                original_title = "",
+                popularity = .0,
+                video = false,
+                vote_count = 0
             ),
-            Movie(
+            MovieShortRemote(
                 id = 681260,
                 title = "Пчелка Майя",
                 overview = "Когда упрямая пчелка Майя и ее лучший друг Вилли спасают принцессу-муравьишку, начинается сказочное и опасное приключение, которое приведет их в необычные новые миры и проверит их дружбу на прочность.",
                 vote_average = 3.25,
-                ageRestriction = "0+",
+                adult = false,// "0+",
                 poster_path = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/xltjMeLlxywym14NEizl0metO10.jpg",
+                release_date = "2021-05-17",
                 genre_ids = listOf(16, 12, 10751),
-                release_date = "2021-05-17"
+                backdrop_path = "",
+                original_language = "",
+                original_title = "",
+                popularity = .0,
+                video = false,
+                vote_count = 0
             ),
-            Movie(
+            MovieShortRemote(
                 id = 337404,
                 title = "Круэлла",
                 overview = "Невероятно одаренная мошенница по имени Эстелла решает сделать себе имя в мире моды. Её лучшие друзья — парочка юных карманников, которые ценят страсть Эстеллы к приключениям и надеются вместе с ней отвоевать себе место под солнцем на улицах британской столицы. В один прекрасный день модное чутье Эстеллы привлекает внимание шикарной и пугающе высокомерной баронессы фон Хельман.",
                 vote_average = 4.2,
-                ageRestriction = "12+",
+                adult = false, //"12+",
                 poster_path = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/hUfyYGP9Xf6cHF9y44JXJV3NxZM.jpg",
+                release_date = "2021-05-28",
                 genre_ids = listOf(35, 80),
-                release_date = "2021-05-28"
+                backdrop_path = "",
+                original_language = "",
+                original_title = "",
+                popularity = .0,
+                video = false,
+                vote_count = 0
             ),
-            Movie(
+            MovieShortRemote(
                 id = 497698,
                 title = "Чёрная вдова",
                 overview = "Наташе Романофф предстоит лицом к лицу встретиться со своим прошлым. Чёрной Вдове придётся вспомнить о том, что было в её жизни задолго до присоединения к команде Мстителей, и узнать об опасном заговоре, в который оказываются втянуты её старые знакомые — Елена, Алексей (известный как Красный Страж) и Мелина.\n",
                 vote_average = 4.0,
-                ageRestriction = "16+",
+                adult = false,//"16+",
                 poster_path = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/mbtN6V6y5kdawvAkzqN4ohi576a.jpg",
+                release_date = "2021-05-28",
                 genre_ids = listOf(28, 12, 53, 879),
-                release_date = "2021-05-28"
-            ),
+                backdrop_path = "",
+                original_language = "",
+                original_title = "",
+                popularity = .0,
+                video = false,
+                vote_count = 0
+            )
         ).shuffled()
     }
 
-    suspend fun getMovieById(movieId: String): Movie? {
-        val id = movieId.toInt()
-        return getPopularMovies().find { it.id == id }
+    suspend fun getMovieById(movieId: String): MovieRemote? {
+        val m = getPopularMovies().find { it.id == movieId.toInt() } ?: return null
+        val allGenres = getGenres()
+        val genres = m.genre_ids.toGenres(allGenres)
+
+        return MovieRemote(
+            adult = m.adult,
+            backdrop_path = m.backdrop_path,
+            belongs_to_collection = null,
+            budget = 0,
+            genres = genres,
+            homepage = "",
+            id = m.id,
+            imdb_id = "",
+            original_language = m.original_language,
+            original_title = m.original_title,
+            overview = m.overview,
+            popularity = m.popularity,
+            poster_path = m.poster_path,
+            production_companies = emptyList(),
+            production_countries = emptyList(),
+            release_date = m.release_date,
+            revenue = 0,
+            runtime = 0,
+            spoken_languages = emptyList(),
+            status = "",
+            tagline = "",
+            title = m.title,
+            video = m.video,
+            vote_average = m.vote_average,
+            vote_count = m.vote_count
+        )
     }
 
 }

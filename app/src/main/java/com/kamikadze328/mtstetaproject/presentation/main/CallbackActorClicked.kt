@@ -1,5 +1,5 @@
 package com.kamikadze328.mtstetaproject.presentation.main
 
 fun interface CallbackActorClicked {
-    fun onActorClicked(actorId: Int)
+    fun onActorClicked(actorId: Long)
 }

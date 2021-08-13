@@ -1,4 +1,4 @@
-package com.kamikadze328.mtstetaproject.presentation.profile.textwatcher
+package com.kamikadze328.mtstetaproject.data.util.phone
 
 import android.text.Editable
 import android.widget.EditText
@@ -18,6 +18,7 @@ fun formatPhoneNumber(s: Editable, editText: EditText) {
             countDeleted++
         }
     }
+
     if (s.isNotEmpty()) {
         when (s[0]) {
             SEVEN -> {
@@ -45,18 +46,5 @@ fun formatPhoneNumber(s: Editable, editText: EditText) {
     }
 }
 
-abstract class ProfilePhoneTextWatcher(private val editText: EditText) : ProfileTextWatcher {
-
-    override fun afterTextChanged(s: Editable?) {
-        if (s != null && s.isNotEmpty()) {
-            editText.removeTextChangedListener(this)
-            formatPhoneNumber(s, editText)
-            editText.addTextChangedListener(this)
-        }
-
-        super.afterTextChanged(s)
-    }
-
-
-}
+fun isPhoneNumberAfterFormatOk(phoneNumber: String): Boolean = phoneNumber.length == 16
 

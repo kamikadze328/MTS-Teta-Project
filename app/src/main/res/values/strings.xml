@@ -62,11 +62,13 @@
     <string name="profile_logout_button">Выйти</string>
     <string name="profile_save_personal_info_button">Сохранить</string>
     <string name="profile_personal_info_name">Имя</string>
-    <string name="profile_personal_info_password">Пароль</string>
+    <string name="password_hint">Пароль</string>
     <string name="profile_personal_info_email">Почта</string>
-    <string name="profile_personal_info_phone">Телефон</string>
+    <string name="phone_hint">Телефон</string>
+    <string name="code_hint">Код</string>
     <string name="profile_img_description">Аватар</string>
     <string name="edit_text_username">Имя</string>
+
 
     <string name="settings_header_notification_and_sound">Уведомления и звуки</string>
     <string name="settings_header_privacy_policy">Конфедициальность</string>

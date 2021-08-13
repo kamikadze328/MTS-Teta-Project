@@ -45,6 +45,13 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
                 navController.navigate(R.id.navigation_home, args)
             }
         }
+
+
+        /*FirebaseApp.initializeApp(this)
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        firebaseAppCheck.installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance()
+        )*/
         //Only in debug purpose
         //scheduleJob("kekeke")
     }
@@ -126,16 +133,16 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
     }
 
 
-    override fun onMovieClicked(movieId: Int) {
+    override fun onMovieClicked(movieId: Long) {
         /* val actions = HomeFragmentDirections.actionHomeToMovieDetails(movieId)
         navController.navigate(actions)*/
     }
 
-    override fun onGenreClicked(genreId: Int) {
+    override fun onGenreClicked(genreId: Long) {
         //TODO("Not yet implemented")
     }
 
-    override fun onActorClicked(actorId: Int) {
+    override fun onActorClicked(actorId: Long) {
         //TODO("Not yet implemented")
     }
 }
