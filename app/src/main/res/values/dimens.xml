@@ -60,4 +60,6 @@
     <dimen name="design_bottom_navigation_active_item_max_width" tools:override="true">6000dp
     </dimen>
 
+    <dimen name="login_margin_main">10dp</dimen>
+    <dimen name="login_margin_between">5dp</dimen>
 </resources>

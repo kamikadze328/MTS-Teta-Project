@@ -38,7 +38,7 @@ class GenreRepository @Inject constructor(
 
     //always return fresh genres
     suspend fun refreshAll(): List<Genre> = withContext(Dispatchers.IO) {
-        val genres = webservice.getGenres().sortedWith(SelectableGenreComparator())
+        val genres = webservice.getGenres().genres.sortedWith(SelectableGenreComparator())
         addAllLocal(genres)
         return@withContext genres
     }

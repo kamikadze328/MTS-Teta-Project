@@ -8,6 +8,10 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def localPropertiesFile = rootProject.file("local.properties")
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(localPropertiesFile))
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -19,7 +23,7 @@ android {
         versionCode 1
         versionName "1.0.0.1"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "THE_MOVIE_DB_API_KEY", "\"${localProperties['THE_MOVIE_DB_API_KEY_V3']}\"")
     }
 
     buildTypes {
@@ -67,7 +71,7 @@ dependencies {
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     //work
-    implementation("androidx.work:work-runtime-ktx:$work_version")
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
     //firebase
     implementation platform('com.google.firebase:firebase-bom:28.3.0')
@@ -87,4 +91,9 @@ dependencies {
 
     //gson
     implementation 'com.google.code.gson:gson:2.8.7'
+
+    //retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 }

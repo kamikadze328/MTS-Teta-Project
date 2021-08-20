@@ -30,6 +30,7 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+
         </activity>
 
         <service
@@ -40,8 +41,5 @@
             </intent-filter>
         </service>
 
-
     </application>
-
-
 </manifest>

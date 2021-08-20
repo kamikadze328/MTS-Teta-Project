@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @Singleton
 @Database(
     entities = [Movie::class, Genre::class, Actor::class, MovieActorCrossRef::class, MovieGenreCrossRef::class],
-    version = 5,
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

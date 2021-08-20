@@ -42,23 +42,22 @@ class MovieDetailsRepository @Inject constructor(
         }
     }
 
-    suspend fun refreshMovie(movieId: Long): Movie? = withContext(Dispatchers.IO) {
+    suspend fun refreshMovie(movieId: Long): Movie = withContext(Dispatchers.IO) {
         if (movieRepository.hasMovieLocal(movieId)) {
             val cachedMovie = movieRepository.getMovieWithDetails(movieId)
 
             if (cachedMovie?.isFully() == true) return@withContext cachedMovie
         }
         val actors = actorRepository.getByMovie(movieId)
-        val freshMovie = webservice.getMovieById(movieId.toString())?.toUIMovie(actors)
+        val freshMovie = webservice.getMovieDetails(movieId).toUIMovie(actors)
 
-        if (freshMovie != null) {
-            updateMovieLocal(freshMovie)
-        }
+        updateMovieLocal(freshMovie)
+
         return@withContext freshMovie
     }
 
     suspend fun loadRandomPopularMovie(): Movie? = withContext(Dispatchers.IO) {
-        return@withContext webservice.getPopularMovies().getOrNull(0)
+        return@withContext webservice.getMoviesPopular().results.getOrNull(0)
             ?.toUIMovie(genreRepository.getAll())
     }
 

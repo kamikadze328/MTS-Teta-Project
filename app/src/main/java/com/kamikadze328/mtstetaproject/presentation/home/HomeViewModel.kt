@@ -82,7 +82,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onMoviesLoadFailed(context: CoroutineContext, exception: Throwable) {
-        Log.d("kek", "onMoviesLoadFailed - ${exception.localizedMessage}")
+        Log.d("kek", "onMoviesLoadFailed - ${exception.stackTraceToString()}")
         _moviesState.postValue(UIState.ErrorState(exception))
     }
 

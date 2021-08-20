@@ -1,6 +1,7 @@
 package com.kamikadze328.mtstetaproject.data.repository
 
 import android.app.Application
+import android.util.Log
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Actor
 import com.kamikadze328.mtstetaproject.data.local.dao.ActorDao
@@ -21,23 +22,26 @@ class ActorRepository @Inject constructor(
 
     private val actorError: Actor by lazy {
         Actor(
-            actorId = -1,
-            avatarIcon = R.drawable.ic_baseline_image_not_supported_24,
+            id = -1,
             name = application.resources.getString(R.string.actors_loading_error)
-        )
-
+        ).apply {
+            local_profile_res_id = R.drawable.ic_baseline_image_not_supported_24
+        }
     }
 
     private val actorLoading: Actor by lazy {
         Actor(
-            actorId = -2,
-            avatarIcon = R.drawable.ic_baseline_face_24,
+            id = -2,
             name = application.resources.getString(R.string.actors_loading)
-        )
+        ).apply {
+            local_profile_res_id = R.drawable.ic_baseline_face_24
+        }
     }
 
     suspend fun getByMovie(movieId: Long): List<Actor> = withContext(Dispatchers.IO) {
-        val actors = webservice.getActorsByMovieId(movieId.toString())
+        val actors = webservice.getMovieDetailsCredits(movieId).cast
+        Log.d("kek", "${actors.getOrNull(0)}")
+        //val actors = webservice.getActorsByMovieId(movieId.toString())
         addLocalWithMovieId(movieId, actors)
         return@withContext actors
     }
