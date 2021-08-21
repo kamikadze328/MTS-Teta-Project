@@ -20,7 +20,6 @@ import com.kamikadze328.mtstetaproject.data.remote.Webservice
 import com.kamikadze328.mtstetaproject.data.util.UIState
 import com.kamikadze328.mtstetaproject.databinding.FragmentMovieDetailsBinding
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
-import com.kamikadze328.mtstetaproject.setRating
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

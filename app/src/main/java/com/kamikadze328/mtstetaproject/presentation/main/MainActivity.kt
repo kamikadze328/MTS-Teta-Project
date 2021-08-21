@@ -13,11 +13,9 @@ import androidx.work.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kamikadze328.mtstetaproject.R
-import com.kamikadze328.mtstetaproject.background.UpdateMoviesWorker
 import com.kamikadze328.mtstetaproject.databinding.ActivityMainBinding
 import com.kamikadze328.mtstetaproject.presentation.home.HomeFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.TimeUnit
 
 
 @AndroidEntryPoint

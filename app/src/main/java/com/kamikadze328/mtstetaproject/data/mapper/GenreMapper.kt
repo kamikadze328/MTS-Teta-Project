@@ -10,7 +10,7 @@ fun List<Int>.toGenres(allGenres: List<Genre>) =
     mapNotNull { genreId -> genreId.toGenre(allGenres) }
 
 fun GenreRemote.toGenre() =
- Genre(genreId = id, name = name)
+    Genre(genreId = id, name = name)
 
 fun List<GenreRemote>.toGenres() =
     map { it.toGenre() }

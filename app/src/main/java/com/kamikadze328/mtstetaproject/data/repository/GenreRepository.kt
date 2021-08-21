@@ -1,7 +1,6 @@
 package com.kamikadze328.mtstetaproject.data.repository
 
 import android.app.Application
-import android.util.Log
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.local.dao.GenreDao
@@ -32,9 +31,7 @@ class GenreRepository @Inject constructor(
 
     //return fresh genres only in the first time. After it will return cached genres
     suspend fun getAll(): List<Genre> = withContext(Dispatchers.IO) {
-        Log.d("kek", "fresh - ${refreshAll()}")
         val genres: List<Genre> = if (wasGenresRefreshed) refreshAll() else genreDao.getGenre()
-        Log.d("kek", "real - ${genres}")
         wasGenresRefreshed = true
         return@withContext genres
     }

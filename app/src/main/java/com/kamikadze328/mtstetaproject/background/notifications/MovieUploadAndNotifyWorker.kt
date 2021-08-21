@@ -1,4 +1,4 @@
-package com.kamikadze328.mtstetaproject.notificationservice
+package com.kamikadze328.mtstetaproject.background.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

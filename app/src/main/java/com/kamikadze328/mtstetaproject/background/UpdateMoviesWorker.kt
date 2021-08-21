@@ -1,7 +1,6 @@
 package com.kamikadze328.mtstetaproject.background
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -17,10 +16,7 @@ class UpdateMoviesWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
         try {
-            Log.d("kek", "update ")
-            val movies = movieRepository.refreshPopularMovies()
-            Log.d("kek", "update $movies")
-
+            movieRepository.refreshPopularMovies()
         } catch (e: Exception) {
             return Result.retry()
         }

@@ -34,7 +34,7 @@
         </activity>
 
         <service
-            android:name=".notificationservice.MyFirebaseMessagingService"
+            android:name="com.kamikadze328.mtstetaproject.background.notifications.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

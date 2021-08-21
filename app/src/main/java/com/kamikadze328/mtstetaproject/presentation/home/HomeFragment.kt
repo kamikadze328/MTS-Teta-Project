@@ -176,8 +176,8 @@ class HomeFragment : Fragment() {
         if (genreId <= 0) return
         (activity as MainActivity).onGenreClicked(genreId)
         viewModel.updateGenresFilter(genreId)
-        val i = genreAdapter.currentList.indexOfFirst{it.genreId == genreId}
-        genreAdapter.currentList.getOrNull(i)?.let{
+        val i = genreAdapter.currentList.indexOfFirst { it.genreId == genreId }
+        genreAdapter.currentList.getOrNull(i)?.let {
             it.isSelected = !it.isSelected
         }
         genreAdapter.notifyItemChanged(i)

@@ -1,13 +1,13 @@
-package com.kamikadze328.mtstetaproject.notificationservice.factory
+package com.kamikadze328.mtstetaproject.background.notifications.factory
 
 import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.kamikadze328.mtstetaproject.background.UpdateMoviesWorker
+import com.kamikadze328.mtstetaproject.background.notifications.MovieUploadAndNotifyWorker
 import com.kamikadze328.mtstetaproject.data.repository.MovieDetailsRepository
 import com.kamikadze328.mtstetaproject.data.repository.MovieRepository
-import com.kamikadze328.mtstetaproject.notificationservice.MovieUploadAndNotifyWorker
 
 class MyWorkerFactory constructor(
     private val movieDetailsRepository: MovieDetailsRepository,
