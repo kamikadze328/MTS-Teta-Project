@@ -43,7 +43,7 @@ abstract class AppDatabase : RoomDatabase() {
                 ).allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build()
-            //.apply { clearAllTables() }
+            .apply { clearAllTables() }
             return instance!!
         }
 
