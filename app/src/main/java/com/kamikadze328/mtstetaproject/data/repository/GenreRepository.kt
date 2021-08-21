@@ -1,9 +1,11 @@
 package com.kamikadze328.mtstetaproject.data.repository
 
 import android.app.Application
+import android.util.Log
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.local.dao.GenreDao
+import com.kamikadze328.mtstetaproject.data.mapper.toGenres
 import com.kamikadze328.mtstetaproject.data.remote.Webservice
 import com.kamikadze328.mtstetaproject.data.util.SelectableGenreComparator
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +32,9 @@ class GenreRepository @Inject constructor(
 
     //return fresh genres only in the first time. After it will return cached genres
     suspend fun getAll(): List<Genre> = withContext(Dispatchers.IO) {
+        Log.d("kek", "fresh - ${refreshAll()}")
         val genres: List<Genre> = if (wasGenresRefreshed) refreshAll() else genreDao.getGenre()
+        Log.d("kek", "real - ${genres}")
         wasGenresRefreshed = true
         return@withContext genres
     }
@@ -38,7 +42,8 @@ class GenreRepository @Inject constructor(
 
     //always return fresh genres
     suspend fun refreshAll(): List<Genre> = withContext(Dispatchers.IO) {
-        val genres = webservice.getGenres().genres.sortedWith(SelectableGenreComparator())
+        val genres =
+            webservice.getGenres().genres.toGenres().sortedWith(SelectableGenreComparator())
         addAllLocal(genres)
         return@withContext genres
     }

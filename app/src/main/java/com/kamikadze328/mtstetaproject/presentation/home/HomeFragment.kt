@@ -28,6 +28,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by activityViewModels()
+    lateinit var genreAdapter: GenreAdapter
 
     companion object {
         @JvmStatic
@@ -144,18 +145,18 @@ class HomeFragment : Fragment() {
 
     private fun setupRecyclerAdapterGenres() {
         val recyclerGenres = binding.movieMainGenresRecycler
-        val adapter = GenreAdapter(::onClickListenerGenres)
+        genreAdapter = GenreAdapter(::onClickListenerGenres)
 
         viewModel.genresState.observe(viewLifecycleOwner, {
             when (it) {
-                is UIState.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
-                is UIState.ErrorState -> adapter.submitList(viewModel.loadGenreError())
-                is UIState.DataState -> adapter.submitList(it.data)
+                is UIState.LoadingState -> genreAdapter.submitList(viewModel.loadGenreLoading())
+                is UIState.ErrorState -> genreAdapter.submitList(viewModel.loadGenreError())
+                is UIState.DataState -> genreAdapter.submitList(it.data)
                 else -> throw IllegalStateException()
             }
         })
 
-        recyclerGenres.adapter = adapter
+        recyclerGenres.adapter = genreAdapter
 
         val offset = resources.getDimension(R.dimen.movie_main_genres_offset).toInt()
         val firstLastOffset = resources.getDimension(R.dimen.movie_main_movie_offset).toInt()
@@ -175,5 +176,10 @@ class HomeFragment : Fragment() {
         if (genreId <= 0) return
         (activity as MainActivity).onGenreClicked(genreId)
         viewModel.updateGenresFilter(genreId)
+        val i = genreAdapter.currentList.indexOfFirst{it.genreId == genreId}
+        genreAdapter.currentList.getOrNull(i)?.let{
+            it.isSelected = !it.isSelected
+        }
+        genreAdapter.notifyItemChanged(i)
     }
 }
