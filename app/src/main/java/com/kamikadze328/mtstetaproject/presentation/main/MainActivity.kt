@@ -1,5 +1,7 @@
 package com.kamikadze328.mtstetaproject.presentation.main
 
+import android.app.SearchManager
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
@@ -17,6 +19,7 @@ import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.databinding.ActivityMainBinding
 import com.kamikadze328.mtstetaproject.notificationservice.MovieUploadAndNotifyWorker
 import com.kamikadze328.mtstetaproject.notificationservice.MyFirebaseMessagingService
+import com.kamikadze328.mtstetaproject.presentation.home.HomeFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -36,8 +39,21 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
         setupNavController()
         debugFirebaseToken()
 
+        if (Intent.ACTION_SEARCH == intent.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                val args = HomeFragmentArgs.Builder().setSearchQuery(query).build().toBundle()
+                navController.navigate(R.id.navigation_home, args)
+            }
+        }
+
+
+        /*FirebaseApp.initializeApp(this)
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        firebaseAppCheck.installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance()
+        )*/
         //Only in debug purpose
-        scheduleJob("kekeke")
+        //scheduleJob("kekeke")
     }
 
     /**
@@ -117,16 +133,16 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
     }
 
 
-    override fun onMovieClicked(movieId: Int) {
+    override fun onMovieClicked(movieId: Long) {
         /* val actions = HomeFragmentDirections.actionHomeToMovieDetails(movieId)
         navController.navigate(actions)*/
     }
 
-    override fun onGenreClicked(genreId: Int) {
+    override fun onGenreClicked(genreId: Long) {
         //TODO("Not yet implemented")
     }
 
-    override fun onActorClicked(actorId: Int) {
+    override fun onActorClicked(actorId: Long) {
         //TODO("Not yet implemented")
     }
 }

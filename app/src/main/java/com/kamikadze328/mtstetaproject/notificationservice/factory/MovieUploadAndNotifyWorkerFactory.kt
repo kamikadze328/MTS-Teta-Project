@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
+import com.kamikadze328.mtstetaproject.data.repository.MovieDetailsRepository
 import com.kamikadze328.mtstetaproject.notificationservice.MovieUploadAndNotifyWorker
-import com.kamikadze328.mtstetaproject.repository.MovieRepository
 
 class MovieUploadAndNotifyWorkerFactory constructor(
-    private val movieRepository: MovieRepository
+    private val movieDetailsRepository: MovieDetailsRepository
 ) : WorkerFactory() {
 
     override fun createWorker(
@@ -18,7 +18,7 @@ class MovieUploadAndNotifyWorkerFactory constructor(
     ): ListenableWorker? {
         return when (workerClassName) {
             MovieUploadAndNotifyWorker::class.java.name ->
-                MovieUploadAndNotifyWorker(appContext, workerParameters, movieRepository)
+                MovieUploadAndNotifyWorker(appContext, workerParameters, movieDetailsRepository)
             else -> null
         }
     }

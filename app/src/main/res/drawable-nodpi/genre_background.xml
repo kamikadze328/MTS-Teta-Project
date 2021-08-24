@@ -1,0 +1,4 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/genre_rounded_oval_activated" android:state_activated="true" />
+    <item android:drawable="@drawable/genre_rounded_oval" />
+</selector>

@@ -18,11 +18,11 @@ class MovieShortViewHolder(private val view: View) : RecyclerView.ViewHolder(vie
     private val poster: ImageView = view.findViewById(R.id.movie_short_poster)
     private val textView: TextView = view.findViewById(R.id.movie_short_name)
 
-    fun bind(movie: Movie, click: (id: Int) -> Unit) {
+    fun bind(movie: Movie, click: (id: Long) -> Unit) {
         poster.load(movie.poster_path) {
             transformations(RoundedCornersTransformation(view.context.resources.getDimension(R.dimen.movie_main_poster_border_radius)))
         }
-        root.setOnClickListener { click(movie.id) }
+        root.setOnClickListener { click(movie.movieId) }
         textView.text = movie.title
     }
 
