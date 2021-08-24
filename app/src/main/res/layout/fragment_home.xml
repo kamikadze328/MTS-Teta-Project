@@ -6,12 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".presentation.home.HomeFragment">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/home_search"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/home_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl" />
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:id="@+id/home_category_header"
@@ -20,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/movie_main_movie_offset"
         android:text="@string/movie_main_header_popular"
-        app:layout_constraintTop_toBottomOf="@id/home_search" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/movie_main_genres_recycler"

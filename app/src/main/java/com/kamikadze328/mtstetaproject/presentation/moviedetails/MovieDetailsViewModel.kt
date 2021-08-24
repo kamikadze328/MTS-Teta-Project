@@ -1,101 +1,79 @@
 package com.kamikadze328.mtstetaproject.presentation.moviedetails
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Actor
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.Movie
-import com.kamikadze328.mtstetaproject.presentation.State
-import com.kamikadze328.mtstetaproject.repository.ActorRepository
-import com.kamikadze328.mtstetaproject.repository.GenreRepository
-import com.kamikadze328.mtstetaproject.repository.MovieRepository
+import com.kamikadze328.mtstetaproject.data.repository.ActorRepository
+import com.kamikadze328.mtstetaproject.data.repository.GenreRepository
+import com.kamikadze328.mtstetaproject.data.repository.MovieDetailsRepository
+import com.kamikadze328.mtstetaproject.data.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val movieRepository: MovieRepository,
+    private val movieDetailsRepository: MovieDetailsRepository,
     private val actorRepository: ActorRepository,
     private val genreRepository: GenreRepository
 ) : ViewModel() {
-    //TODO initial args in savedstatehandle
-    private val movieId: MutableLiveData<Int> = MutableLiveData(savedStateHandle[MOVIE_ID_ARG])
+    private val movieId: Long =
+        MovieDetailsFragmentArgs.fromSavedStateHandle(savedStateHandle).movieId
 
-    private val _actors = MutableLiveData<List<Actor>>()
-    val actors: LiveData<List<Actor>> = _actors
-
-    private val _movieState: MutableLiveData<State<Movie>> = MutableLiveData(State.LoadingState)
-    val movieState: LiveData<State<Movie>> = _movieState
-
-    private val _genresState: MutableLiveData<State<List<Genre>>> =
-        MutableLiveData(State.LoadingState)
-    val genresState: LiveData<State<List<Genre>>> = _genresState
+    private val _movieState: MutableLiveData<UIState<Movie>> = MutableLiveData(UIState.LoadingState)
+    val movieState: LiveData<UIState<Movie>> = _movieState
 
     private val moviesCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler(::onMoviesLoadFailed)
     }
-    private val genresCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
-        CoroutineExceptionHandler(::onGenresLoadFailed)
-    }
 
+    init {
+
+        val movie: Movie? = savedStateHandle[MOVIE]
+
+        val isMovieNotCached = movie == null
+
+        if (isMovieNotCached) loadMovie()
+
+        viewModelScope.launch {
+            if (!isMovieNotCached) setMovie(movie!!)
+        }
+    }
 
     companion object {
-        const val MOVIE_ID_ARG = "mid"
+        private const val MOVIE = "mv"
     }
+
+    private fun getMovieId() = movieId
 
     private fun onMoviesLoadFailed(context: CoroutineContext, exception: Throwable) {
-        _movieState.postValue(State.ErrorState(exception))
-        onGenresLoadFailed(context, exception)
+        Log.d("kek", "$exception")
+        Log.d("kek", exception.stackTraceToString())
+        _movieState.postValue(UIState.ErrorState(exception))
     }
-
-    private fun onGenresLoadFailed(context: CoroutineContext, exception: Throwable) {
-        _genresState.postValue(State.ErrorState(exception))
-    }
-
-    fun setMovieId(newMovieId: Int) {
-        movieId.value = newMovieId
-        savedStateHandle.set(MOVIE_ID_ARG, newMovieId)
-        init()
-    }
-
-    private fun init() {
-        loadMovie()
-        loadActors()
-    }
-
-    private fun getMovieId() = movieId.value!!
-
 
     private fun loadMovie() {
         viewModelScope.launch(moviesCoroutineExceptionHandler) {
-            _movieState.postValue(State.LoadingState)
-            val newMovieState = movieRepository.refreshMovie(getMovieId())
-            if (newMovieState != null) {
-                _movieState.postValue(State.DataState(newMovieState))
-                loadGenresByIds(newMovieState.genre_ids)
-            } else {
-                throw Exception("Can't load the movie")
-            }
+            _movieState.postValue(UIState.LoadingState)
+            val newMovieState = movieDetailsRepository.refreshMovie(getMovieId())
+                ?: throw Exception("Can't load the movie")
+
+            setMovie(newMovieState)
         }
     }
 
-    private suspend fun loadGenresByIds(genre_ids: List<Int>) {
-        viewModelScope.launch(genresCoroutineExceptionHandler) {
-            _genresState.postValue(State.LoadingState)
-            val genres = genreRepository.loadGenresByIds(genre_ids)
-            _genresState.postValue(State.DataState(genres))
-        }
+    private suspend fun setMovie(movie: Movie) = withContext(Dispatchers.Default) {
+        _movieState.postValue(UIState.DataState(movie))
+        savedStateHandle.set(MOVIE, movie)
     }
 
-    private fun loadActors() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _actors.postValue(actorRepository.getActorsByMovieId(getMovieId()))
-        }
-    }
 
     fun loadGenreLoading(): List<Genre> {
         return listOf(genreRepository.loadGenreLoading())
@@ -106,11 +84,19 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     fun loadMovieLoading(): Movie {
-        return movieRepository.loadMovieLoading()
+        return movieDetailsRepository.getMovieLoading()
     }
 
     fun loadMovieError(): Movie {
-        return movieRepository.loadMovieError()
+        return movieDetailsRepository.getMovieError()
+    }
+
+    fun loadActorsLoading(): List<Actor> {
+        return listOf(actorRepository.loadActorLoading())
+    }
+
+    fun loadActorsError(): List<Actor> {
+        return listOf(actorRepository.loadActorError())
     }
 
 }

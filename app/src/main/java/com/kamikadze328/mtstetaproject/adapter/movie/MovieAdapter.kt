@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.kamikadze328.mtstetaproject.data.dto.Movie
 
-class MovieAdapter(private val clickOnMovie: (id: Int) -> Unit/*, private val title: String*/) :
+class MovieAdapter(private val clickOnMovie: (id: Long) -> Unit/*, private val title: String*/) :
     ListAdapter<Movie, MovieViewHolderSealed>(MovieCallback()) {
 
     companion object {
