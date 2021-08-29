@@ -5,12 +5,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionInflater
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
@@ -20,6 +25,8 @@ import com.kamikadze328.mtstetaproject.data.util.UIState
 import com.kamikadze328.mtstetaproject.databinding.FragmentHomeBinding
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 
 @AndroidEntryPoint
@@ -56,7 +63,17 @@ class HomeFragment : Fragment() {
 
         setupStringSearch()
 
+        exitTransition = TransitionInflater.from(requireContext())
+            .inflateTransition(R.transition.home_exit_transition);
+
+
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        binding.movieMainMoviesRecycler.post { startPostponedEnterTransition() }
     }
 
     private fun setupStringSearch() {
@@ -140,6 +157,8 @@ class HomeFragment : Fragment() {
         })
 
         layoutManager.onRestoreInstanceState(viewModel.recyclerMoviesState.value)
+
+        recyclerMovies.itemAnimator = SlideInUpAnimator(LinearOutSlowInInterpolator())
     }
 
 
@@ -163,12 +182,18 @@ class HomeFragment : Fragment() {
 
         val itemDecorator = LinearHorizontalItemDecorator(offset, firstLastOffset, firstLastOffset)
         recyclerGenres.addItemDecoration(itemDecorator)
+
+        recyclerGenres.itemAnimator = SlideInRightAnimator(FastOutSlowInInterpolator())
     }
 
-    private fun onClickListenerMovies(movieId: Long) {
+    private fun onClickListenerMovies(movieId: Long, view: View) {
         if (movieId <= 0) return
-        val actions = HomeFragmentDirections.actionHomeToMovieDetails(movieId)
-        findNavController().navigate(actions)
+        val poster = view.findViewById<ImageView>(R.id.movie_main_poster)
+        val actions =
+            HomeFragmentDirections.actionHomeToMovieDetails(movieId, poster.transitionName)
+
+        val extras = FragmentNavigatorExtras(poster to poster.transitionName)
+        findNavController().navigate(actions, extras)
         //(activity as MainActivity).onMovieClicked(movieId)
     }
 
