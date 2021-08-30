@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/movie_poster"
+        android:id="@+id/movie_poster_background"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:contentDescription="@string/movie_poster_description"
@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/movie_poster_background"
+        android:id="@+id/movie_poster"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:contentDescription="@string/movie_poster_description"
