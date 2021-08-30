@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
 import coil.load
+import coil.transform.BlurTransformation
 import com.google.android.material.appbar.AppBarLayout
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
@@ -81,7 +82,9 @@ class MovieDetailsFragment : Fragment() {
         val basePath =
             if (movie.movieId >= 0) Webservice.BASE_PATH_IMAGE_URL else Webservice.BASE_PATH_IMAGE_SMALL_URL
         binding.moviePoster.load(basePath + movie.poster_path)
-
+        binding.moviePosterBackground.load(basePath + movie.poster_path) {
+            transformations(BlurTransformation(requireContext(), sampling = 7.0f))
+        }
         binding.movieDateText.text = movie.release_date
         binding.movieNameText.text = movie.title
         binding.movieNameTextToolbar.text = movie.title

@@ -62,4 +62,8 @@
 
     <dimen name="login_margin_main">10dp</dimen>
     <dimen name="login_margin_between">5dp</dimen>
+
+    <dimen name="movie_poster_offset">30dp</dimen>
+    <dimen name="movie_poster_offset_end">80dp</dimen>
+
 </resources>

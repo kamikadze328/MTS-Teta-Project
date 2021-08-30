@@ -12,25 +12,45 @@
         android:layout_height="@dimen/movie_detail_poster_height"
         android:background="@color/background">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
+        <com.kamikadze328.mtstetaproject.presentation.CollapsibleToolbar
             android:id="@+id/movie_collapsing_toolbar"
             android:layout_width="match_parent"
+
             android:layout_height="match_parent"
+            app:layoutDescription="@xml/fragment_movie_details_scene"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:id="@+id/movie_poster_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/movie_poster_description"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:src="@drawable/img_actor_statham" />
 
             <ImageView
                 android:id="@+id/movie_poster"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/movie_poster_offset"
+                android:layout_marginEnd="@dimen/movie_poster_offset"
                 android:contentDescription="@string/movie_poster_description"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:src="@drawable/img_actor_statham" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/toolbar_before_collapsed"
                 style="@style/MovieToolbarBeforeCollapsed"
                 android:layout_width="match_parent"
                 android:layout_gravity="bottom"
-                android:background="@drawable/movie_details_header_half_rounded_shape_background">
+                android:background="@drawable/movie_details_header_half_rounded_shape_background"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/movie_genres_recycler"
@@ -95,7 +115,7 @@
                     android:text="@string/movie_name_loading"
                     tools:text="@string/movie_name_tools" />
             </androidx.appcompat.widget.Toolbar>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.kamikadze328.mtstetaproject.presentation.CollapsibleToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
