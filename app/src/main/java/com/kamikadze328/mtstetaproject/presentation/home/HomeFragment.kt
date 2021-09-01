@@ -46,7 +46,6 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("kek", "onCreate home")
         super.onCreate(savedInstanceState)
     }
 
@@ -54,18 +53,10 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("kek", "onCreateView home")
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        setupRecyclerAdapters()
-
-        setupSwipeRefresh()
-
-        setupStringSearch()
 
         exitTransition = TransitionInflater.from(requireContext())
             .inflateTransition(R.transition.home_exit_transition);
-
 
         return binding.root
     }
@@ -74,6 +65,12 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
         binding.movieMainMoviesRecycler.post { startPostponedEnterTransition() }
+
+        setupRecyclerAdapters()
+
+        setupSwipeRefresh()
+
+        setupStringSearch()
     }
 
     private fun setupStringSearch() {
