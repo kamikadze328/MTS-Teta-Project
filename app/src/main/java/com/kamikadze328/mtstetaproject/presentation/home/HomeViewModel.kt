@@ -161,11 +161,11 @@ class HomeViewModel @Inject constructor(
                     (_genresState.value as UIState.DataState<List<Genre>>).data.toMutableList()
                 val index = genres.indexOfFirst { it.genreId == genreId }
                 val genre = genres[index].copy()
-                val selectedCount = genres.count { it.isSelected }
-                genre.isSelected = !genre.isSelected
+
+                genre.isSelected = !_selectedGenresId.contains(genreId)
 
                 genres.removeAt(index)
-                genres.add(selectedCount, genre)
+                genres.add(_selectedGenresId.size, genre)
 
                 genres.sortWith(SelectableGenreComparator())
 

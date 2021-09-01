@@ -13,13 +13,13 @@ def localProperties = new Properties()
 localProperties.load(new FileInputStream(localPropertiesFile))
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.kamikadze328.mtstetaproject"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0.0.1"
 
@@ -72,6 +72,7 @@ dependencies {
 
     //work
     implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation "androidx.work:work-multiprocess:$work_version"
 
     //firebase
     implementation platform('com.google.firebase:firebase-bom:28.3.0')
@@ -96,4 +97,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+
+    // RecyclerView Animators
+    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
+
 }

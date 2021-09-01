@@ -5,12 +5,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionInflater
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
@@ -20,6 +25,8 @@ import com.kamikadze328.mtstetaproject.data.util.UIState
 import com.kamikadze328.mtstetaproject.databinding.FragmentHomeBinding
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 
 @AndroidEntryPoint
@@ -28,6 +35,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by activityViewModels()
+    lateinit var genreAdapter: GenreAdapter
 
     companion object {
         @JvmStatic
@@ -38,7 +46,6 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("kek", "onCreate home")
         super.onCreate(savedInstanceState)
     }
 
@@ -46,16 +53,24 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("kek", "onCreateView home")
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        exitTransition = TransitionInflater.from(requireContext())
+            .inflateTransition(R.transition.home_exit_transition);
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        binding.movieMainMoviesRecycler.post { startPostponedEnterTransition() }
 
         setupRecyclerAdapters()
 
         setupSwipeRefresh()
 
         setupStringSearch()
-
-        return binding.root
     }
 
     private fun setupStringSearch() {
@@ -139,35 +154,43 @@ class HomeFragment : Fragment() {
         })
 
         layoutManager.onRestoreInstanceState(viewModel.recyclerMoviesState.value)
+
+        recyclerMovies.itemAnimator = SlideInUpAnimator(LinearOutSlowInInterpolator())
     }
 
 
     private fun setupRecyclerAdapterGenres() {
         val recyclerGenres = binding.movieMainGenresRecycler
-        val adapter = GenreAdapter(::onClickListenerGenres)
+        genreAdapter = GenreAdapter(::onClickListenerGenres)
 
         viewModel.genresState.observe(viewLifecycleOwner, {
             when (it) {
-                is UIState.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
-                is UIState.ErrorState -> adapter.submitList(viewModel.loadGenreError())
-                is UIState.DataState -> adapter.submitList(it.data)
+                is UIState.LoadingState -> genreAdapter.submitList(viewModel.loadGenreLoading())
+                is UIState.ErrorState -> genreAdapter.submitList(viewModel.loadGenreError())
+                is UIState.DataState -> genreAdapter.submitList(it.data)
                 else -> throw IllegalStateException()
             }
         })
 
-        recyclerGenres.adapter = adapter
+        recyclerGenres.adapter = genreAdapter
 
         val offset = resources.getDimension(R.dimen.movie_main_genres_offset).toInt()
         val firstLastOffset = resources.getDimension(R.dimen.movie_main_movie_offset).toInt()
 
         val itemDecorator = LinearHorizontalItemDecorator(offset, firstLastOffset, firstLastOffset)
         recyclerGenres.addItemDecoration(itemDecorator)
+
+        recyclerGenres.itemAnimator = SlideInRightAnimator(FastOutSlowInInterpolator())
     }
 
-    private fun onClickListenerMovies(movieId: Long) {
+    private fun onClickListenerMovies(movieId: Long, view: View) {
         if (movieId <= 0) return
-        val actions = HomeFragmentDirections.actionHomeToMovieDetails(movieId)
-        findNavController().navigate(actions)
+        val poster = view.findViewById<ImageView>(R.id.movie_main_poster)
+        val actions =
+            HomeFragmentDirections.actionHomeToMovieDetails(movieId, poster.transitionName)
+
+        val extras = FragmentNavigatorExtras(poster to poster.transitionName)
+        findNavController().navigate(actions, extras)
         //(activity as MainActivity).onMovieClicked(movieId)
     }
 
@@ -175,5 +198,10 @@ class HomeFragment : Fragment() {
         if (genreId <= 0) return
         (activity as MainActivity).onGenreClicked(genreId)
         viewModel.updateGenresFilter(genreId)
+        val i = genreAdapter.currentList.indexOfFirst { it.genreId == genreId }
+        genreAdapter.currentList.getOrNull(i)?.let {
+            it.isSelected = !it.isSelected
+        }
+        genreAdapter.notifyItemChanged(i)
     }
 }

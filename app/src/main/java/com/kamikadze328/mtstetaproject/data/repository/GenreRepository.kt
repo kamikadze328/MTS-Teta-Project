@@ -4,6 +4,7 @@ import android.app.Application
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.local.dao.GenreDao
+import com.kamikadze328.mtstetaproject.data.mapper.toGenres
 import com.kamikadze328.mtstetaproject.data.remote.Webservice
 import com.kamikadze328.mtstetaproject.data.util.SelectableGenreComparator
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +39,8 @@ class GenreRepository @Inject constructor(
 
     //always return fresh genres
     suspend fun refreshAll(): List<Genre> = withContext(Dispatchers.IO) {
-        val genres = webservice.getGenres().genres.sortedWith(SelectableGenreComparator())
+        val genres =
+            webservice.getGenres().genres.toGenres().sortedWith(SelectableGenreComparator())
         addAllLocal(genres)
         return@withContext genres
     }

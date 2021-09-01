@@ -18,7 +18,7 @@ data class Movie(
     val release_date: String,
     val vote_average: Double,
     val age_restriction: String,
-    val poster_path: String?,
+    var poster_path: String?,
     val isFavourite: Boolean = false,
     //@ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     //@ColumnInfo(defaultValue = "(datetime('now'))")

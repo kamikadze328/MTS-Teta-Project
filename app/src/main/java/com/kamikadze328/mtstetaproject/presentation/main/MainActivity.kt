@@ -9,16 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.WorkRequest
+import androidx.work.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.databinding.ActivityMainBinding
-import com.kamikadze328.mtstetaproject.notificationservice.MovieUploadAndNotifyWorker
-import com.kamikadze328.mtstetaproject.notificationservice.MyFirebaseMessagingService
 import com.kamikadze328.mtstetaproject.presentation.home.HomeFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -45,32 +40,6 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
                 navController.navigate(R.id.navigation_home, args)
             }
         }
-
-
-        /*FirebaseApp.initializeApp(this)
-        val firebaseAppCheck = FirebaseAppCheck.getInstance()
-        firebaseAppCheck.installAppCheckProviderFactory(
-            SafetyNetAppCheckProviderFactory.getInstance()
-        )*/
-        //Only in debug purpose
-        //scheduleJob("kekeke")
-    }
-
-    /**
-     * The real work executes in [MyFirebaseMessagingService].
-     * This method exists only in debug purpose
-     */
-    //Only in debug purpose
-    private fun scheduleJob(messageBody: String) {
-        val data = Data.Builder()
-            .putString(MyFirebaseMessagingService.MESSAGE_ARG, messageBody)
-            .build()
-
-        val work: WorkRequest = OneTimeWorkRequestBuilder<MovieUploadAndNotifyWorker>()
-            .setInputData(data)
-            .build()
-
-        WorkManager.getInstance(applicationContext).enqueue(work)
     }
 
     private fun debugFirebaseToken() {

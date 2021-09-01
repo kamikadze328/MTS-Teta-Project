@@ -27,5 +27,8 @@
         <argument
             android:name="movieId"
             app:argType="long" />
+        <argument
+            android:name="moviePath"
+            app:argType="string" />
     </fragment>
 </navigation>

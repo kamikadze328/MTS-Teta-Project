@@ -9,7 +9,11 @@ import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
+import androidx.transition.Transition
+import androidx.transition.TransitionInflater
 import coil.load
+import coil.transform.BlurTransformation
 import com.google.android.material.appbar.AppBarLayout
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
@@ -30,8 +34,7 @@ class MovieDetailsFragment : Fragment() {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
 
-    //args automatically passed to viewModel's savedStateHandle
-    //private val args: MovieDetailsFragmentArgs by navArgs()
+    private val args: MovieDetailsFragmentArgs by navArgs()
 
     companion object {
 
@@ -45,6 +48,7 @@ class MovieDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("kek", "onCreate moviedetails")
         super.onCreate(savedInstanceState)
+        prepareSharedElementTransition()
     }
 
     override fun onCreateView(
@@ -52,10 +56,11 @@ class MovieDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
-
+        binding.moviePoster.transitionName = args.moviePath
         viewModel.movieState.observe(viewLifecycleOwner, {
             when (it) {
-                is UIState.LoadingState -> updateUI(viewModel.loadMovieLoading())
+                is UIState.LoadingState -> updateUI(
+                    viewModel.loadMovieLoading().apply { poster_path = args.moviePath })
                 is UIState.ErrorState -> updateUI(viewModel.loadMovieError())
                 is UIState.DataState -> updateUI(it.data)
             }
@@ -73,8 +78,13 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun updateUI(movie: Movie) {
-        binding.moviePoster.load(Webservice.BASE_PATH_IMAGE_URL + movie.poster_path)
-
+        //for smooth animation
+        val basePath =
+            if (movie.movieId >= 0) Webservice.BASE_PATH_IMAGE_URL else Webservice.BASE_PATH_IMAGE_SMALL_URL
+        binding.moviePoster.load(basePath + movie.poster_path)
+        binding.moviePosterBackground.load(basePath + movie.poster_path) {
+            transformations(BlurTransformation(requireContext(), sampling = 7.0f))
+        }
         binding.movieDateText.text = movie.release_date
         binding.movieNameText.text = movie.title
         binding.movieNameTextToolbar.text = movie.title
@@ -165,6 +175,13 @@ class MovieDetailsFragment : Fragment() {
             binding.toolbar.visibility =
                 if (y - binding.movieNameText.lineHeight <= 0) View.VISIBLE else View.INVISIBLE
         }
+    }
+
+    private fun prepareSharedElementTransition() {
+        val transition: Transition = TransitionInflater.from(requireContext())
+            .inflateTransition(R.transition.movie_details_transition)
+        sharedElementEnterTransition = transition
+        sharedElementReturnTransition = transition
     }
 
 

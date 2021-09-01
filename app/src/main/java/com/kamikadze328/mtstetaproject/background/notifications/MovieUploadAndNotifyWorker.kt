@@ -1,4 +1,4 @@
-package com.kamikadze328.mtstetaproject.notificationservice
+package com.kamikadze328.mtstetaproject.background.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -61,7 +61,7 @@ class MovieUploadAndNotifyWorker @AssistedInject constructor(
     }
 
     private fun sendNotificationToMovie(movieName: String, movieId: Long, movieIcon: Bitmap) {
-        val args = MovieDetailsFragmentArgs.Builder(movieId).build().toBundle()
+        val args = MovieDetailsFragmentArgs.Builder(movieId, "").build().toBundle()
 
         val pendingIntent = NavDeepLinkBuilder(appContext)
             .setComponentName(MainActivity::class.java)

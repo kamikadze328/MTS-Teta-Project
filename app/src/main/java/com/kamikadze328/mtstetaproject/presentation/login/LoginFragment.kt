@@ -39,7 +39,11 @@ class LoginFragment : Fragment() {
     ): View {
         Log.d("kek", "onCreateView login")
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.loginPhone.apply {
             addTextChangedListener(phoneTextWatcher)
             setText(viewModel.getPhoneNumber())
@@ -48,7 +52,6 @@ class LoginFragment : Fragment() {
         binding.loginSubmit.setOnClickListener {
             viewModel.sendVerificationCode()
         }
-
 
         viewModel.state.observe(viewLifecycleOwner, {
             Log.d("kek", "$it")
@@ -83,8 +86,6 @@ class LoginFragment : Fragment() {
                 }
             }
         })
-
-        return binding.root
     }
 
     private fun toWaitCodeFragment() {
