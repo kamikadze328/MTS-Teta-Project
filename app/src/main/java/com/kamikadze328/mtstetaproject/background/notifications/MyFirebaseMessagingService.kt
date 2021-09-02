@@ -1,4 +1,4 @@
-package com.kamikadze328.mtstetaproject.notificationservice
+package com.kamikadze328.mtstetaproject.background.notifications
 
 import android.util.Log
 import androidx.work.Data

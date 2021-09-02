@@ -100,4 +100,24 @@
     <string name="default_notification_channel_name">Популярные фильмы</string>
 
     <string name="home_search_hint">Movie Title</string>
+
+    <string name="login_request_code">Запросить код</string>
+    <string name="login_tools_status">Статус</string>
+    <string name="login_input_phone">Введите номер телефона</string>
+    <string name="login_couldnt_send_code">Не удалось отправить код. Попробуйте ещё раз</string>
+    <string name="login_couldnt_send_code_sms_quota">Не удалось отправить код. превышел лимит запросов. Попробуйте завтра</string>
+
+    <string name="login_wrong_phone">Некорректный номер. Введите корректный номер телефона.</string>
+    <string name="login_code_sending">Отправляю код… Ожидайте</string>
+    <string name="login_code_sent">Отправляю код… Ожидайте</string>
+    <string name="login_sign_in_process">Захожу в аккаунт…</string>
+    <string name="login_to_forward">Отправляю дальше…</string>
+
+    <string name="wait_code_description">На номер %1$s был отправлен код</string>
+    <string name="wait_code_timer">Можно отправить код повторно через: %1$d секунд</string>
+    <string name="wait_code_send_code_again">Отправить код повторно</string>
+    <string name="wait_code_code_wrong">Код неверный</string>
+    <string name="wait_code_code_checking">Проверяем код… Ожидайте</string>
+    <string name="wait_code_code_right">Код верный</string>
+    <string name="wait_code_success">Успешно!</string>
 </resources>

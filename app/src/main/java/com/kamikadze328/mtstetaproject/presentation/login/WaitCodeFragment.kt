@@ -18,8 +18,6 @@ class WaitCodeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: SharedLoginViewModel by activityViewModels()
-    // [START declare_auth]
-    // [END declare_auth]
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("kek", "onCreate login")
@@ -35,7 +33,7 @@ class WaitCodeFragment : Fragment() {
         _binding = FragmentWaitCodeBinding.inflate(inflater, container, false)
 
         binding.waitCodeDescription.text =
-            "На номер ${viewModel.getPhoneNumber()} был отправлен код"
+            getString(R.string.wait_code_description, viewModel.getPhoneNumber())
 
         binding.waitCodeSubmit.setOnClickListener {
             viewModel.submitCode(binding.waitCodeCode.text.toString())
@@ -46,7 +44,7 @@ class WaitCodeFragment : Fragment() {
         }
 
         viewModel.codeResendTimeout.observe(viewLifecycleOwner, {
-            binding.waitCodeResendTimer.text = "Можно отправить код повторно через: $it секунд"
+            binding.waitCodeResendTimer.text = getString(R.string.wait_code_timer, it)
         })
 
 
@@ -54,7 +52,7 @@ class WaitCodeFragment : Fragment() {
             if (it) {
                 binding.waitCodeResendTimer.apply {
                     setOnClickListener { viewModel.sendVerificationCode(true) }
-                    text = "Отправить код повторно"
+                    text = getString(R.string.wait_code_send_code_again)
                     isEnabled = true
                     setBackgroundColor(ContextCompat.getColor(context, R.color.purple_500))
                 }
@@ -73,16 +71,16 @@ class WaitCodeFragment : Fragment() {
 
             when (it) {
                 is FirebaseAuthState.CodeWasSentToUser -> {
-                    if (it.isCodeInvalid) setStatus("Код неверный")
+                    if (it.isCodeInvalid) setStatus(getString(R.string.wait_code_code_wrong))
                 }
                 is FirebaseAuthState.CodeChecking -> {
-                    setStatus("Проверяем код... Ожидайте")
+                    setStatus(getString(R.string.wait_code_code_checking))
                 }
                 is FirebaseAuthState.CodeChecked -> {
-                    setStatus("Код верный!")
+                    setStatus(getString(R.string.wait_code_code_right))
                 }
                 is FirebaseAuthState.AuthWasSuccessful -> {
-                    setStatus("Успешно!")
+                    setStatus(getString(R.string.wait_code_success))
                     toProfileFragment()
                 }
                 is FirebaseAuthState.WaitUserPhoneNumber -> {

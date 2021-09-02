@@ -16,10 +16,10 @@ import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.moviedetailsactor.ActorAdapter
 import com.kamikadze328.mtstetaproject.data.dto.Movie
+import com.kamikadze328.mtstetaproject.data.remote.Webservice
 import com.kamikadze328.mtstetaproject.data.util.UIState
 import com.kamikadze328.mtstetaproject.databinding.FragmentMovieDetailsBinding
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
-import com.kamikadze328.mtstetaproject.setRating
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -72,7 +72,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun updateUI(movie: Movie) {
-        binding.moviePoster.load(movie.poster_path)
+        binding.moviePoster.load(Webservice.BASE_PATH_IMAGE_URL + movie.poster_path)
 
         binding.movieDateText.text = movie.release_date
         binding.movieNameText.text = movie.title

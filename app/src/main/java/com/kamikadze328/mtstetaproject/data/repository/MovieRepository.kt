@@ -1,7 +1,6 @@
 package com.kamikadze328.mtstetaproject.data.repository
 
 import android.app.Application
-import android.util.Log
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.data.local.dao.movie.MovieDao
@@ -46,7 +45,8 @@ class MovieRepository @Inject constructor(
 
     suspend fun refreshPopularMovies(): List<Movie> = withContext(Dispatchers.IO) {
         val allGenres = genreRepository.getAll()
-        val movies = webservice.getPopularMovies().map { it.toUIMovie(allGenres) }
+        val movies = webservice.getMoviesPopular().results.map { it.toUIMovie(allGenres) }
+
         addAllLocal(movies)
         return@withContext movies
     }
@@ -64,7 +64,6 @@ class MovieRepository @Inject constructor(
     }
 
     fun hasMovieLocal(movieId: Long): Boolean {
-        Log.d("kek", "")
         return movieDao.hasMovie(movieId, FRESH_TIMEOUT)
     }
 

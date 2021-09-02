@@ -82,7 +82,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onMoviesLoadFailed(context: CoroutineContext, exception: Throwable) {
-        Log.d("kek", "onMoviesLoadFailed - ${exception.localizedMessage}")
+        Log.d("kek", "onMoviesLoadFailed - ${exception.stackTraceToString()}")
         _moviesState.postValue(UIState.ErrorState(exception))
     }
 
@@ -161,11 +161,11 @@ class HomeViewModel @Inject constructor(
                     (_genresState.value as UIState.DataState<List<Genre>>).data.toMutableList()
                 val index = genres.indexOfFirst { it.genreId == genreId }
                 val genre = genres[index].copy()
-                val selectedCount = genres.count { it.isSelected }
-                genre.isSelected = !genre.isSelected
+
+                genre.isSelected = !_selectedGenresId.contains(genreId)
 
                 genres.removeAt(index)
-                genres.add(selectedCount, genre)
+                genres.add(_selectedGenresId.size, genre)
 
                 genres.sortWith(SelectableGenreComparator())
 

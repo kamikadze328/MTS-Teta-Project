@@ -55,30 +55,30 @@ class LoginFragment : Fragment() {
             when (it) {
                 is FirebaseAuthState.WaitUserPhoneNumber -> {
                     when {
-                        it.isPhoneNumberNotValid -> setStatus("Некорректный номер. Введите корректный номер телефона.")
-                        else -> setStatus("Введите номер телефона")
+                        it.isPhoneNumberNotValid -> setStatus(getString(R.string.login_wrong_phone))
+                        else -> setStatus(getString(R.string.login_input_phone))
                     }
                 }
                 is FirebaseAuthState.CodeSendingToUserInvalid -> {
                     when {
-                        it.isInvalidRequest -> setStatus("Не удалось отправить код. Попробуйте ещё раз")
-                        it.isSmsQuotaHasBeenExceeded -> setStatus("Не удалось отправить код. превышел лимит запросов. Попробуйте завтра")
-                        else -> setStatus("Не удалось отправить код. Попробуйте ещё раз")
+                        it.isInvalidRequest -> setStatus(getString(R.string.login_couldnt_send_code))
+                        it.isSmsQuotaHasBeenExceeded -> setStatus(getString(R.string.login_couldnt_send_code_sms_quota))
+                        else -> setStatus(getString(R.string.login_couldnt_send_code))
                     }
                 }
                 is FirebaseAuthState.PhoneValidSendingCodeToUser -> {
-                    setStatus("Отправляю код... Ожидайте")
+                    setStatus(getString(R.string.login_code_sending))
                 }
                 is FirebaseAuthState.CodeWasSentToUser -> {
-                    setStatus("Код отправлен")
+                    setStatus(getString(R.string.login_code_sent))
                     toWaitCodeFragment()
                 }
                 is FirebaseAuthState.AuthWasSuccessful -> {
-                    setStatus("Захожу в аккаунт")
+                    setStatus(getString(R.string.login_sign_in_process))
                     toProfileFragment()
                 }
                 else -> {
-                    setStatus("Отправляю дальше...")
+                    setStatus(getString(R.string.login_to_forward))
                     toWaitCodeFragment()
                 }
             }
