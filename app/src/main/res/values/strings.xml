@@ -120,4 +120,6 @@
     <string name="wait_code_code_checking">Проверяем код… Ожидайте</string>
     <string name="wait_code_code_right">Код верный</string>
     <string name="wait_code_success">Успешно!</string>
+
+    <string name="shared_movie_poster">moviePoster</string>
 </resources>
