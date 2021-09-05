@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface Webservice {
@@ -34,7 +35,7 @@ interface Webservice {
     suspend fun getGenres(): GenresResponse
 
     @GET("movie/popular")
-    suspend fun getMoviesPopular(): MovieRemoteShortResponse
+    suspend fun getMoviesPopular(@Query("page") page: Int = 1): MovieRemoteShortResponse
 
     @GET("movie/{movie_id}")
     suspend fun getMovieDetails(@Path(value = "movie_id") movieId: Long): MovieRemote

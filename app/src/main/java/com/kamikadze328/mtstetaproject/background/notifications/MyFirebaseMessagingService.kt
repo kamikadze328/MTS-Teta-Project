@@ -11,12 +11,6 @@ import com.kamikadze328.mtstetaproject.R
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-
-    override fun onCreate() {
-        Log.d("kek", "onCreate service")
-        super.onCreate()
-    }
-
     /**
      * Called when message is received.
      *
@@ -85,7 +79,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .build()
 
 
-        val operation = WorkManager.getInstance(this).enqueue(work)
+        WorkManager.getInstance(this).enqueue(work)
     }
 
     private fun sendRegistrationToServer(token: String?) {

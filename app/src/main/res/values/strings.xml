@@ -61,6 +61,7 @@
 
     <string name="profile_logout_button">Выйти</string>
     <string name="profile_save_personal_info_button">Сохранить</string>
+    <string name="profile_cancel_personal_info_button">Отменить</string>
     <string name="profile_personal_info_name">Имя</string>
     <string name="password_hint">Пароль</string>
     <string name="profile_personal_info_email">Почта</string>

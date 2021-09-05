@@ -64,7 +64,6 @@ class SharedLoginViewModel @Inject constructor(
         override fun signInSuccessful(user: FirebaseUser?) {
             if (user != null) {
                 _state.postValue(FirebaseAuthState.AuthWasSuccessful)
-                Log.d("kek", "signInSuccessful - $user")
 
             } else {
                 signInFailed(false, null)
@@ -78,7 +77,6 @@ class SharedLoginViewModel @Inject constructor(
                     exceptionType = exception?.javaClass?.simpleName
                 )
             )
-            Log.d("kek", "signInFailed - $exception")
         }
 
         override fun onTokenSent() {

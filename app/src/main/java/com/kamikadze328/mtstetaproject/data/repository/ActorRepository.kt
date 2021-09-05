@@ -40,7 +40,6 @@ class ActorRepository @Inject constructor(
 
     suspend fun getByMovie(movieId: Long): List<Actor> = withContext(Dispatchers.IO) {
         val actors = webservice.getMovieDetailsCredits(movieId).cast
-        Log.d("kek", "${actors.getOrNull(0)}")
         //val actors = webservice.getActorsByMovieId(movieId.toString())
         addLocalWithMovieId(movieId, actors)
         return@withContext actors

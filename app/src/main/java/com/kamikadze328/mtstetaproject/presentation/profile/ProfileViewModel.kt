@@ -1,7 +1,6 @@
 package com.kamikadze328.mtstetaproject.presentation.profile
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.User
@@ -15,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -39,20 +37,23 @@ class ProfileViewModel @Inject constructor(
     private val _userState: MutableLiveData<UIState<User>> = MutableLiveData(UIState.LoadingState)
     val userState: LiveData<UIState<User>> = _userState
 
-    private val _wasDataChanged = MutableLiveData(savedStateHandle[WAS_DATA_CHANGED] ?: false)
-    val wasDataChanged: LiveData<Boolean> = _wasDataChanged
+    private val _wasDataChanged: MutableLiveData<UserState> = MutableLiveData()
+    val wasDataChanged: LiveData<UserState> = _wasDataChanged
+
 
     private val genresCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
-        CoroutineExceptionHandler(::onGenresLoadFailed)
+        CoroutineExceptionHandler { _, throwable -> onGenresLoadFailed(throwable) }
     }
     private val userCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
-        CoroutineExceptionHandler(::onUserLoadFailed)
+        CoroutineExceptionHandler { _, throwable -> onUserLoadFailed(throwable) }
     }
+
+    private val isEmailUpdate = MutableLiveData(false)
+    private val isNameUpdate = MutableLiveData(false)
 
     companion object {
         private const val PROFILE_ID = "uid"
         private const val CHANGED_USER = "ch_usr"
-        private const val WAS_DATA_CHANGED = "ws_dt_ch"
         private const val GENRES = "grns"
     }
 
@@ -80,8 +81,7 @@ class ProfileViewModel @Inject constructor(
     fun getUseId() = uid.value!!
 
 
-    private fun onGenresLoadFailed(context: CoroutineContext, exception: Throwable) {
-        Log.d("kek", exception.stackTraceToString())
+    private fun onGenresLoadFailed(exception: Throwable) {
         _favouriteGenresState.postValue(UIState.ErrorState(exception))
     }
 
@@ -98,10 +98,9 @@ class ProfileViewModel @Inject constructor(
         savedStateHandle.set(GENRES, genres)
     }
 
-    private fun onUserLoadFailed(context: CoroutineContext, exception: Throwable) {
-        Log.d("kek", "$exception")
+    private fun onUserLoadFailed(exception: Throwable) {
         _userState.postValue(UIState.ErrorState(exception))
-        onGenresLoadFailed(context, exception)
+        onGenresLoadFailed(exception)
     }
 
     private fun setupUser() {
@@ -116,11 +115,10 @@ class ProfileViewModel @Inject constructor(
         setUserId(user.id)
         _userState.postValue(UIState.DataState(user))
         setChangedUser(user)
-        setWasDataChanged(false)
+        setWasDataChanged(UserState.DEFAULT)
     }
 
-    private fun setWasDataChanged(newVal: Boolean) {
-        savedStateHandle.set(WAS_DATA_CHANGED, newVal)
+    private fun setWasDataChanged(newVal: UserState) {
         this._wasDataChanged.value = newVal
     }
 
@@ -138,13 +136,20 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun updateUser() {
+        val currentUser = _changedUser.value ?: return
+        viewModelScope.launch {
+            accountRepository.updateUser(currentUser)
+        }
+    }
+
     fun logout() {
         accountRepository.logout()
         _isAuthorized.value = false
     }
 
-    private fun wasDataChanged(oldUser: User, newChangedUser: User): Boolean =
-        oldUser.compareTo(newChangedUser) != 0
+    private fun wasDataChanged(oldUser: User, newChangedUser: User): UserState =
+        if (oldUser.compareTo(newChangedUser) != 0) UserState.DEFAULT else UserState.WAS_DATA_CHANGED
 
     fun loadGenreLoading(): List<Genre> {
         return listOf(genreRepository.loadGenreLoading())

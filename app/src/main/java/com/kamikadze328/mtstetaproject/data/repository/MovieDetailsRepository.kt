@@ -57,7 +57,7 @@ class MovieDetailsRepository @Inject constructor(
     }
 
     suspend fun loadRandomPopularMovie(): Movie? = withContext(Dispatchers.IO) {
-        return@withContext webservice.getMoviesPopular().results.getOrNull(0)
+        return@withContext webservice.getMoviesPopular(0).results.getOrNull(0)
             ?.toUIMovie(genreRepository.getAll())
     }
 

@@ -3,7 +3,7 @@ package com.kamikadze328.mtstetaproject.presentation.main
 import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -27,12 +27,11 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("kek", "onCreate main")
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupNavController()
-        debugFirebaseToken()
+        //debugFirebaseToken()
 
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
@@ -45,17 +44,11 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
     private fun debugFirebaseToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
-                Log.w("kek", "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
             }
-
-            // Get new FCM registration token
             val token = task.result
-
-            // Log and toast
             val msg = getString(R.string.msg_token_fmt, token)
-            Log.d("kek", msg)
-            //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         })
     }
 
@@ -81,7 +74,6 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        Log.d("kek", "onSupportNavigateUp")
         return navController.navigateUp()
     }
 

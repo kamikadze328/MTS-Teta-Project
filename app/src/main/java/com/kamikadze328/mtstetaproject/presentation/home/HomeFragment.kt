@@ -45,10 +45,6 @@ class HomeFragment : Fragment() {
             }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,7 +52,7 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         exitTransition = TransitionInflater.from(requireContext())
-            .inflateTransition(R.transition.home_exit_transition);
+            .inflateTransition(R.transition.home_exit_transition)
 
         return binding.root
     }
@@ -97,9 +93,13 @@ class HomeFragment : Fragment() {
         setupRecyclerAdapterGenres()
     }
 
+    private fun loadMore() {
+        viewModel.loadMoreMovies()
+    }
+
     private fun setupRecyclerAdapterMovies() {
         val recyclerMovies = binding.movieMainMoviesRecycler
-        val adapter = MovieAdapter(::onClickListenerMovies)
+        val adapter = MovieAdapter(::onClickListenerMovies, ::loadMore)
 
         recyclerMovies.adapter = adapter
 
@@ -156,6 +156,10 @@ class HomeFragment : Fragment() {
         layoutManager.onRestoreInstanceState(viewModel.recyclerMoviesState.value)
 
         recyclerMovies.itemAnimator = SlideInUpAnimator(LinearOutSlowInInterpolator())
+
+        viewModel.thereAreMoreMovies.observe(viewLifecycleOwner, {
+            adapter.isLoadMore = it
+        })
     }
 
 

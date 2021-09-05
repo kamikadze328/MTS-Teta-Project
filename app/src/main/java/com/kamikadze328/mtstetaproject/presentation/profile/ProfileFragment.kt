@@ -51,7 +51,6 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("kek", "onCreate profile")
         super.onCreate(savedInstanceState)
         viewModel.init()
         if (savedInstanceState == null) {
@@ -63,7 +62,6 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("kek", "onCreateView profile")
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         setupRecyclerAdapters()
@@ -91,7 +89,7 @@ class ProfileFragment : Fragment() {
                     setEditTextEnable(false)
                 }
                 is UIState.DataState -> {
-                    if (viewModel.wasDataChanged.value == false) {
+                    if (viewModel.wasDataChanged.value != UserState.WAS_DATA_CHANGED) {
                         updateUserInfoUI(it.data)
                         setEditTextEnable(true)
                     }
@@ -106,8 +104,20 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupSaveButton()
+    }
+
+    private fun setupSaveButton() {
+        binding.profileSavePersonalInfoButton.setOnClickListener {
+            viewModel.updateUser()
+        }
+
+    }
+
     private fun setupRecyclerAdapters() {
-        setupRecyclerAdapterSetting()
+        //setupRecyclerAdapterSetting()
         setupRecycleAdapterFavouriteGenres()
     }
 
@@ -152,9 +162,25 @@ class ProfileFragment : Fragment() {
         setOnChangeListeners()
     }
 
-    private fun updateSubmitButtonUI(wasDataChanged: Boolean) {
-        binding.profileSavePersonalInfoButton.visibility =
-            if (wasDataChanged) View.VISIBLE else View.INVISIBLE
+    private fun updateSubmitButtonUI(userState: UserState) {
+        when (userState) {
+            UserState.LOADING -> {
+                binding.profileCancelPersonalInfoButton.visibility = View.GONE
+                binding.profileSavePersonalInfoButton.text = ""
+                binding.profileSavePersonalInfoButtonLoading.visibility = View.VISIBLE
+            }
+            UserState.WAS_DATA_CHANGED -> {
+                binding.profileSavePersonalInfoButtonLoading.visibility = View.INVISIBLE
+                binding.profileSavePersonalInfoButton.visibility = View.VISIBLE
+                binding.profileCancelPersonalInfoButton.visibility = View.VISIBLE
+                binding.profileSavePersonalInfoButton.setText(R.string.profile_save_personal_info_button)
+            }
+            UserState.DEFAULT -> {
+                binding.profileSavePersonalInfoButtonLoading.visibility = View.GONE
+                binding.profileSavePersonalInfoButton.visibility = View.GONE
+                binding.profileCancelPersonalInfoButton.visibility = View.GONE
+            }
+        }
     }
 
     private fun setupRecyclerAdapterSetting() {

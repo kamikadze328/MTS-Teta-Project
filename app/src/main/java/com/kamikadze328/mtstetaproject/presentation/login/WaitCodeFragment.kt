@@ -20,8 +20,6 @@ class WaitCodeFragment : Fragment() {
     private val viewModel: SharedLoginViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("kek", "onCreate login")
-
         super.onCreate(savedInstanceState)
     }
 
@@ -29,7 +27,6 @@ class WaitCodeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("kek", "onCreateView login")
         _binding = FragmentWaitCodeBinding.inflate(inflater, container, false)
 
         binding.waitCodeDescription.text =
@@ -67,8 +64,6 @@ class WaitCodeFragment : Fragment() {
         })
 
         viewModel.state.observe(viewLifecycleOwner, {
-            Log.d("kek", "wait code frag $it")
-
             when (it) {
                 is FirebaseAuthState.CodeWasSentToUser -> {
                     if (it.isCodeInvalid) setStatus(getString(R.string.wait_code_code_wrong))

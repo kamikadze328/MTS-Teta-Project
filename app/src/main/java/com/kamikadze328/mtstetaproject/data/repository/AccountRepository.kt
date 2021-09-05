@@ -6,6 +6,10 @@ import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
@@ -29,6 +33,12 @@ class AccountRepository @Inject constructor(
 ) {
     val currentUser: FirebaseUser?
         get() = Firebase.auth.currentUser
+
+    val database: FirebaseDatabase
+        get() = Firebase.database
+
+    val references: DatabaseReference
+        get() = database.reference
 
     private val userError: User by lazy {
         User(
@@ -66,6 +76,24 @@ class AccountRepository @Inject constructor(
         return@withContext countGenres.filter { isMaxMoreOne && it.second > 1 }.map { it.first }
     }
 
+    suspend fun updateUser(user: User){
+        val kek = object {
+            var nameChanged = false
+        }
+        val savedUser = currentUser ?: return
+        if(user.name != savedUser.displayName){
+            userProfileChangeRequest {
+                displayName = user.name
+            }
+        }
+    }
+
+    fun changeMovieLike(movieId: Long, isFavourite: Boolean){
+        val uid = currentUser?.uid ?: return
+        //val list
+        //references.child("users").child(uid).setValue(user)
+    }
+
     fun saveToken(token: String) {
         addSecurePrefsValue(THE_MOVIE_DB_TOKEN, token)
     }
@@ -93,7 +121,6 @@ class AccountRepository @Inject constructor(
     }
 
     fun logout() {
-        Log.d("kek", "logout")
         movieRepository.setAllNotFavourite()
         Firebase.auth.signOut()
     }

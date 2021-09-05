@@ -2,7 +2,6 @@ package com.kamikadze328.mtstetaproject.app
 
 import android.app.Application
 import androidx.work.*
-import com.kamikadze328.mtstetaproject.BuildConfig
 import com.kamikadze328.mtstetaproject.background.UpdateMoviesWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
@@ -39,8 +38,7 @@ class App : Application(), Configuration.Provider {
             .addTag(updateTag)
             .build()
 
-        val existingPeriodicWorkPolicy =
-            if (BuildConfig.DEBUG) ExistingPeriodicWorkPolicy.REPLACE else ExistingPeriodicWorkPolicy.KEEP
+        val existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.KEEP
 
         WorkManager.getInstance(this)
             .enqueueUniquePeriodicWork(updateTag, existingPeriodicWorkPolicy, workRequest)

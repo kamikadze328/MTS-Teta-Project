@@ -1,6 +1,7 @@
 package com.kamikadze328.mtstetaproject.data.repository
 
 import android.app.Application
+import android.util.Log
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.data.local.dao.movie.MovieDao
@@ -43,11 +44,13 @@ class MovieRepository @Inject constructor(
         )
     }
 
-    suspend fun refreshPopularMovies(): List<Movie> = withContext(Dispatchers.IO) {
+    suspend fun refreshPopularMovies(page: Int = 1): List<Movie> = withContext(Dispatchers.IO) {
         val allGenres = genreRepository.getAll()
-        val movies = webservice.getMoviesPopular().results.map { it.toUIMovie(allGenres) }
+        Log.d("kek", "refreshPopularMovies - $page")
+        val movies = webservice.getMoviesPopular(page).results.map { it.toUIMovie(allGenres) }
 
         addAllLocal(movies)
+        Log.d("kek", "refreshPopularMovies end - $movies")
         return@withContext movies
     }
 

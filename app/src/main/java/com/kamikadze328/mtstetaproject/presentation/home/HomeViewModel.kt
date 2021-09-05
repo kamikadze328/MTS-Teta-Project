@@ -16,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -36,11 +35,16 @@ class HomeViewModel @Inject constructor(
         MutableLiveData<Parcelable>(savedStateHandle[RECYCLER_MOVIES_STATE])
     val recyclerMoviesState: LiveData<Parcelable> = _recyclerMoviesState
 
+    val thereAreMoreMovies = MutableLiveData(true)
+
     private val moviesCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
-        CoroutineExceptionHandler(::onMoviesLoadFailed)
+        CoroutineExceptionHandler { _, throwable -> onMoviesLoadFailed(throwable) }
+    }
+    private val moviesMoreCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
+        CoroutineExceptionHandler { _, _ -> onMoviesLoadMoreFailed() }
     }
     private val genresCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
-        CoroutineExceptionHandler(::onGenresLoadFailed)
+        CoroutineExceptionHandler { _, throwable -> onGenresLoadFailed(throwable) }
     }
 
     private val _selectedGenresId: MutableSet<Long> = mutableSetOf()
@@ -48,10 +52,11 @@ class HomeViewModel @Inject constructor(
         HomeFragmentArgs.fromSavedStateHandle(savedStateHandle).searchQuery
 
     private var _movies: List<Movie> = emptyList()
+    private var nextPage: Int = 2
+
     private var _filteredMovies: List<Movie> = emptyList()
 
     init {
-        Log.d("kek", "init home View model")
         val movies: List<Movie>? = savedStateHandle[MOVIES]
         val genres: List<Genre>? = savedStateHandle[GENRES]
 
@@ -66,7 +71,6 @@ class HomeViewModel @Inject constructor(
             if (!isGenresNotCached) setGenres(genres!!)
         }
 
-        Log.d("kek", "init home View model end")
     }
 
     companion object {
@@ -81,12 +85,15 @@ class HomeViewModel @Inject constructor(
         loadGenres()
     }
 
-    private fun onMoviesLoadFailed(context: CoroutineContext, exception: Throwable) {
-        Log.d("kek", "onMoviesLoadFailed - ${exception.stackTraceToString()}")
+    private fun onMoviesLoadFailed(exception: Throwable) {
         _moviesState.postValue(UIState.ErrorState(exception))
     }
 
-    private fun onGenresLoadFailed(context: CoroutineContext, exception: Throwable) {
+    private fun onMoviesLoadMoreFailed() {
+        thereAreMoreMovies.postValue(false)
+    }
+
+    private fun onGenresLoadFailed(exception: Throwable) {
         _genresState.postValue(UIState.ErrorState(exception))
     }
 
@@ -94,7 +101,21 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(moviesCoroutineExceptionHandler) {
             _moviesState.postValue(UIState.LoadingState)
             val movies = movieRepository.refreshPopularMovies()
+            Log.d("kek", "loadMovies before update")
             updateMovies(movies)
+            Log.d("kek", "loadMovies end")
+
+        }
+    }
+
+    fun loadMoreMovies() {
+        viewModelScope.launch(moviesMoreCoroutineExceptionHandler) {
+            val movies = movieRepository.refreshPopularMovies(nextPage++)
+            if (movies.isEmpty()) {
+                onMoviesLoadMoreFailed()
+                return@launch
+            }
+            addMovies(movies)
         }
     }
 
@@ -112,6 +133,21 @@ class HomeViewModel @Inject constructor(
             val filteredMovies = getFilteredMovies(movies)
             _moviesState.postValue(UIState.DataState(filteredMovies))
             savedStateHandle.set(MOVIES, movies)
+        }
+
+    private suspend fun addMovies(movies: List<Movie> = _movies) =
+        withContext(Dispatchers.Default) {
+            _movies = if (_moviesState.value is UIState.DataState) {
+                val oldMovies =
+                    (_moviesState.value as UIState.DataState<List<Movie>>).data.toMutableList()
+                oldMovies.addAll(movies)
+                oldMovies
+            } else {
+                movies
+            }
+            val filteredMovies = getFilteredMovies(_movies)
+            _moviesState.postValue(UIState.DataState(filteredMovies))
+            savedStateHandle.set(MOVIES, _movies)
         }
 
 

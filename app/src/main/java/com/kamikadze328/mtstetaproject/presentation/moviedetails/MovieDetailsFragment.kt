@@ -2,7 +2,6 @@ package com.kamikadze328.mtstetaproject.presentation.moviedetails
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,17 +35,7 @@ class MovieDetailsFragment : Fragment() {
 
     private val args: MovieDetailsFragmentArgs by navArgs()
 
-    companion object {
-
-        @JvmStatic
-        fun newInstance(movieId: Int, parentTag: String) =
-            MovieDetailsFragment().apply {
-                arguments = Bundle().apply {}
-            }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("kek", "onCreate moviedetails")
         super.onCreate(savedInstanceState)
         prepareSharedElementTransition()
     }
@@ -56,6 +45,11 @@ class MovieDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.moviePoster.transitionName = args.moviePath
         viewModel.movieState.observe(viewLifecycleOwner, {
             when (it) {
@@ -69,7 +63,6 @@ class MovieDetailsFragment : Fragment() {
         setupRecyclerAdapters()
 
         prepareToolBar()
-        return binding.root
     }
 
     private fun setupRecyclerAdapters() {
@@ -81,10 +74,11 @@ class MovieDetailsFragment : Fragment() {
         //for smooth animation
         val basePath =
             if (movie.movieId >= 0) Webservice.BASE_PATH_IMAGE_URL else Webservice.BASE_PATH_IMAGE_SMALL_URL
-        binding.moviePoster.load(basePath + movie.poster_path)
-        binding.moviePosterBackground.load(basePath + movie.poster_path) {
+        binding.moviePosterBackground.load(Webservice.BASE_PATH_IMAGE_SMALL_URL + movie.poster_path) {
             transformations(BlurTransformation(requireContext(), sampling = 7.0f))
         }
+        binding.moviePoster.load(basePath + movie.poster_path)
+
         binding.movieDateText.text = movie.release_date
         binding.movieNameText.text = movie.title
         binding.movieNameTextToolbar.text = movie.title

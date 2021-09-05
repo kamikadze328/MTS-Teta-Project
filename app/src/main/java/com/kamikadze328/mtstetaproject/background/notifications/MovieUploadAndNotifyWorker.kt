@@ -43,7 +43,6 @@ class MovieUploadAndNotifyWorker @AssistedInject constructor(
                     .data(it.poster_path)
                     .target { result ->
                         val bitmap = (result as BitmapDrawable).bitmap
-                        Log.d("kek", "do work")
                         sendNotificationToMovie(it.title, it.movieId, bitmap)
                     }
                     .build()

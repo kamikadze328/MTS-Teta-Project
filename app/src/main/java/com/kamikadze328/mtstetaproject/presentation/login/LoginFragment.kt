@@ -28,7 +28,6 @@ class LoginFragment : Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("kek", "onCreate login")
         viewModel.init(requireActivity())
         super.onCreate(savedInstanceState)
     }
@@ -37,7 +36,6 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("kek", "onCreateView login")
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -54,7 +52,6 @@ class LoginFragment : Fragment() {
         }
 
         viewModel.state.observe(viewLifecycleOwner, {
-            Log.d("kek", "$it")
             when (it) {
                 is FirebaseAuthState.WaitUserPhoneNumber -> {
                     when {

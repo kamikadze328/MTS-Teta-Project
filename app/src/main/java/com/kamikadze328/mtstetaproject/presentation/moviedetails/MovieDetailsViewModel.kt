@@ -1,6 +1,5 @@
 package com.kamikadze328.mtstetaproject.presentation.moviedetails
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Actor
 import com.kamikadze328.mtstetaproject.data.dto.Genre
@@ -15,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
@@ -27,11 +25,11 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieId: Long =
         MovieDetailsFragmentArgs.fromSavedStateHandle(savedStateHandle).movieId
 
-    private val _movieState: MutableLiveData<UIState<Movie>> = MutableLiveData(UIState.LoadingState)
+    private val _movieState: MutableLiveData<UIState<Movie>> = MutableLiveData()
     val movieState: LiveData<UIState<Movie>> = _movieState
 
     private val moviesCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
-        CoroutineExceptionHandler(::onMoviesLoadFailed)
+        CoroutineExceptionHandler { _, throwable -> onMoviesLoadFailed(throwable) }
     }
 
     init {
@@ -53,9 +51,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun getMovieId() = movieId
 
-    private fun onMoviesLoadFailed(context: CoroutineContext, exception: Throwable) {
-        Log.d("kek", "$exception")
-        Log.d("kek", exception.stackTraceToString())
+    private fun onMoviesLoadFailed(exception: Throwable) {
         _movieState.postValue(UIState.ErrorState(exception))
     }
 
@@ -63,7 +59,6 @@ class MovieDetailsViewModel @Inject constructor(
         viewModelScope.launch(moviesCoroutineExceptionHandler) {
             _movieState.postValue(UIState.LoadingState)
             val newMovieState = movieDetailsRepository.refreshMovie(getMovieId())
-                ?: throw Exception("Can't load the movie")
 
             setMovie(newMovieState)
         }

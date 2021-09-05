@@ -25,6 +25,7 @@ class MovieViewHolder(private val view: View) : MovieViewHolderSealed(view) {
     fun bind(movie: Movie, click: (id: Long, view: View) -> Unit) {
         poster.transitionName = movie.poster_path
         poster.load(Webservice.BASE_PATH_IMAGE_SMALL_URL + movie.poster_path) {
+            placeholder(R.drawable.ic_baseline_image_not_supported_24)
             transformations(RoundedCornersTransformation(view.context.resources.getDimension(R.dimen.movie_main_poster_border_radius)))
         }
         root.setOnClickListener { click(movie.movieId, root) }
