@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_home"
+    app:startDestination="@id/fragment_home">
+
+    <fragment
+        android:id="@+id/fragment_home"
+        android:name="com.kamikadze328.mtstetaproject.presentation.home.HomeFragment"
+        tools:layout="@layout/fragment_home">
+        <argument
+            android:name="searchQuery"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_home_to_movie_details"
+            app:destination="@id/fragment_movie_details"
+            app:launchSingleTop="true"
+            app:popUpToSaveState="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_movie_details"
+        android:name="com.kamikadze328.mtstetaproject.presentation.moviedetails.MovieDetailsFragment"
+        tools:layout="@layout/fragment_movie_details">
+        <argument
+            android:name="movieId"
+            app:argType="long" />
+        <argument
+            android:name="moviePath"
+            app:argType="string" />
+    </fragment>
+</navigation>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <stroke
+        android:width="@dimen/age_restriction_stroke_width"
+        android:color="@color/black" />
+
+    <solid android:color="@color/white" />
+
+    <size
+        android:width="@dimen/movie_main_age_restriction_size"
+        android:height="@dimen/movie_main_age_restriction_size" />
+
+</shape>
