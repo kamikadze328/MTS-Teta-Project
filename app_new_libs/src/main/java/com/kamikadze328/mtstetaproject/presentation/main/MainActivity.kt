@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
     CallbackActorClicked {
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel: MainViewModel by viewModels()
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
