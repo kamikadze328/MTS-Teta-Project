@@ -1,19 +1,15 @@
-package com.kamikadze328.mtstetaproject.ui
+package com.kamikadze328.mtstetaproject.ui.resourse
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.kamikadze328.mtstetaproject.ui.resourse.*
 
-val primaryVariant = purple_700
 private val colors = lightColors(
     onSurface = Color.White,
-    primary = purple_200,
+    primary = purple_500,
     onPrimary = white,
-    primaryVariant = primaryVariant,
+    primaryVariant = purple_700,
     secondary = teal_200,
     secondaryVariant = teal_700,
     onSecondary = black,
