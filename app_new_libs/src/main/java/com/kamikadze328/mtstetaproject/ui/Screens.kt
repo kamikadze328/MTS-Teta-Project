@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.*
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.kamikadze328.mtstetaproject.R
 
 /*
@@ -21,7 +21,11 @@ import androidx.compose.ui.graphics.vector.VectorAsset
 */
 
 
-sealed class Screens(val route: String, @StringRes val resourceId: Int, @DrawableRes val icon: Int) {
+sealed class Screens(
+    val route: String,
+    @StringRes val resourceId: Int,
+    @DrawableRes val icon: Int
+) {
     object Movies : Screens("Movies", R.string.title_home, R.drawable.ic_home_black)
     object Profile : Screens("Profile", R.string.title_profile, R.drawable.ic_profile_black)
 }
@@ -46,13 +50,13 @@ fun MyAppBottomNavigation(
                     /*if (currentDestination?.route == Screens.Films.route) {
                         navController.popBackStack(Screens.Films.route, false)
                     } else {*/
-                        navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+                    navController.navigate(screen.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                     //}
                 }
             )
