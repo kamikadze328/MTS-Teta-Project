@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class MoviesViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val movieRepository: MovieRepository,
     private val genreRepository: GenreRepository

@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: HomeViewModel by activityViewModels()
+    private val viewModel: MoviesViewModel by activityViewModels()
     lateinit var genreAdapter: GenreAdapter
 
     companion object {

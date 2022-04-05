@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.vector.VectorAsset
 
 
 sealed class Screens(val route: String, @StringRes val resourceId: Int, @DrawableRes val icon: Int) {
-    object Films : Screens("Films", R.string.title_home, R.drawable.ic_home_black)
+    object Movies : Screens("Movies", R.string.title_home, R.drawable.ic_home_black)
     object Profile : Screens("Profile", R.string.title_profile, R.drawable.ic_profile_black)
 }
 

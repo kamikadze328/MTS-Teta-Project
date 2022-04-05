@@ -18,7 +18,6 @@ import com.kamikadze328.mtstetaproject.presentation.home.HomeFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreClicked,
     CallbackActorClicked {
     private lateinit var binding: ActivityMainBinding

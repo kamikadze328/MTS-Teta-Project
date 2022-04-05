@@ -11,7 +11,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kamikadze328.mtstetaproject.ui.resourse.BasicMTSTetaProjectTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +27,7 @@ class MainActivity : ComponentActivity() {
 private fun MyApp() {
     BasicMTSTetaProjectTheme {
         val bottomNavigationItems = listOf(
-            Screens.Films,
+            Screens.Movies,
             Screens.Profile,
         )
 
@@ -38,10 +40,10 @@ private fun MyApp() {
         ) { innerPadding ->
             NavHost(
                 navController,
-                startDestination = Screens.Films.route,
+                startDestination = Screens.Movies.route,
                 Modifier.padding(innerPadding)
             ) {
-                composable(Screens.Films.route) { Films(navController) }
+                composable(Screens.Movies.route) { Movies(navController) }
                 composable(Screens.Profile.route) { Profile(navController) }
             }
         }
