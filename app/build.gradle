@@ -83,8 +83,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx'
 
     //coil
-    implementation "io.coil-kt:coil-base:$coil_version"
-    implementation "io.coil-kt:coil:$coil_version"
+    implementation "io.coil-kt:coil-base:$coil_v1_version"
+    implementation "io.coil-kt:coil:$coil_v1_version"
 
     //Room
     implementation "androidx.room:room-runtime:$room_version"

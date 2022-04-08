@@ -10,7 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kamikadze328.mtstetaproject.ui.resourse.BasicMTSTetaProjectTheme
+import com.kamikadze328.mtstetaproject.ui.profile.Profile
+import com.kamikadze328.mtstetaproject.ui.theme.BasicTetaProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun MyApp() {
-    BasicMTSTetaProjectTheme {
+    BasicTetaProjectTheme {
         val bottomNavigationItems = listOf(
             Screens.Movies,
             Screens.Profile,
@@ -37,16 +38,17 @@ private fun MyApp() {
             bottomBar = {
                 MyAppBottomNavigation(navController, bottomNavigationItems)
             },
-        ) { innerPadding ->
-            NavHost(
-                navController,
-                startDestination = Screens.Movies.route,
-                Modifier.padding(innerPadding)
-            ) {
-                composable(Screens.Movies.route) { Movies(navController) }
-                composable(Screens.Profile.route) { Profile(navController) }
+            content = { innerPadding ->
+                NavHost(
+                    navController,
+                    startDestination = Screens.Movies.route,
+                    Modifier.padding(innerPadding)
+                ) {
+                    composable(Screens.Movies.route) { Movies(navController) }
+                    composable(Screens.Profile.route) { Profile(navController) }
+                }
             }
-        }
+        )
     }
 }
 

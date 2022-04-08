@@ -1,3 +1,5 @@
 rootProject.name = "MTS Teta Project"
 include ':app'
 include ':app_new_libs'
+include ':app_popular_libs'
+include ':benchmark'

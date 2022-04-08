@@ -1,0 +1,159 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.BasicMTSTetaProject" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="MovieGenreText">
+        <item name="android:background">@drawable/genre_background</item>
+        <item name="android:paddingStart">9dp</item>
+        <item name="android:paddingEnd">9dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="MovieDateText">
+        <item name="android:textAlignment">textEnd</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="MovieNameText">
+        <item name="android:paddingTop">@dimen/movie_detail_name_padding_top</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MovieNameText.Main" parent="MovieNameText">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="MovieNameText.ToolBarCollapsedLand" parent="MovieNameText">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+
+    </style>
+
+    <style name="MovieRatingAgeText">
+        <item name="android:background">@drawable/movie_age_rating_rounded_circle</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="MovieRatingAgeText.Main" parent="MovieRatingAgeText">
+        <item name="android:textSize">7sp</item>
+    </style>
+
+    <style name="MovieDescriptionText">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="MovieDescriptionText.Main" parent="MovieDescriptionText">
+        <item name="android:textSize">12sp</item>
+        <item name="android:maxLines">6</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">6</item>
+    </style>
+
+    <style name="MovieToolbarBeforeCollapsed">
+        <item name="android:layout_height">105dp</item>
+        <item name="android:paddingStart">@dimen/movie_detail_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/movie_detail_padding_horizontal</item>
+        <item name="android:paddingTop">@dimen/movie_detail_padding_top</item>
+        <item name="android:paddingBottom">@dimen/movie_detail_header_padding_bottom</item>
+    </style>
+
+    <style name="MovieToolbarCollapsed">
+        <item name="android:background">@color/white</item>
+        <item name="android:elevation">@dimen/design_appbar_elevation</item>
+    </style>
+
+    <style name="MovieRatingStar">
+        <item name="android:layout_marginStart">@dimen/rating_stars_margin_between</item>
+    </style>
+
+    <style name="MovieActorsHeader">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="BottomNavigationView">
+        <item name="itemTextColor">@color/main_color</item>
+        <item name="itemIconTint">@color/main_color</item>
+        <item name="itemBackground">@drawable/navigation_bottom_background</item>
+        <item name="labelVisibilityMode">unlabeled</item>
+    </style>
+
+    <style name="MovieMainHeader">
+        <item name="maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="MovieMainFooter">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+
+    <style name="MyRatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@android:color/holo_green_light</item>
+        <item name="colorControlActivated">@android:color/holo_orange_dark</item>
+    </style>
+
+    <style name="ProfileName">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ProfileEmail">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ProfileBlockHeader">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">@dimen/profile_margin_header</item>
+    </style>
+
+    <style name="ProfileTextInput">
+        <item name="android:backgroundTint">@color/profile_edit_text</item>
+        <item name="android:textColorHint">@color/profile_edit_text</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ProfileSaveButton" parent="ProfileBlockHeader">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+    </style>
+
+    <style name="SettingsItem">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ProfileLogoutButton">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">15dp</item>
+        <item name="backgroundTint">@color/profile_special_background</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/profile_buttons_background</item>
+        <item name="android:layout_marginTop">@dimen/profile_margin_header</item>
+    </style>
+</resources>

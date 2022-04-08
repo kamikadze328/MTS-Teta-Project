@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="movie_detail_border_radius">30dp</dimen>
+    <dimen name="movie_detail_padding_horizontal">20dp</dimen>
+    <dimen name="movie_detail_padding_top">32dp</dimen>
+    <dimen name="movie_detail_header_padding_bottom">8dp</dimen>
+    <dimen name="movie_detail_name_padding_top">14dp</dimen>
+    <dimen name="movie_detail_poster_height">330dp</dimen>
+    <dimen name="movie_detail_actors_offset">10dp</dimen>
+
+    <dimen name="genre_border_width">1dp</dimen>
+    <dimen name="genre_border_width_selected">2dp</dimen>
+    <dimen name="genre_border_radius">10dp</dimen>
+
+    <dimen name="age_restriction_stroke_width">1dp</dimen>
+
+    <dimen name="main_poster_width">150dp</dimen>
+    <dimen name="main_poster_height">216dp</dimen>
+
+    <dimen name="actor_container_width">150dp</dimen>
+    <dimen name="actor_container_height">216dp</dimen>
+
+    <dimen name="main_side_offset">3dp</dimen>
+
+    <dimen name="movie_main_age_restriction_size">21dp</dimen>
+
+    <dimen name="size_movies_list_title">14sp</dimen>
+    <dimen name="size_movies_list_description">12sp</dimen>
+
+    <dimen name="movie_main_movie_offset_bottom">48dp</dimen>
+    <dimen name="movie_main_movie_offset">20dp</dimen>
+
+    <dimen name="movie_main_genres_offset">6dp</dimen>
+    <dimen name="movie_main_poster_border_radius">10dp</dimen>
+
+    <dimen name="movie_main_no_movies_img_size">150dp</dimen>
+
+    <dimen name="rating_stars_margin_between">2dp</dimen>
+
+    <dimen name="movie_item_name_margin">8dp</dimen>
+    <dimen name="movie_item_margin_between">10dp</dimen>
+
+    <dimen name="profile_img_size">72dp</dimen>
+    <dimen name="profile_img_margin_top">24dp</dimen>
+    <dimen name="profile_img_padding_top">24dp</dimen>
+    <dimen name="profile_img_padding">20dp</dimen>
+    <dimen name="profile_padding_vertical">48dp</dimen>
+    <dimen name="profile_padding_horizontal">20dp</dimen>
+    <dimen name="profile_text_input_placeholder_font_size">12sp</dimen>
+    <dimen name="profile_text_input_font_size">14sp</dimen>
+
+    <dimen name="profile_margin_header">40dp</dimen>
+    <dimen name="profile_movies_offset">10dp</dimen>
+    <dimen name="profile_vertical_offset_between">10dp</dimen>
+    <dimen name="profile_buttons_border_radius">10dp</dimen>
+
+    <dimen name="bottom_navigation_bar_bottom_border_height">2dp</dimen>
+
+    <dimen name="design_bottom_navigation_item_max_width" tools:override="true">6000dp</dimen>
+    <dimen name="design_bottom_navigation_active_item_max_width" tools:override="true">6000dp
+    </dimen>
+
+    <dimen name="login_margin_main">10dp</dimen>
+    <dimen name="login_margin_between">5dp</dimen>
+
+    <dimen name="movie_poster_offset_horizontal">30dp</dimen>
+    <dimen name="movie_poster_offset_vertical">0dp</dimen>
+    <dimen name="movie_poster_offset_horizontal_end">80dp</dimen>
+    <dimen name="movie_poster_offset_vertical_end">50dp</dimen>
+
+</resources>

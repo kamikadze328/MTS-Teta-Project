@@ -4,13 +4,6 @@ package com.kamikadze328.mtstetaproject.data.repository
 import android.app.Application
 import android.net.Uri
 import android.util.Log
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.auth.ktx.userProfileChangeRequest
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.User
@@ -31,36 +24,29 @@ class AccountRepository @Inject constructor(
     private val movieRepository: MovieRepository,
     private val genreRepository: GenreRepository
 ) {
-    val currentUser: FirebaseUser?
-        get() = Firebase.auth.currentUser
-
-    val database: FirebaseDatabase
-        get() = Firebase.database
-
-    val references: DatabaseReference
-        get() = database.reference
+    val currentUser: User = User(
+            uid = "-1", name = "Банан Бананов",
+            password = "1234", email = "bananbananov@yandex.ru", phone = "+799999999999", photoUrl = Uri.EMPTY, emailVerified = true
+        )
 
     private val userError: User by lazy {
         User(
-            id = "-1", name = application.resources.getString(R.string.user_loading_error),
+            uid = "-1", name = application.resources.getString(R.string.user_loading_error),
             password = "", email = "", phone = "", photoUrl = Uri.EMPTY, emailVerified = true
         )
     }
 
     private val userLoading: User by lazy {
         User(
-            id = "-2", name = application.resources.getString(R.string.user_loading),
+            uid = "-2", name = application.resources.getString(R.string.user_loading),
             password = "", email = "", phone = "", photoUrl = Uri.EMPTY, emailVerified = true
         )
     }
 
-    //TODO update and refresh user with FirebaseUser
-    /*suspend fun refreshUser(accountId: Int): User = withContext(Dispatchers.IO) {
-        return@withContext webservice.getAccountDetails(accountId.toString())
-    }*/
-
     suspend fun getFavouriteGenres(accountId: String): List<Genre> = withContext(Dispatchers.IO) {
         val allGenres = genreRepository.getAll()
+        Log.d("kek", "getFavouriteGenres - ${allGenres}")
+
         val maxGenresCount = 3
         val favouriteMovies =
             getUserFavouriteMovies(accountId.toLong()).map { it.toUIMovie(allGenres) }
@@ -76,22 +62,10 @@ class AccountRepository @Inject constructor(
         return@withContext countGenres.filter { isMaxMoreOne && it.second > 1 }.map { it.first }
     }
 
-    suspend fun updateUser(user: User){
-        val kek = object {
-            var nameChanged = false
-        }
-        val savedUser = currentUser ?: return
-        if(user.name != savedUser.displayName){
-            userProfileChangeRequest {
-                displayName = user.name
-            }
-        }
-    }
+    suspend fun updateUser(user: User){}
 
-    fun changeMovieLike(movieId: Long, isFavourite: Boolean){
-        val uid = currentUser?.uid ?: return
-        //val list
-        //references.child("users").child(uid).setValue(user)
+    fun changeMovieLike(movieId: Long, isFavourite: Boolean) {
+        val uid = currentUser.uid
     }
 
     fun saveToken(token: String) {
@@ -122,7 +96,6 @@ class AccountRepository @Inject constructor(
 
     fun logout() {
         movieRepository.setAllNotFavourite()
-        Firebase.auth.signOut()
     }
 
     fun loadUserLoading(): User {

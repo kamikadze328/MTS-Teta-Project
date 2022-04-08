@@ -8,21 +8,22 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.annotation.ExperimentalCoilApi
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Movie
@@ -44,7 +45,6 @@ fun MovieShortGrid(
     }
 }
 
-@OptIn(ExperimentalCoilApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun MovieShort(
     movie: Movie,
@@ -54,10 +54,6 @@ fun MovieShort(
         dimensionResource(R.dimen.movie_main_poster_border_radius).toPx()
     }
     val url = Webservice.BASE_PATH_IMAGE_SMALL_URL + movie.poster_path
-    val painter = rememberImagePainter(url) {
-        placeholder(R.drawable.ic_baseline_image_not_supported_24)
-        transformations(RoundedCornersTransformation(cornerRadius))
-    }
 
     val interactionSource = remember { MutableInteractionSource() }
     Column(
@@ -70,8 +66,12 @@ fun MovieShort(
             .padding(horizontal = 5.dp, vertical = 12.dp)
             .padding(3.dp),
     ) {
-        Image(
-            painter = painter,
+        AsyncImage (
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(url)
+                .placeholder(R.drawable.ic_baseline_image_not_supported_24)
+                .transformations(RoundedCornersTransformation(cornerRadius))
+                .build(),
             modifier = Modifier
                 .width(dimensionResource(R.dimen.main_poster_width))
                 .height(dimensionResource(R.dimen.main_poster_height))

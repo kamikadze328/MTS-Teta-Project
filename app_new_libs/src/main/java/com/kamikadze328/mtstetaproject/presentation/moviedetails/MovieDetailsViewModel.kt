@@ -22,8 +22,8 @@ class MovieDetailsViewModel @Inject constructor(
     private val actorRepository: ActorRepository,
     private val genreRepository: GenreRepository
 ) : ViewModel() {
-    private val movieId: Long =
-        MovieDetailsFragmentArgs.fromSavedStateHandle(savedStateHandle).movieId
+    private val movieId: Long = 0
+        //MovieDetailsFragmentArgs.fromSavedStateHandle(savedStateHandle).movieId
 
     private val _movieState: MutableLiveData<UIState<Movie>> = MutableLiveData()
     val movieState: LiveData<UIState<Movie>> = _movieState
