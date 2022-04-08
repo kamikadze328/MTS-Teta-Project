@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,6 +26,7 @@ import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.util.UIState
 import com.kamikadze328.mtstetaproject.presentation.profile.ProfileViewModel
+import com.kamikadze328.mtstetaproject.ui.common.Header
 import com.kamikadze328.mtstetaproject.ui.theme.profile_special_background
 
 @Composable
@@ -85,19 +87,6 @@ fun Profile(
             )
         }
     }
-}
-
-@Composable
-fun Header(
-    @StringRes textRes: Int,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        modifier = modifier.padding(top = 20.dp, bottom = 10.dp),
-        text = stringResource(textRes),
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
-    )
 }
 
 @Composable

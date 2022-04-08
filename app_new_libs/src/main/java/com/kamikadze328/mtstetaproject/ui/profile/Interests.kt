@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.presentation.main.CallbackGenreClicked
+import com.kamikadze328.mtstetaproject.ui.common.Header
 import com.kamikadze328.mtstetaproject.ui.common.ListGenre
 
 @Composable

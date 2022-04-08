@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.User
+import com.kamikadze328.mtstetaproject.ui.common.Header
 
 @Composable
 fun ProfileEditableInfo(

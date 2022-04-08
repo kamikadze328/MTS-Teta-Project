@@ -1,7 +1,6 @@
 package com.kamikadze328.mtstetaproject.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -22,7 +21,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import com.kamikadze328.mtstetaproject.R
@@ -37,7 +35,7 @@ fun MovieShortGrid(
 ) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),
-        contentPadding = PaddingValues(14.dp),
+        contentPadding = PaddingValues(start = 14.dp, end = 14.dp, bottom = 48.dp),
     ) {
         items(movies) {
             MovieShort(it, onMovieClick)
@@ -66,7 +64,7 @@ fun MovieShort(
             .padding(horizontal = 5.dp, vertical = 12.dp)
             .padding(3.dp),
     ) {
-        AsyncImage (
+        AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(url)
                 .placeholder(R.drawable.ic_baseline_image_not_supported_24)
