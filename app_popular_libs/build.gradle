@@ -28,15 +28,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        benchmark {
-            initWith buildTypes.release
-            signingConfig signingConfigs.debug
-            debuggable false
-
         }
     }
     compileOptions {
@@ -50,18 +43,28 @@ android {
         kotlinCompilerExtensionVersion '1.1.1'
     }
     buildFeatures {
+        viewBinding true
         compose true
     }
 }
 
 dependencies {
     implementation "androidx.core:core-ktx:1.7.0"
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha03'
+    implementation "com.google.accompanist:accompanist-appcompat-theme:0.16.0"
 
     //navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     implementation "androidx.navigation:navigation-compose:$nav_version"
 
@@ -70,8 +73,26 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
+    //hilt work
+    implementation 'androidx.hilt:hilt-work:1.0.0'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+
+    //work
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation "androidx.work:work-multiprocess:$work_version"
+
+    //firebase
+    implementation platform('com.google.firebase:firebase-bom:28.4.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-appcheck:16.0.0-beta05'
+    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0-beta05'
+    implementation 'com.google.firebase:firebase-database-ktx'
+
     //coil
     implementation "io.coil-kt:coil-base:$coil_version"
+    implementation "io.coil-kt:coil:$coil_version"
     implementation "io.coil-kt:coil-compose:$coil_version"
 
     //Room
@@ -79,12 +100,15 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     //gson
-    implementation "com.google.code.gson:gson:$gson_version"
+    implementation 'com.google.code.gson:gson:2.9.0'
 
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
+
+    // RecyclerView Animators
+    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
 
     //Compose
     implementation 'androidx.compose.ui:ui:1.1.1'
@@ -97,5 +121,4 @@ dependencies {
     implementation 'androidx.compose.runtime:runtime-livedata:1.1.1'
     implementation 'androidx.activity:activity-compose:1.4.0'
     debugImplementation "androidx.compose.ui:ui-tooling:1.1.1"
-
 }
