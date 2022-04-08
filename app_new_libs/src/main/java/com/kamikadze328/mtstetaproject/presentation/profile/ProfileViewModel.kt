@@ -68,10 +68,10 @@ class ProfileViewModel @Inject constructor(
 
         val genres: List<Genre>? = savedStateHandle[GENRES]
         val isGenresNotCached = genres == null
-        if (isGenresNotCached) loadFavouritesGenres()
+        if (genres == null) loadFavouritesGenres()
 
         viewModelScope.launch {
-            if (!isGenresNotCached) setFavouriteGenres(genres!!)
+            genres?.let { setFavouriteGenres(it) }
         }
     }
 

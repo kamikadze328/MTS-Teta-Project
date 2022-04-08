@@ -63,15 +63,12 @@ class MoviesViewModel @Inject constructor(
         val movies: List<Movie>? = savedStateHandle[MOVIES]
         val genres: List<Genre>? = savedStateHandle[GENRES]
 
-        val isMoviesNotCached = movies == null
-        val isGenresNotCached = genres == null
-
-        if (isGenresNotCached) loadGenres()
-        if (isMoviesNotCached) loadMovies()
+        if (genres == null) loadGenres()
+        if (genres == null) loadMovies()
 
         viewModelScope.launch {
-            if (!isMoviesNotCached) updateMovies(movies!!)
-            if (!isGenresNotCached) setGenres(genres!!)
+            movies?.let { updateMovies(it) }
+            genres?.let { setGenres(it) }
         }
 
     }
@@ -89,6 +86,7 @@ class MoviesViewModel @Inject constructor(
     }
 
     private fun onMoviesLoadFailed(exception: Throwable) {
+        Log.d("kek", "$exception")
         _moviesState.postValue(UIState.ErrorState(exception))
     }
 
@@ -185,7 +183,7 @@ class MoviesViewModel @Inject constructor(
 
     private suspend fun setRecyclerMoviesState(newState: Parcelable?) =
         withContext(Dispatchers.Default) {
-            if (newState != null) _recyclerMoviesState.postValue(newState!!)
+            newState?.let { _recyclerMoviesState.postValue(it) }
             savedStateHandle.set(RECYCLER_MOVIES_STATE, newState)
         }
 
@@ -199,7 +197,7 @@ class MoviesViewModel @Inject constructor(
         if (_genresState.value is UIState.DataState) {
             viewModelScope.launch {
                 val genres =
-                    (_genresState.value as UIState.DataState<List<Genre>>).data.toMutableList()
+                    (_genresState.value as UIState.DataState<SnapshotStateList<Genre>>).data.toMutableList()
                 val index = genres.indexOfFirst { it.genreId == genreId }
                 val genre = genres[index].copy()
 

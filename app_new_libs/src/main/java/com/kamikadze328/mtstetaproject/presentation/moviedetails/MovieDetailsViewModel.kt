@@ -36,12 +36,10 @@ class MovieDetailsViewModel @Inject constructor(
 
         val movie: Movie? = savedStateHandle[MOVIE]
 
-        val isMovieNotCached = movie == null
-
-        if (isMovieNotCached) loadMovie()
+        if (movie == null) loadMovie()
 
         viewModelScope.launch {
-            if (!isMovieNotCached) setMovie(movie!!)
+            movie?.let { setMovie(it) }
         }
     }
 
