@@ -60,8 +60,6 @@ fun Movies(
             is UIState.DataState -> MovieShortGrid(
                 movies = movies.data,
                 onMovieClick = {
-                    Toast.makeText(context, it.toString(), Toast.LENGTH_SHORT)
-                        .show()
                     navController.navigate("${NavCommand.MovieDetails.route}/$it")
                 }
             )

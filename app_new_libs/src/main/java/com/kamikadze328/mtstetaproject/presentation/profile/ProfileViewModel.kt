@@ -24,34 +24,17 @@ class ProfileViewModel @Inject constructor(
     private val genreRepository: GenreRepository,
     application: Application
 ) : AndroidViewModel(application), CallbackGenreClicked {
-    private val uid: MutableLiveData<String> = MutableLiveData(savedStateHandle[PROFILE_ID])
-
-    private val _isAuthorized = MutableLiveData(true)
-    val isAuthorized: LiveData<Boolean> = _isAuthorized
-
     private val _favouriteGenresState: MutableLiveData<UIState<SnapshotStateList<Genre>>> =
         MutableLiveData(UIState.LoadingState)
     val favouriteGenresState: LiveData<UIState<SnapshotStateList<Genre>>> = _favouriteGenresState
 
-    private val _changedUser = MutableLiveData<User>(savedStateHandle[CHANGED_USER])
-    val changedUser: LiveData<User> = _changedUser
-
     private val _userState: MutableLiveData<UIState<User>> = MutableLiveData(UIState.LoadingState)
     val userState: LiveData<UIState<User>> = _userState
-
-    private val _wasDataChanged: MutableLiveData<UserState> = MutableLiveData()
-    val wasDataChanged: LiveData<UserState> = _wasDataChanged
 
 
     private val genresCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable -> onGenresLoadFailed(throwable) }
     }
-    private val userCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
-        CoroutineExceptionHandler { _, throwable -> onUserLoadFailed(throwable) }
-    }
-
-    private val isEmailUpdate = MutableLiveData(false)
-    private val isNameUpdate = MutableLiveData(false)
 
     companion object {
         private const val PROFILE_ID = "uid"
@@ -63,11 +46,10 @@ class ProfileViewModel @Inject constructor(
         init()
     }
 
-    fun init() {
+    private fun init() {
         setupUser()
 
         val genres: List<Genre>? = savedStateHandle[GENRES]
-        val isGenresNotCached = genres == null
         if (genres == null) loadFavouritesGenres()
 
         viewModelScope.launch {
@@ -77,11 +59,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun setUserId(uid: String) {
         savedStateHandle.set(PROFILE_ID, uid)
-        this.uid.value = uid
     }
-
-    fun getUseId() = uid.value!!
-
 
     private fun onGenresLoadFailed(exception: Throwable) {
         _favouriteGenresState.postValue(UIState.ErrorState(exception))
@@ -90,7 +68,7 @@ class ProfileViewModel @Inject constructor(
     private fun loadFavouritesGenres() {
         viewModelScope.launch(genresCoroutineExceptionHandler) {
             _favouriteGenresState.postValue(UIState.LoadingState)
-            val genres = accountRepository.getFavouriteGenres(getUseId())
+            val genres = accountRepository.getFavouriteGenres()
             setFavouriteGenres(genres)
         }
     }
@@ -102,16 +80,10 @@ class ProfileViewModel @Inject constructor(
         savedStateHandle.set(GENRES, genres)
     }
 
-    private fun onUserLoadFailed(exception: Throwable) {
-        _userState.postValue(UIState.ErrorState(exception))
-        onGenresLoadFailed(exception)
-    }
-
     private fun setupUser() {
         _userState.postValue(UIState.LoadingState)
         val user = accountRepository.currentUser
 
-        _isAuthorized.value = true
         setNewUser(user)
     }
 
@@ -119,17 +91,10 @@ class ProfileViewModel @Inject constructor(
         setUserId(user.uid)
         _userState.postValue(UIState.DataState(user))
         setChangedUser(user)
-        setWasDataChanged(UserState.DEFAULT)
-    }
-
-    private fun setWasDataChanged(newVal: UserState) {
-        this._wasDataChanged.value = newVal
     }
 
     private fun setChangedUser(user: User) {
-        user.uid = getUseId()
         savedStateHandle.set(CHANGED_USER, user)
-        _changedUser.value = user
     }
 
     private fun getOldUser(): User? = (_userState.value as? UIState.DataState)?.data
@@ -158,26 +123,9 @@ class ProfileViewModel @Inject constructor(
         updateChangedUser(newUser)
     }
 
-    fun updateChangedUser(newChangedUser: User) {
+    private fun updateChangedUser(newChangedUser: User) {
         setChangedUser(newChangedUser)
-        val oldUser = getOldUser() ?: return
-        setWasDataChanged(wasDataChanged(oldUser, newChangedUser))
     }
-
-    fun updateUser() {
-        val currentUser = _changedUser.value ?: return
-        viewModelScope.launch {
-            accountRepository.updateUser(currentUser)
-        }
-    }
-
-    fun logout() {
-        accountRepository.logout()
-        _isAuthorized.value = false
-    }
-
-    private fun wasDataChanged(oldUser: User, newChangedUser: User): UserState =
-        if (oldUser.compareTo(newChangedUser) != 0) UserState.DEFAULT else UserState.WAS_DATA_CHANGED
 
     fun loadGenreLoading(): SnapshotStateList<Genre> {
         return mutableStateListOf(genreRepository.loadGenreLoading())
@@ -196,11 +144,13 @@ class ProfileViewModel @Inject constructor(
     }
 
     override fun onGenreClicked(genreId: Long) {
-        val genres =  (_favouriteGenresState.value as? UIState.DataState)?.data ?: return
+        val genres = (_favouriteGenresState.value as? UIState.DataState)?.data ?: return
         val index = genres.indexOfFirst { it.genreId == genreId }
         val genre = genres[index]
         val newGenre = genre.copy().apply { isSelected = !genre.isSelected }
         genres.removeAt(index)
         genres.add(index, newGenre)
     }
+
+    fun logout() {}
 }

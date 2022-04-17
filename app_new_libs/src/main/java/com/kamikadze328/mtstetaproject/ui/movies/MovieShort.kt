@@ -27,12 +27,13 @@ import coil.transform.RoundedCornersTransformation
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.data.remote.Webservice
+import com.kamikadze328.mtstetaproject.presentation.main.CallbackMovieClicked
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MovieShortGrid(
     movies: List<Movie>,
-    onMovieClick: (id: Long) -> Unit
+    onMovieClick: CallbackMovieClicked
 ) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),
@@ -57,7 +58,7 @@ fun LazyGridScope.MovieShortGrid(
 @Composable
 fun MovieShort(
     movie: Movie,
-    onMovieClick: (id: Long) -> Unit,
+    callback: CallbackMovieClicked,
 ) {
     val cornerRadius = with(LocalDensity.current) {
         dimensionResource(R.dimen.movie_main_poster_border_radius).toPx()
@@ -70,7 +71,7 @@ fun MovieShort(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = { onMovieClick(movie.movieId) }
+                onClick = { callback.onMovieClicked(movie.movieId) }
             )
             .padding(horizontal = 5.dp, vertical = 12.dp)
             .padding(3.dp),
