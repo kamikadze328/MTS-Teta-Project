@@ -143,9 +143,9 @@ class ProfileViewModel @Inject constructor(
         return accountRepository.loadUserError()
     }
 
-    override fun onGenreClicked(genreId: Long) {
+    override fun onGenreClicked(id: Long) {
         val genres = (_favouriteGenresState.value as? UIState.DataState)?.data ?: return
-        val index = genres.indexOfFirst { it.genreId == genreId }
+        val index = genres.indexOfFirst { it.genreId == id }
         val genre = genres[index]
         val newGenre = genre.copy().apply { isSelected = !genre.isSelected }
         genres.removeAt(index)

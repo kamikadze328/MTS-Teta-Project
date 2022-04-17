@@ -37,15 +37,13 @@ fun Profile(
     val user = when (val userState = viewModel.userState.observeAsState().value) {
         is UIState.DataState -> userState.data
         UIState.LoadingState -> viewModel.loadUserLoading()
-        is UIState.ErrorState -> viewModel.loadUserError()
-        null -> viewModel.loadUserError()
+        else -> viewModel.loadUserError()
     }
     val genres: SnapshotStateList<Genre> =
         when (val genreState = viewModel.favouriteGenresState.observeAsState().value) {
             is UIState.DataState -> genreState.data
             UIState.LoadingState -> viewModel.loadGenreLoading()
-            is UIState.ErrorState -> viewModel.loadGenreError()
-            null -> viewModel.loadGenreError()
+            else -> viewModel.loadGenreError()
         }
     val settings = stringArrayResource(R.array.settings_headers)
     val appSettings = stringArrayResource(R.array.app_info_headers)

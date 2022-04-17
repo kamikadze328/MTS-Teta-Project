@@ -121,9 +121,9 @@ class MoviesViewModel @Inject constructor(
         return listOf(genreRepository.loadGenreError())
     }
 
-    override fun onGenreClicked(genreId: Long) {
+    override fun onGenreClicked(id: Long) {
         val genres = (_genresState.value as? UIState.DataState)?.data ?: return
-        val index = genres.indexOfFirst { it.genreId == genreId }
+        val index = genres.indexOfFirst { it.genreId == id }
         val genre = genres[index]
         val newGenre = genre.copy().apply { isSelected = !genre.isSelected }
         genres.removeAt(index)

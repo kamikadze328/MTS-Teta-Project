@@ -33,7 +33,6 @@ fun ListGenre(
     ) {
         items(
             items = genres,
-            key = { it.genreId }
         ) { genre ->
             Genre(genre = genre, callback = callback)
         }

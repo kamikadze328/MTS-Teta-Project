@@ -1,16 +1,12 @@
 package com.kamikadze328.mtstetaproject.ui.movies
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.NavHost
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.util.UIState
 import com.kamikadze328.mtstetaproject.presentation.movies.MoviesViewModel
@@ -25,7 +21,6 @@ fun Movies(
 ) {
     val movies = viewModel.moviesState.observeAsState().value
     val genres = viewModel.genresState.observeAsState().value
-    val context = LocalContext.current
     Column(
         modifier = Modifier,
     ) {
@@ -38,9 +33,8 @@ fun Movies(
         ListGenre(
             genres = when (genres) {
                 is UIState.LoadingState -> viewModel.loadGenreLoading()
-                is UIState.ErrorState -> viewModel.loadGenreError()
                 is UIState.DataState -> genres.data
-                null -> viewModel.loadGenreError()
+                else -> viewModel.loadGenreError()
             },
             callback = viewModel
         )
@@ -51,26 +45,17 @@ fun Movies(
                 .padding(horizontal = 20.dp)
         )
         when (movies) {
-            is UIState.ErrorState -> NoMovies(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 20.dp)
-            )
-
             is UIState.DataState -> MovieShortGrid(
                 movies = movies.data,
                 onMovieClick = {
                     navController.navigate("${NavCommand.MovieDetails.route}/$it")
                 }
             )
-
-
             else -> NoMovies(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 20.dp)
             )
-
         }
     }
 }

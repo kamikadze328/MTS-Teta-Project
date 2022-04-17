@@ -8,6 +8,8 @@ import com.kamikadze328.mtstetaproject.data.repository.ActorRepository
 import com.kamikadze328.mtstetaproject.data.repository.GenreRepository
 import com.kamikadze328.mtstetaproject.data.repository.MovieDetailsRepository
 import com.kamikadze328.mtstetaproject.data.util.UIState
+import com.kamikadze328.mtstetaproject.presentation.main.CallbackActorClicked
+import com.kamikadze328.mtstetaproject.presentation.main.CallbackGenreClicked
 import com.kamikadze328.mtstetaproject.ui.NavCommand
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -22,7 +24,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieDetailsRepository: MovieDetailsRepository,
     private val actorRepository: ActorRepository,
     private val genreRepository: GenreRepository
-) : ViewModel() {
+) : ViewModel(), CallbackActorClicked, CallbackGenreClicked {
     private val movieId: Long = savedStateHandle.get<Long>(NavCommand.MovieDetails.argKey) ?: 0
 
     private val _movieState: MutableLiveData<UIState<Movie>> = MutableLiveData()
@@ -89,6 +91,12 @@ class MovieDetailsViewModel @Inject constructor(
 
     fun loadActorsError(): List<Actor> {
         return listOf(actorRepository.loadActorError())
+    }
+
+    override fun onActorClicked(id: Int) {
+    }
+
+    override fun onGenreClicked(id: Long) {
     }
 
 }

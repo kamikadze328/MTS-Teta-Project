@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kamikadze328.mtstetaproject.ui.movie.details.MovieDetails
 import com.kamikadze328.mtstetaproject.ui.movies.Movies
 import com.kamikadze328.mtstetaproject.ui.profile.Profile
 import com.kamikadze328.mtstetaproject.ui.theme.BasicTetaProjectTheme
@@ -72,9 +73,4 @@ fun NavGraphBuilder.moviesGraph(navController: NavController) {
             )
         }
     }
-}
-
-@Composable
-private fun Main() {
-
 }
