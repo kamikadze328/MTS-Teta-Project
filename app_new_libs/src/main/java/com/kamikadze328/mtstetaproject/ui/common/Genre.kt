@@ -39,9 +39,8 @@ fun ListGenre(
         }
     }
 }
-
 @Composable
-private fun Genre(
+fun Genre(
     genre: Genre,
     callback: CallbackGenreClicked
 ) {

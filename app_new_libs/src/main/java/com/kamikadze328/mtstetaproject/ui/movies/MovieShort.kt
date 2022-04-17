@@ -1,10 +1,11 @@
-package com.kamikadze328.mtstetaproject.ui
+package com.kamikadze328.mtstetaproject.ui.movies
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyGridScope
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
@@ -39,7 +40,17 @@ fun MovieShortGrid(
     ) {
         items(movies) {
             MovieShort(it, onMovieClick)
-        }
+        }    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun LazyGridScope.MovieShortGrid(
+    movies: List<Movie>,
+    onMovieClick: (id: Long) -> Unit
+) {
+    items(movies) {
+        MovieShort(it, onMovieClick)
     }
 }
 

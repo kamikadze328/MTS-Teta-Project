@@ -13,21 +13,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.kamikadze328.mtstetaproject.R
-
-/*
-import androidx.compose.ui.graphics.vector.VectorAsset
-*/
-
 
 sealed class Screens(
     val route: String,
     @StringRes val resourceId: Int,
-    @DrawableRes val icon: Int
+    @DrawableRes val icon: Int,
+    val argKey: String? = null
 ) {
     object Movies : Screens("Movies", R.string.title_home, R.drawable.ic_home_black)
     object Profile : Screens("Profile", R.string.title_profile, R.drawable.ic_profile_black)
+}
+sealed class NavCommand(
+    val route: String,
+    val argKey: String,
+    val navType: NavType<*>
+){
+    object MovieDetails : NavCommand("movie_details", "movieId", NavType.LongType)
 }
 
 

@@ -24,3 +24,16 @@ fun Header(
         fontSize = fontSize,
     )
 }
+
+@Composable
+fun MainHeader(
+    @StringRes textRes: Int,
+    modifier: Modifier = Modifier,
+    fontSize: TextUnit = 18.sp,
+) {
+    Header(
+        modifier = modifier,
+        textRes = textRes,
+        fontSize = fontSize,
+    )
+}
