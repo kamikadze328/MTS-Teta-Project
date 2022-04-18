@@ -34,6 +34,7 @@ class MoviesViewModel @Inject constructor(
     private val moviesCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable -> onMoviesLoadFailed(throwable) }
     }
+
     private val genresCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable -> onGenresLoadFailed(throwable) }
     }

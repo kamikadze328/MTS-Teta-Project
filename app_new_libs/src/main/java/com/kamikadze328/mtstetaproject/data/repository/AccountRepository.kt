@@ -3,7 +3,6 @@ package com.kamikadze328.mtstetaproject.data.repository
 
 import android.app.Application
 import android.net.Uri
-import android.util.Log
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.User
@@ -45,14 +44,13 @@ class AccountRepository @Inject constructor(
         )
     }
 
-    suspend fun getFavouriteGenres(accountId: String = ""): List<Genre> =
+    suspend fun getFavouriteGenres(): List<Genre> =
         withContext(Dispatchers.IO) {
             val allGenres = genreRepository.getAll()
-            Log.d("kek", "getFavouriteGenres - ${allGenres}")
 
             val maxGenresCount = 3
             val favouriteMovies =
-                getUserFavouriteMovies(accountId.toLong()).map { it.toUIMovie(allGenres) }
+                getUserFavouriteMovies().map { it.toUIMovie(allGenres) }
 
             movieRepository.changeMoviesFavourite(favouriteMovies, true)
 
@@ -65,6 +63,9 @@ class AccountRepository @Inject constructor(
             return@withContext countGenres.filter { isMaxMoreOne && it.second > 1 }.map { it.first }
         }
 
+    fun logout() {
+        movieRepository.setAllNotFavourite()
+    }
 
     fun loadUserLoading(): User {
         return userLoading
@@ -74,7 +75,7 @@ class AccountRepository @Inject constructor(
         return userError
     }
 
-    private fun getUserFavouriteMovies(uid: Long) = listOf(
+    private fun getUserFavouriteMovies() = listOf(
         MovieShortRemote(
             id = 637649,
             title = "Гнев человеческий",

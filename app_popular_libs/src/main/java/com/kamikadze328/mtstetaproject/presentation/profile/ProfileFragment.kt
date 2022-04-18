@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
@@ -69,13 +68,7 @@ class ProfileFragment : Fragment() {
             viewModel.logout()
         }
 
-        viewModel.isAuthorized.observe(viewLifecycleOwner) {
-            if (it == false) toLoginFragment()
-        }
         setOnChangeListeners()
-
-        viewModel.wasDataChanged.observe(viewLifecycleOwner, ::updateSubmitButtonUI)
-
 
         viewModel.userState.observe(viewLifecycleOwner) {
             when (it) {
@@ -88,31 +81,12 @@ class ProfileFragment : Fragment() {
                     setEditTextEnable(false)
                 }
                 is UIState.DataState -> {
-                    if (viewModel.wasDataChanged.value != UserState.WAS_DATA_CHANGED) {
-                        updateUserInfoUI(it.data)
-                        setEditTextEnable(true)
-                    }
+                    updateUserInfoUI(it.data)
+                    setEditTextEnable(true)
                 }
             }
         }
-
-        viewModel.changedUser.value?.let {
-            updateUserInfoUI(it)
-        }
-
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupSaveButton()
-    }
-
-    private fun setupSaveButton() {
-        binding.profileSavePersonalInfoButton.setOnClickListener {
-            viewModel.updateUser()
-        }
-
     }
 
     private fun setupRecyclerAdapters() {
@@ -127,7 +101,7 @@ class ProfileFragment : Fragment() {
                 password = binding.profileTextInputPassword.text.toString(),
                 email = binding.profileTextInputEmail.text.toString(),
                 phone = binding.profileTextInputPhone.text.toString(),
-                uid = viewModel.getUseId(),
+                uid = "",
             )
         )
     }
@@ -159,27 +133,6 @@ class ProfileFragment : Fragment() {
         formatPhoneNumber(binding.profileTextInputPhone.text, binding.profileTextInputPhone)
 
         setOnChangeListeners()
-    }
-
-    private fun updateSubmitButtonUI(userState: UserState) {
-        when (userState) {
-            UserState.LOADING -> {
-                binding.profileCancelPersonalInfoButton.visibility = View.GONE
-                binding.profileSavePersonalInfoButton.text = ""
-                binding.profileSavePersonalInfoButtonLoading.visibility = View.VISIBLE
-            }
-            UserState.WAS_DATA_CHANGED -> {
-                binding.profileSavePersonalInfoButtonLoading.visibility = View.INVISIBLE
-                binding.profileSavePersonalInfoButton.visibility = View.VISIBLE
-                binding.profileCancelPersonalInfoButton.visibility = View.VISIBLE
-                binding.profileSavePersonalInfoButton.setText(R.string.profile_save_personal_info_button)
-            }
-            UserState.DEFAULT -> {
-                binding.profileSavePersonalInfoButtonLoading.visibility = View.GONE
-                binding.profileSavePersonalInfoButton.visibility = View.GONE
-                binding.profileCancelPersonalInfoButton.visibility = View.GONE
-            }
-        }
     }
 
     private fun setupRecyclerAdapterSetting() {
@@ -284,9 +237,5 @@ class ProfileFragment : Fragment() {
             binding.profileTextInputPhone,
             phoneTextWatcher
         )
-    }
-
-    private fun toLoginFragment() {
-        findNavController().navigate(R.id.action_to_login)
     }
 }

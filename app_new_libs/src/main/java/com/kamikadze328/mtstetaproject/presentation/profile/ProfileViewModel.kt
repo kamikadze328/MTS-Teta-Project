@@ -152,5 +152,7 @@ class ProfileViewModel @Inject constructor(
         genres.add(index, newGenre)
     }
 
-    fun logout() {}
+    fun logout() {
+        accountRepository.logout()
+    }
 }

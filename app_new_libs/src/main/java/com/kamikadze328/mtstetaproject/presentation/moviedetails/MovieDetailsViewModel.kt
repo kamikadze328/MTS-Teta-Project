@@ -25,7 +25,8 @@ class MovieDetailsViewModel @Inject constructor(
     private val actorRepository: ActorRepository,
     private val genreRepository: GenreRepository
 ) : ViewModel(), CallbackActorClicked, CallbackGenreClicked {
-    private val movieId: Long = savedStateHandle.get<Long>(NavCommand.MovieDetails.argKey) ?: 0
+    private val movieId: Long =
+        savedStateHandle.get<Long>(NavCommand.MovieDetails.argKey) ?: 0
 
     private val _movieState: MutableLiveData<UIState<Movie>> = MutableLiveData()
     val movieState: LiveData<UIState<Movie>> = _movieState

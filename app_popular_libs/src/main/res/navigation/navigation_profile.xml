@@ -3,31 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_profile"
-    app:startDestination="@id/fragment_login">
-
-    <fragment
-        android:id="@+id/fragment_login"
-        android:name="com.kamikadze328.mtstetaproject.presentation.login.LoginFragment"
-        tools:layout="@layout/fragment_login" />
-
-
-    <fragment
-        android:id="@+id/fragment_wait_code"
-        android:name="com.kamikadze328.mtstetaproject.presentation.login.WaitCodeFragment"
-        tools:layout="@layout/fragment_wait_code" />
+    app:startDestination="@id/fragment_profile">
 
     <fragment
         android:id="@+id/fragment_profile"
         android:name="com.kamikadze328.mtstetaproject.presentation.profile.ProfileFragment"
         tools:layout="@layout/fragment_profile" />
 
-    <action
-        android:id="@+id/action_to_login"
-        app:destination="@id/fragment_login" />
-    <action
-        android:id="@+id/action_to_wait_code"
-        app:destination="@id/fragment_wait_code" />
-    <action
-        android:id="@+id/action_to_profile"
-        app:destination="@id/fragment_profile" />
 </navigation>

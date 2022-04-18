@@ -3,19 +3,11 @@ package com.kamikadze328.mtstetaproject.data.repository
 
 import android.app.Application
 import android.net.Uri
-import android.util.Log
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.User
 import com.kamikadze328.mtstetaproject.data.mapper.toUIMovie
-import com.kamikadze328.mtstetaproject.data.remote.Webservice
 import com.kamikadze328.mtstetaproject.data.remote.dao.MovieShortRemote
-import com.kamikadze328.mtstetaproject.data.util.SharedPrefsUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -24,21 +16,19 @@ import javax.inject.Singleton
 
 @Singleton
 class AccountRepository @Inject constructor(
-    private val webservice: Webservice,
     private val application: Application,
     private val movieRepository: MovieRepository,
     private val genreRepository: GenreRepository
 ) {
     val currentUser: User = User(
-            uid = "-1", name = "Банан Бананов",
-            password = "1234", email = "bananbananov@yandex.ru", phone = "+799999999999", photoUrl = Uri.EMPTY, emailVerified = true
-        )
-
-    val database: FirebaseDatabase
-        get() = Firebase.database
-
-    val references: DatabaseReference
-        get() = database.reference
+        uid = "-1",
+        name = "Банан Бананов",
+        password = "1234",
+        email = "bananbananov@yandex.ru",
+        phone = "+799999999999",
+        photoUrl = Uri.EMPTY,
+        emailVerified = true
+    )
 
     private val userError: User by lazy {
         User(
@@ -54,60 +44,27 @@ class AccountRepository @Inject constructor(
         )
     }
 
-    suspend fun getFavouriteGenres(accountId: String): List<Genre> = withContext(Dispatchers.IO) {
-        val allGenres = genreRepository.getAll()
-        Log.d("kek", "getFavouriteGenres - ${allGenres}")
+    suspend fun getFavouriteGenres(): List<Genre> =
+        withContext(Dispatchers.IO) {
+            val allGenres = genreRepository.getAll()
 
-        val maxGenresCount = 3
-        val favouriteMovies =
-            getUserFavouriteMovies(accountId.toLong()).map { it.toUIMovie(allGenres) }
+            val maxGenresCount = 3
+            val favouriteMovies =
+                getUserFavouriteMovies().map { it.toUIMovie(allGenres) }
 
-        movieRepository.changeMoviesFavourite(favouriteMovies, true)
+            movieRepository.changeMoviesFavourite(favouriteMovies, true)
 
-        val countGenres = favouriteMovies.flatMap { it.genres }
-            .groupingBy { it }.eachCount().toList()
-            .sortedByDescending { (_, v) -> v }
-            .subList(0, maxGenresCount - 1)
+            val countGenres = favouriteMovies.flatMap { it.genres }
+                .groupingBy { it }.eachCount().toList()
+                .sortedByDescending { (_, v) -> v }
+                .subList(0, maxGenresCount - 1)
 
-        val isMaxMoreOne = countGenres[0].second > 1
-        return@withContext countGenres.filter { isMaxMoreOne && it.second > 1 }.map { it.first }
-    }
-
-    suspend fun updateUser(user: User){}
-
-    fun changeMovieLike(movieId: Long, isFavourite: Boolean) {
-        val uid = currentUser.uid
-    }
-
-    fun saveToken(token: String) {
-        addSecurePrefsValue(THE_MOVIE_DB_TOKEN, token)
-    }
-
-    fun getToken(): String? {
-        return getSecurePrefsValue(THE_MOVIE_DB_TOKEN)
-    }
-
-    private fun addSecurePrefsValue(key: String, value: String) {
-        val prefs = SharedPrefsUtils.createSecure(application.applicationContext)
-        with(prefs.edit()) {
-            putString(key, value)
-            apply()
+            val isMaxMoreOne = countGenres[0].second > 1
+            return@withContext countGenres.filter { isMaxMoreOne && it.second > 1 }.map { it.first }
         }
-    }
-
-    private fun getSecurePrefsValue(key: String): String? {
-        val prefs = SharedPrefsUtils.createSecure(application.applicationContext)
-        return prefs.getString(key, null)
-    }
-
-
-    fun isLogin(): Boolean {
-        return currentUser != null
-    }
 
     fun logout() {
         movieRepository.setAllNotFavourite()
-        Firebase.auth.signOut()
     }
 
     fun loadUserLoading(): User {
@@ -118,7 +75,7 @@ class AccountRepository @Inject constructor(
         return userError
     }
 
-    private fun getUserFavouriteMovies(uid: Long) = listOf(
+    private fun getUserFavouriteMovies() = listOf(
         MovieShortRemote(
             id = 637649,
             title = "Гнев человеческий",
@@ -248,9 +205,4 @@ class AccountRepository @Inject constructor(
             vote_count = 0
         )
     ).shuffled().subList(0, 5)
-
-    companion object {
-        const val THE_MOVIE_DB_TOKEN = "th_mv_db_tkn"
-
-    }
 }

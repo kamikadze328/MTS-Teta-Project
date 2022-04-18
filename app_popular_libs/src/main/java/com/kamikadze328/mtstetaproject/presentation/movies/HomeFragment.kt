@@ -5,27 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
 import com.kamikadze328.mtstetaproject.adapter.movie.MovieAdapter
 import com.kamikadze328.mtstetaproject.adapter.movie.MovieItemDecoration
+import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.data.util.UIState
 import com.kamikadze328.mtstetaproject.databinding.FragmentHomeBinding
 import com.kamikadze328.mtstetaproject.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import jp.wasabeef.recyclerview.animators.SlideInRightAnimator
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 
 @AndroidEntryPoint
@@ -34,7 +29,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MoviesViewModel by activityViewModels()
-    lateinit var genreAdapter: GenreAdapter
+    private lateinit var genreAdapter: GenreAdapter
 
     companion object {
         @JvmStatic
@@ -62,29 +57,6 @@ class HomeFragment : Fragment() {
         binding.movieMainMoviesRecycler.post { startPostponedEnterTransition() }
 
         setupRecyclerAdapters()
-
-        setupSwipeRefresh()
-
-        setupStringSearch()
-    }
-
-    private fun setupStringSearch() {
-        binding.homeSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = false
-            override fun onQueryTextChange(newText: String?): Boolean {
-                viewModel.setNewTextFilter(newText ?: "")
-                return true
-            }
-        })
-    }
-
-    private fun setupSwipeRefresh() {
-        binding.movieMainSwiperefresh.setOnRefreshListener(::onRefresh)
-    }
-
-    private fun onRefresh() {
-        viewModel.clearRecyclerMoviesState()
-        viewModel.loadAllData()
     }
 
     private fun setupRecyclerAdapters() {
@@ -92,13 +64,9 @@ class HomeFragment : Fragment() {
         setupRecyclerAdapterGenres()
     }
 
-    private fun loadMore() {
-        viewModel.loadMoreMovies()
-    }
-
     private fun setupRecyclerAdapterMovies() {
         val recyclerMovies = binding.movieMainMoviesRecycler
-        val adapter = MovieAdapter(::onClickListenerMovies, ::loadMore)
+        val adapter = MovieAdapter(::onClickListenerMovies)
 
         recyclerMovies.adapter = adapter
 
@@ -122,43 +90,21 @@ class HomeFragment : Fragment() {
         }
         recyclerMovies.layoutManager = layoutManager
 
-        viewModel.moviesState.observe(viewLifecycleOwner, {
+        viewModel.moviesState.observe(viewLifecycleOwner) {
             when (it) {
-                is UIState.LoadingState -> {
-                    binding.movieMainSwiperefresh.isRefreshing = true
-                }
-                is UIState.ErrorState -> {
-                    adapter.submitList(emptyList())
-                    binding.movieMainSwiperefresh.isRefreshing = false
-                }
                 is UIState.DataState -> {
-                    adapter.submitList(it.data) {
-                        if (viewModel.recyclerMoviesState.value == null)
-                            recyclerMovies.scrollToPosition(0)
-                        else layoutManager.onRestoreInstanceState(viewModel.recyclerMoviesState.value)
-                    }
-                    binding.movieMainSwiperefresh.isRefreshing = false
+                    adapter.isEmpty = false
+                    adapter.submitList(it.data)
+                }
+                else -> {
+                    adapter.isEmpty = true
+                    adapter.submitList(listOf(Movie(0, "", "", "", 0.0, "", "")))
                 }
             }
-        })
+        }
 
         val itemDecorator = MovieItemDecoration(offsetBetween.toInt(), offsetBottom, spanCount)
         recyclerMovies.addItemDecoration(itemDecorator)
-
-        recyclerMovies.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                    viewModel.setRecyclerMoviesState(layoutManager)
-            }
-        })
-
-        layoutManager.onRestoreInstanceState(viewModel.recyclerMoviesState.value)
-
-        recyclerMovies.itemAnimator = SlideInUpAnimator(LinearOutSlowInInterpolator())
-
-        viewModel.thereAreMoreMovies.observe(viewLifecycleOwner, {
-            adapter.isLoadMore = it
-        })
     }
 
 
@@ -166,14 +112,14 @@ class HomeFragment : Fragment() {
         val recyclerGenres = binding.movieMainGenresRecycler
         genreAdapter = GenreAdapter(::onClickListenerGenres)
 
-        viewModel.genresState.observe(viewLifecycleOwner, {
+        viewModel.genresState.observe(viewLifecycleOwner) {
             when (it) {
                 is UIState.LoadingState -> genreAdapter.submitList(viewModel.loadGenreLoading())
                 is UIState.ErrorState -> genreAdapter.submitList(viewModel.loadGenreError())
                 is UIState.DataState -> genreAdapter.submitList(it.data)
                 else -> throw IllegalStateException()
             }
-        })
+        }
 
         recyclerGenres.adapter = genreAdapter
 
@@ -182,8 +128,6 @@ class HomeFragment : Fragment() {
 
         val itemDecorator = LinearHorizontalItemDecorator(offset, firstLastOffset, firstLastOffset)
         recyclerGenres.addItemDecoration(itemDecorator)
-
-        recyclerGenres.itemAnimator = SlideInRightAnimator(FastOutSlowInInterpolator())
     }
 
     private fun onClickListenerMovies(movieId: Long, view: View) {
@@ -200,7 +144,6 @@ class HomeFragment : Fragment() {
     private fun onClickListenerGenres(genreId: Long) {
         if (genreId <= 0) return
         (activity as MainActivity).onGenreClicked(genreId)
-        viewModel.updateGenresFilter(genreId)
         val i = genreAdapter.currentList.indexOfFirst { it.genreId == genreId }
         genreAdapter.currentList.getOrNull(i)?.let {
             it.isSelected = !it.isSelected

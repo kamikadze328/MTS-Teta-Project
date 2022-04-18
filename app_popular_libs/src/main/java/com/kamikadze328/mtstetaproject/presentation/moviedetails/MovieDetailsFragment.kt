@@ -1,6 +1,5 @@
 package com.kamikadze328.mtstetaproject.presentation.moviedetails
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -51,14 +50,14 @@ class MovieDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.moviePoster.transitionName = args.moviePath
-        viewModel.movieState.observe(viewLifecycleOwner, {
+        viewModel.movieState.observe(viewLifecycleOwner) {
             when (it) {
                 is UIState.LoadingState -> updateUI(
                     viewModel.loadMovieLoading().apply { poster_path = args.moviePath })
                 is UIState.ErrorState -> updateUI(viewModel.loadMovieError())
                 is UIState.DataState -> updateUI(it.data)
             }
-        })
+        }
 
         setupRecyclerAdapters()
 
@@ -93,13 +92,13 @@ class MovieDetailsFragment : Fragment() {
         val recyclerGenres = binding.movieGenresRecycler
         val adapter = GenreAdapter(::onClickListenerGenres)
 
-        viewModel.movieState.observe(viewLifecycleOwner, {
+        viewModel.movieState.observe(viewLifecycleOwner) {
             when (it) {
                 is UIState.LoadingState -> adapter.submitList(viewModel.loadGenreLoading())
                 is UIState.ErrorState -> adapter.submitList(viewModel.loadGenreError())
                 is UIState.DataState -> adapter.submitList(it.data.genres)
             }
-        })
+        }
 
         recyclerGenres.adapter = adapter
 
@@ -117,13 +116,13 @@ class MovieDetailsFragment : Fragment() {
         val recyclerActors = binding.movieActorsRecycler
         val adapter = ActorAdapter()
 
-        viewModel.movieState.observe(viewLifecycleOwner, {
+        viewModel.movieState.observe(viewLifecycleOwner) {
             when (it) {
                 is UIState.LoadingState -> adapter.submitList(viewModel.loadActorsLoading())
                 is UIState.ErrorState -> adapter.submitList(viewModel.loadActorsError())
                 is UIState.DataState -> adapter.submitList(it.data.actors)
             }
-        })
+        }
 
         recyclerActors.adapter = adapter
 
@@ -135,40 +134,24 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun prepareToolBar() {
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
-            prepareToolBarPortrait()
-        else prepareToolBarLand()
-    }
-
-    private fun prepareToolBarPortrait() {
         var scrollRange = 0
         var isCollapsed = false
 
         binding.toolbar.doOnLayout {
-            scrollRange = binding.movieAppBar?.totalScrollRange ?: 0
+            scrollRange = binding.movieAppBar.totalScrollRange
         }
 
-        binding.movieAppBar?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+        binding.movieAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             if (isCollapsed) {
                 isCollapsed = false
-                binding.toolbarBeforeCollapsed?.visibility = View.VISIBLE
+                binding.toolbarBeforeCollapsed.visibility = View.VISIBLE
                 binding.toolbar.visibility = View.INVISIBLE
             } else if (scrollRange + verticalOffset == 0) {
                 isCollapsed = true
                 binding.toolbar.visibility = View.VISIBLE
-                binding.toolbarBeforeCollapsed?.visibility = View.INVISIBLE
+                binding.toolbarBeforeCollapsed.visibility = View.INVISIBLE
             }
         })
-    }
-
-    private fun prepareToolBarLand() {
-        binding.movieContentScroll?.viewTreeObserver?.addOnScrollChangedListener {
-            val location = IntArray(2)
-            binding.movieNameText.getLocationOnScreen(location)
-            val y = location[1]
-            binding.toolbar.visibility =
-                if (y - binding.movieNameText.lineHeight <= 0) View.VISIBLE else View.INVISIBLE
-        }
     }
 
     private fun prepareSharedElementTransition() {

@@ -33,7 +33,6 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     init {
-
         val movie: Movie? = savedStateHandle[MOVIE]
 
         val isMovieNotCached = movie == null

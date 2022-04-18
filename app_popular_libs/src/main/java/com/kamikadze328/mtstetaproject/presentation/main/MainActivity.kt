@@ -3,13 +3,10 @@ package com.kamikadze328.mtstetaproject.presentation.main
 import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.databinding.ActivityMainBinding
 import com.kamikadze328.mtstetaproject.presentation.movies.HomeFragmentArgs
@@ -28,7 +25,6 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupNavController()
-        //debugFirebaseToken()
 
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
@@ -36,17 +32,6 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
                 navController.navigate(R.id.navigation_home, args)
             }
         }
-    }
-
-    private fun debugFirebaseToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                return@OnCompleteListener
-            }
-            val token = task.result
-            val msg = getString(R.string.msg_token_fmt, token)
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-        })
     }
 
 
@@ -91,16 +76,16 @@ class MainActivity : AppCompatActivity(), CallbackMovieClicked, CallbackGenreCli
     }
 
 
-    override fun onMovieClicked(movieId: Long) {
+    override fun onMovieClicked(id: Long) {
         /* val actions = HomeFragmentDirections.actionHomeToMovieDetails(movieId)
         navController.navigate(actions)*/
     }
 
-    override fun onGenreClicked(genreId: Long) {
+    override fun onGenreClicked(id: Long) {
         //TODO("Not yet implemented")
     }
 
-    override fun onActorClicked(actorId: Long) {
+    override fun onActorClicked(id: Long) {
         //TODO("Not yet implemented")
     }
 }

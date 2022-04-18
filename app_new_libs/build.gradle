@@ -97,5 +97,4 @@ dependencies {
     implementation 'androidx.compose.runtime:runtime-livedata:1.1.1'
     implementation 'androidx.activity:activity-compose:1.4.0'
     debugImplementation "androidx.compose.ui:ui-tooling:1.1.1"
-
 }
