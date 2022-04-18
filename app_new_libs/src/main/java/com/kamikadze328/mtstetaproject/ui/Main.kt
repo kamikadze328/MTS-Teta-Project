@@ -51,7 +51,7 @@ private fun MyApp() {
                     modifier = Modifier.padding(innerPadding)
                 ) {
                     moviesGraph(navController)
-                    composable(Screens.Profile.route) { Profile(navController) }
+                    composable(Screens.Profile.route) { Profile() }
                 }
             }
         )
@@ -66,11 +66,6 @@ fun NavGraphBuilder.moviesGraph(navController: NavController) {
             arguments = listOf(navArgument(NavCommand.MovieDetails.argKey) {
                 type = NavCommand.MovieDetails.navType
             })
-        ) { backStackEntry ->
-            MovieDetails(
-                navController = navController,
-                movieId = backStackEntry.arguments?.getLong(NavCommand.MovieDetails.argKey),
-            )
-        }
+        ) { MovieDetails() }
     }
 }

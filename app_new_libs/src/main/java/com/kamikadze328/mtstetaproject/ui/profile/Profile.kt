@@ -1,6 +1,5 @@
 package com.kamikadze328.mtstetaproject.ui.profile
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,12 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.util.UIState
@@ -31,7 +27,6 @@ import com.kamikadze328.mtstetaproject.ui.theme.profile_special_background
 
 @Composable
 fun Profile(
-    navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val user = when (val userState = viewModel.userState.observeAsState().value) {

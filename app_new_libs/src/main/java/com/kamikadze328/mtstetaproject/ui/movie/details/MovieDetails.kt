@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.util.UIState
 import com.kamikadze328.mtstetaproject.presentation.moviedetails.MovieDetailsViewModel
@@ -19,8 +18,6 @@ import com.kamikadze328.mtstetaproject.ui.common.Rating
 
 @Composable
 fun MovieDetails(
-    navController: NavController,
-    movieId: Long?,
     viewModel: MovieDetailsViewModel = hiltViewModel(),
 ) {
     val movieState = viewModel.movieState.observeAsState().value
