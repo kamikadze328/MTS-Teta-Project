@@ -1,15 +1,13 @@
 package com.kamikadze328.mtstetaproject.presentation.movies
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.Movie
 import com.kamikadze328.mtstetaproject.data.repository.GenreRepository
 import com.kamikadze328.mtstetaproject.data.repository.MovieRepository
+import com.kamikadze328.mtstetaproject.data.util.SelectableGenreComparator
 import com.kamikadze328.mtstetaproject.data.util.UIState
-import com.kamikadze328.mtstetaproject.presentation.main.CallbackGenreClicked
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -22,14 +20,14 @@ class MoviesViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val movieRepository: MovieRepository,
     private val genreRepository: GenreRepository
-) : ViewModel(), CallbackGenreClicked {
+) : ViewModel() {
     private val _moviesState: MutableLiveData<UIState<List<Movie>>> =
         MutableLiveData(UIState.LoadingState)
     val moviesState: LiveData<UIState<List<Movie>>> = _moviesState
 
-    private val _genresState: MutableLiveData<UIState<SnapshotStateList<Genre>>> =
+    private val _genresState: MutableLiveData<UIState<List<Genre>>> =
         MutableLiveData(UIState.LoadingState)
-    val genresState: LiveData<UIState<SnapshotStateList<Genre>>> = _genresState
+    val genresState: LiveData<UIState<List<Genre>>> = _genresState
 
     private val moviesCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable -> onMoviesLoadFailed(throwable) }
@@ -99,9 +97,7 @@ class MoviesViewModel @Inject constructor(
         }
 
     private suspend fun setGenres(genres: List<Genre>) = withContext(Dispatchers.Default) {
-        val stateGenresList = mutableStateListOf<Genre>()
-        stateGenresList.addAll(genres)
-        _genresState.postValue(UIState.DataState(stateGenresList))
+        _genresState.postValue(UIState.DataState(genres))
         savedStateHandle.set(GENRES, genres)
     }
 
@@ -121,12 +117,30 @@ class MoviesViewModel @Inject constructor(
         return listOf(genreRepository.loadGenreError())
     }
 
-    override fun onGenreClicked(id: Long) {
-        val genres = (_genresState.value as? UIState.DataState)?.data ?: return
-        val index = genres.indexOfFirst { it.genreId == id }
-        val genre = genres[index]
-        val newGenre = genre.copy().apply { isSelected = !genre.isSelected }
-        genres.removeAt(index)
-        genres.add(index, newGenre)
+    private suspend fun updateSelectedGenres(genre: Genre) {
+        if (genre.isSelected) _selectedGenresId.add(genre.genreId)
+        else _selectedGenresId.remove(genre.genreId)
+        updateMovies()
+    }
+
+    fun updateGenresFilter(genreId: Long) {
+        if (_genresState.value is UIState.DataState) {
+            viewModelScope.launch {
+                val genres =
+                    (_genresState.value as UIState.DataState<List<Genre>>).data.toMutableList()
+                val index = genres.indexOfFirst { it.genreId == genreId }
+                val genre = genres[index].copy()
+
+                genre.isSelected = !_selectedGenresId.contains(genreId)
+
+                genres.removeAt(index)
+                genres.add(_selectedGenresId.size, genre)
+
+                genres.sortWith(SelectableGenreComparator())
+
+                setGenres(genres)
+                updateSelectedGenres(genre)
+            }
+        }
     }
 }

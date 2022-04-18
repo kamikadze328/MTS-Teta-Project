@@ -1,15 +1,12 @@
 package com.kamikadze328.mtstetaproject.presentation.profile
 
 import android.app.Application
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.User
 import com.kamikadze328.mtstetaproject.data.repository.AccountRepository
 import com.kamikadze328.mtstetaproject.data.repository.GenreRepository
 import com.kamikadze328.mtstetaproject.data.util.UIState
-import com.kamikadze328.mtstetaproject.presentation.main.CallbackGenreClicked
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -23,10 +20,10 @@ class ProfileViewModel @Inject constructor(
     private val accountRepository: AccountRepository,
     private val genreRepository: GenreRepository,
     application: Application
-) : AndroidViewModel(application), CallbackGenreClicked {
-    private val _favouriteGenresState: MutableLiveData<UIState<SnapshotStateList<Genre>>> =
+) : AndroidViewModel(application) {
+    private val _favouriteGenresState: MutableLiveData<UIState<List<Genre>>> =
         MutableLiveData(UIState.LoadingState)
-    val favouriteGenresState: LiveData<UIState<SnapshotStateList<Genre>>> = _favouriteGenresState
+    val favouriteGenresState: LiveData<UIState<List<Genre>>> = _favouriteGenresState
 
     private val _userState: MutableLiveData<UIState<User>> = MutableLiveData(UIState.LoadingState)
     val userState: LiveData<UIState<User>> = _userState
@@ -73,9 +70,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private suspend fun setFavouriteGenres(genres: List<Genre>) = withContext(Dispatchers.Default) {
-        val stateGenresList = mutableStateListOf<Genre>()
-        stateGenresList.addAll(genres)
-        _favouriteGenresState.postValue(UIState.DataState(stateGenresList))
+        _favouriteGenresState.postValue(UIState.DataState(genres))
         savedStateHandle.set(GENRES, genres)
     }
 
@@ -100,12 +95,12 @@ class ProfileViewModel @Inject constructor(
         setChangedUser(newChangedUser)
     }
 
-    fun loadGenreLoading(): SnapshotStateList<Genre> {
-        return mutableStateListOf(genreRepository.loadGenreLoading())
+    fun loadGenreLoading(): List<Genre> {
+        return listOf(genreRepository.loadGenreLoading())
     }
 
-    fun loadGenreError(): SnapshotStateList<Genre> {
-        return mutableStateListOf(genreRepository.loadGenreError())
+    fun loadGenreError(): List<Genre> {
+        return listOf(genreRepository.loadGenreError())
     }
 
     fun loadUserLoading(): User {
@@ -114,15 +109,6 @@ class ProfileViewModel @Inject constructor(
 
     fun loadUserError(): User {
         return accountRepository.loadUserError()
-    }
-
-    override fun onGenreClicked(id: Long) {
-        val genres =  (_favouriteGenresState.value as? UIState.DataState)?.data ?: return
-        val index = genres.indexOfFirst { it.genreId == id }
-        val genre = genres[index]
-        val newGenre = genre.copy().apply { isSelected = !genre.isSelected }
-        genres.removeAt(index)
-        genres.add(index, newGenre)
     }
 
     fun logout() {
