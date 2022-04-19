@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kamikadze328.mtstetaproject.app.App
 import com.kamikadze328.mtstetaproject.ui.movie.details.MovieDetails
 import com.kamikadze328.mtstetaproject.ui.movies.Movies
 import com.kamikadze328.mtstetaproject.ui.profile.Profile
@@ -23,47 +24,27 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private var start = 0L
+    private val start: Long
+        get() = (application as App).start
+
     private val resultList = mutableListOf<Long>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        start = System.currentTimeMillis()
         setContent {
             MyApp()
         }
-        window.decorView.post {
-            val end2 = System.currentTimeMillis()
-            val result2 = end2 - start
-            Log.d("kekTime", " decorView time = $result2 ") // 4
-            resultList.add(result2)
-        }
+        calculateTime()
+    }
 
-        val end = System.currentTimeMillis()
-        val result = end - start
-        Log.d("kekTime", " onCreate time = $result ") // 1
-        resultList.add(result)
+    private fun calculateTime() {
+        resultList.add(System.currentTimeMillis() - start)
     }
 
     override fun onResume() {
         super.onResume()
-        val end = System.currentTimeMillis()
-        val result = end - start
-        Log.d("kekTime", " onResume time = $result ") // 2
-        resultList.add(result)
-    }
-
-    private var windowFocusChanged = true
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (windowFocusChanged && hasFocus) {
-            windowFocusChanged = false
-            val end = System.currentTimeMillis()
-            val result = end - start
-            Log.d("kekTime", " onWindowFocusChanged time = $result ") // 5
-            resultList.add(result)
-            Log.d("kekTime", "all = $resultList")
-
-        }
+        resultList.add(System.currentTimeMillis() - start)
+        Log.d("kekTime", "compose   = $resultList")
     }
 }
 

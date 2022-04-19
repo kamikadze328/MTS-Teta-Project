@@ -22,7 +22,7 @@ class MoviesViewModel @Inject constructor(
     private val genreRepository: GenreRepository
 ) : ViewModel() {
     private val _moviesState: MutableLiveData<UIState<List<Movie>>> =
-        MutableLiveData(UIState.LoadingState)
+        MutableLiveData(UIState.DataState(MovieRepository.movies))
     val moviesState: LiveData<UIState<List<Movie>>> = _moviesState
 
     private val _genresState: MutableLiveData<UIState<List<Genre>>> =

@@ -80,7 +80,7 @@ class HomeFragment : Fragment() {
         val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, false)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int = when (position) {
-                /*0, */adapter.itemCount - 1 -> spanCount
+                adapter.itemCount - 1 -> spanCount
                 else -> 1
             }
         }
@@ -134,7 +134,6 @@ class HomeFragment : Fragment() {
 
         val extras = FragmentNavigatorExtras(poster to poster.transitionName)
         findNavController().navigate(actions, extras)
-        //(activity as MainActivity).onMovieClicked(movieId)
     }
 
     private fun onClickListenerGenres(genreId: Long) {
