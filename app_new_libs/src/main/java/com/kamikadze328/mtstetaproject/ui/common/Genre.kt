@@ -38,6 +38,7 @@ fun ListGenre(
         }
     }
 }
+
 @Composable
 fun Genre(
     genre: Genre,
