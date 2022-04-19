@@ -2,6 +2,7 @@ package com.kamikadze328.mtstetaproject.data.dto
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.compose.runtime.Stable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -9,6 +10,7 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 
+@Stable
 @Parcelize
 @Entity
 data class Movie(
