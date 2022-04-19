@@ -8,8 +8,6 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import androidx.transition.Transition
-import androidx.transition.TransitionInflater
 import coil.load
 import coil.transform.BlurTransformation
 import com.google.android.material.appbar.AppBarLayout
@@ -33,11 +31,6 @@ class MovieDetailsFragment : Fragment() {
     private val viewModel: MovieDetailsViewModel by viewModels()
 
     private val args: MovieDetailsFragmentArgs by navArgs()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        prepareSharedElementTransition()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -153,13 +146,4 @@ class MovieDetailsFragment : Fragment() {
             }
         })
     }
-
-    private fun prepareSharedElementTransition() {
-        val transition: Transition = TransitionInflater.from(requireContext())
-            .inflateTransition(R.transition.movie_details_transition)
-        sharedElementEnterTransition = transition
-        sharedElementReturnTransition = transition
-    }
-
-
 }

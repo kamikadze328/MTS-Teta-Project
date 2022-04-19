@@ -1,6 +1,7 @@
 package com.kamikadze328.mtstetaproject.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kamikadze328.mtstetaproject.app.App
 import com.kamikadze328.mtstetaproject.ui.movie.details.MovieDetails
 import com.kamikadze328.mtstetaproject.ui.movies.Movies
 import com.kamikadze328.mtstetaproject.ui.profile.Profile
@@ -22,11 +24,27 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val start: Long
+        get() = (application as App).start
+
+    private val resultList = mutableListOf<Long>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyApp()
         }
+        calculateTime()
+    }
+
+    private fun calculateTime() {
+        resultList.add(System.currentTimeMillis() - start)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        resultList.add(System.currentTimeMillis() - start)
+        Log.d("kekTime", "compose   = $resultList")
     }
 }
 
@@ -58,7 +76,7 @@ private fun MyApp() {
     }
 }
 
-fun NavGraphBuilder.moviesGraph(navController: NavController) {
+private fun NavGraphBuilder.moviesGraph(navController: NavController) {
     navigation(startDestination = Screens.Movies.route, route = "movies") {
         composable(Screens.Movies.route) { Movies(navController) }
         composable(

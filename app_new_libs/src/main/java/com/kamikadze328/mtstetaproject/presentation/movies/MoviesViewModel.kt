@@ -3,6 +3,7 @@ package com.kamikadze328.mtstetaproject.presentation.movies
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.*
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.dto.Movie
@@ -23,12 +24,12 @@ class MoviesViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val genreRepository: GenreRepository
 ) : ViewModel(), CallbackGenreClicked {
-    private val _moviesState: MutableLiveData<UIState<List<Movie>>> =
-        MutableLiveData(UIState.LoadingState)
-    val moviesState: LiveData<UIState<List<Movie>>> = _moviesState
+    private val _moviesState: MutableLiveData<UIState<SnapshotStateList<Movie>>> =
+        MutableLiveData(UIState.DataState(MovieRepository.movies.toMutableStateList()))
+    val moviesState: LiveData<UIState<SnapshotStateList<Movie>>> = _moviesState
 
     private val _genresState: MutableLiveData<UIState<SnapshotStateList<Genre>>> =
-        MutableLiveData(UIState.LoadingState)
+        MutableLiveData()
     val genresState: LiveData<UIState<SnapshotStateList<Genre>>> = _genresState
 
     private val moviesCoroutineExceptionHandler: CoroutineExceptionHandler by lazy {
@@ -95,7 +96,7 @@ class MoviesViewModel @Inject constructor(
         withContext(Dispatchers.Default) {
             _movies = movies
             val filteredMovies = getFilteredMovies(movies)
-            _moviesState.postValue(UIState.DataState(filteredMovies))
+            _moviesState.postValue(UIState.DataState(filteredMovies.toMutableStateList()))
             savedStateHandle.set(MOVIES, movies)
         }
 

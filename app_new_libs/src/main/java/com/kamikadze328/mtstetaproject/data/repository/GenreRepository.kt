@@ -1,7 +1,6 @@
 package com.kamikadze328.mtstetaproject.data.repository
 
 import android.app.Application
-import android.util.Log
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.data.dto.Genre
 import com.kamikadze328.mtstetaproject.data.local.dao.GenreDao

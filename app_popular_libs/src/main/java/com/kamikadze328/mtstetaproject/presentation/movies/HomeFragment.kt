@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.transition.TransitionInflater
 import com.kamikadze328.mtstetaproject.R
 import com.kamikadze328.mtstetaproject.adapter.LinearHorizontalItemDecorator
 import com.kamikadze328.mtstetaproject.adapter.genre.GenreAdapter
@@ -44,9 +43,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        exitTransition = TransitionInflater.from(requireContext())
-            .inflateTransition(R.transition.home_exit_transition)
 
         return binding.root
     }
@@ -84,7 +80,7 @@ class HomeFragment : Fragment() {
         val layoutManager = GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, false)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int = when (position) {
-                /*0, */adapter.itemCount - 1 -> spanCount
+                adapter.itemCount - 1 -> spanCount
                 else -> 1
             }
         }
@@ -138,12 +134,12 @@ class HomeFragment : Fragment() {
 
         val extras = FragmentNavigatorExtras(poster to poster.transitionName)
         findNavController().navigate(actions, extras)
-        //(activity as MainActivity).onMovieClicked(movieId)
     }
 
     private fun onClickListenerGenres(genreId: Long) {
         if (genreId <= 0) return
         (activity as MainActivity).onGenreClicked(genreId)
+        viewModel.updateGenresFilter(genreId)
         val i = genreAdapter.currentList.indexOfFirst { it.genreId == genreId }
         genreAdapter.currentList.getOrNull(i)?.let {
             it.isSelected = !it.isSelected

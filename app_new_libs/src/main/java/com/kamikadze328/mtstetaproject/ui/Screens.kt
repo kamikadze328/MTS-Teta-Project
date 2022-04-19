@@ -26,11 +26,12 @@ sealed class Screens(
     object Movies : Screens("Movies", R.string.title_home, R.drawable.ic_home_black)
     object Profile : Screens("Profile", R.string.title_profile, R.drawable.ic_profile_black)
 }
+
 sealed class NavCommand(
     val route: String,
     val argKey: String,
     val navType: NavType<*>
-){
+) {
     object MovieDetails : NavCommand("movie_details", "movieId", NavType.LongType)
 }
 
@@ -51,9 +52,6 @@ fun MyAppBottomNavigation(
                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                 alwaysShowLabel = false,
                 onClick = {
-                    /*if (currentDestination?.route == Screens.Films.route) {
-                        navController.popBackStack(Screens.Films.route, false)
-                    } else {*/
                     navController.navigate(screen.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
@@ -61,7 +59,6 @@ fun MyAppBottomNavigation(
                         launchSingleTop = true
                         restoreState = true
                     }
-                    //}
                 }
             )
         }
