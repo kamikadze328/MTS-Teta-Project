@@ -25,6 +25,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="com.kamikadze328.mtstetaproject.PROFILE_ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="com.kamikadze328.mtstetaproject.MOVIES_ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
 
         </activity>
 

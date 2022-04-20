@@ -1,5 +1,6 @@
 package com.kamikadze328.benchmark
 
+import android.content.Intent
 import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.StartupTimingMetric
@@ -16,7 +17,10 @@ class StartupBenchmarkStartupModel {
     @get:Rule
     val benchmarkRule = MacrobenchmarkRule()
 
-    private fun startup(startupMode: StartupMode) = benchmarkRule.measureRepeated(
+    private fun startup(
+        startupMode: StartupMode,
+        intentAction: String
+    ) = benchmarkRule.measureRepeated(
         packageName = TARGET_PACKAGE,
         metrics = listOf(StartupTimingMetric()),
         compilationMode = CompilationMode.SpeedProfile(),
@@ -26,16 +30,28 @@ class StartupBenchmarkStartupModel {
             pressHome()
         }
     ) {
-        startActivityAndWait()
+        val intent = Intent().apply {
+            action = "$TARGET_PACKAGE.$intentAction"
+        }
+        startActivityAndWait(intent)
     }
 
     @Test
-    fun startupCold() = startup(StartupMode.COLD)
+    fun startupColdMovies() = startup(StartupMode.COLD, "MOVIES_ACTION")
 
     @Test
-    fun startupHot() = startup(StartupMode.HOT)
+    fun startupHotMovies() = startup(StartupMode.HOT, "MOVIES_ACTION")
 
     @Test
-    fun startupWarm() = startup(StartupMode.WARM)
+    fun startupWarmMovies() = startup(StartupMode.WARM, "MOVIES_ACTION")
+
+    @Test
+    fun startupColdProfile() = startup(StartupMode.COLD, "PROFILE_ACTION")
+
+    @Test
+    fun startupHotProfile() = startup(StartupMode.HOT, "PROFILE_ACTION")
+
+    @Test
+    fun startupWarmProfile() = startup(StartupMode.WARM, "PROFILE_ACTION")
 
 }

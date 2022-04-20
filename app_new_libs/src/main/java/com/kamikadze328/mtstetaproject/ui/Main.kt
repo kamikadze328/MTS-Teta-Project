@@ -1,7 +1,6 @@
 package com.kamikadze328.mtstetaproject.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
@@ -15,7 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.kamikadze328.mtstetaproject.app.App
 import com.kamikadze328.mtstetaproject.ui.movie.details.MovieDetails
 import com.kamikadze328.mtstetaproject.ui.movies.Movies
 import com.kamikadze328.mtstetaproject.ui.profile.Profile
@@ -24,32 +22,23 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val start: Long
-        get() = (application as App).start
-
-    private val resultList = mutableListOf<Long>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            MyApp()
+        val startDestination = when (intent?.action) {
+            "com.kamikadze328.mtstetaproject.PROFILE_ACTION" -> Screens.Profile.route
+            "com.kamikadze328.mtstetaproject.MOVIES_ACTION" -> "movies"
+            else -> "movies"
         }
-        calculateTime()
-    }
-
-    private fun calculateTime() {
-        resultList.add(System.currentTimeMillis() - start)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        resultList.add(System.currentTimeMillis() - start)
-        Log.d("kekTime", "compose   = $resultList")
+        setContent {
+            MyApp(startDestination)
+        }
     }
 }
 
 @Composable
-private fun MyApp() {
+private fun MyApp(
+    startDestination: String
+) {
     BasicTetaProjectTheme {
         val bottomNavigationItems = listOf(
             Screens.Movies,
@@ -65,7 +54,7 @@ private fun MyApp() {
             content = { innerPadding ->
                 NavHost(
                     navController = navController,
-                    startDestination = "movies",
+                    startDestination = startDestination,
                     modifier = Modifier.padding(innerPadding)
                 ) {
                     moviesGraph(navController)
