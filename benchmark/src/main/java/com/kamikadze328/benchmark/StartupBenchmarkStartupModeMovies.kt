@@ -23,7 +23,7 @@ class StartupBenchmarkStartupModel {
     ) = benchmarkRule.measureRepeated(
         packageName = TARGET_PACKAGE,
         metrics = listOf(StartupTimingMetric()),
-        compilationMode = CompilationMode.SpeedProfile(),
+        compilationMode = CompilationMode.None(),
         iterations = ITERATIONS,
         startupMode = startupMode,
         setupBlock = {
